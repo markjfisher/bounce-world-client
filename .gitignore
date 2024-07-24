@@ -1,0 +1,22 @@
+*.d
+*.o
+*.lib
+*.a
+
+.vscode/
+
+apple-tools/*.jar
+apple-tools/*.dsk
+
+_libs/
+build/
+dist/
+obj/
+
+# emulator configs
+altirra-debug.ini
+atari800-debug.cfg
+AppleWin.log
+
+Makefile.options
+.DS_Store
