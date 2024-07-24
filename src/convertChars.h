@@ -30,7 +30,7 @@
 	'▟' -> 'k'.code
 	'▙' -> 'l'.code
 	'█' -> 'm'.code 	// whole inverted space
-	'▚' -> 'n'.code		// skip 'o' as useable char
+	'▚' -> 'n'.code		// skip 'o' so it can be used in shapes
 	'▞' -> 'p'.code
  */
 

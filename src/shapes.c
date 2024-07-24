@@ -15,6 +15,8 @@
 ShapeRecord *shapes;
 char *shapes_url = "/shapes";
 
+extern void itoa_byte(char *s, uint8_t v);
+
 void parseShapeRecords(const char *input, uint8_t count, ShapeRecord *records) {
     uint8_t i;
 	uint8_t dataLength;
@@ -90,7 +92,7 @@ void readAndParseShapesData(char *endpoint, uint8_t shape_count) {
 	strcat(url_buffer, "/data");
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shapes open");
-	n = network_read(url_buffer, buffer, 512);
+	n = network_read(url_buffer, (uint8_t *) buffer, 512);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape data read");
@@ -100,24 +102,30 @@ void readAndParseShapesData(char *endpoint, uint8_t shape_count) {
 	free(buffer);
 }
 
-void displayShapeData(uint8_t n) {
+void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
 	uint8_t i;
 	uint8_t j;
 	uint8_t dataLength;
 	uint8_t width;
 	ShapeRecord shape;
+	char *c;
+	uint8_t actX;
+	uint8_t actY;
     
 	shape = shapes[n];
     width = shape.shape_width;
     dataLength = shape.shape_data_len;
+	c = &shape.shape_data[0];
 
     for (i = 0; i < dataLength; i += width) {
         for (j = 0; j < width; ++j) {
             if (i + j < dataLength) {
-                printf("%c", shape.shape_data[i + j]);
+				actX = x + j;
+				actY = y + (i / width);
+				cputcxy(actX, actY, *c);
+				c++;
             }
         }
-        printf("\n"); // New line after printing 'width' number of characters
     }
 }
 
@@ -125,21 +133,26 @@ void displayShapeData(uint8_t n) {
 void getShapes(char *endpoint) {
 	uint8_t shape_count;
 	uint8_t i;
+	uint8_t x;
+	uint8_t y;
+	char tmp[4];
 
-	printf("beginning parse of shapes data\n");
+	cputsxy(0, 0, "Beginning parse of shapes data...");
 
 	shape_count = getShapeCount(endpoint);
 	shapes = (ShapeRecord *)malloc(shape_count * sizeof(ShapeRecord));
 	readAndParseShapesData(endpoint, shape_count);
 
-	printf("parsed shapes, count: %d\n", shape_count);
-	for (i = 0; i < shape_count; i++) {
-		displayShapeData(i);
-		cgetc();
-	}
+	gotoxy(0, 1);
+	cputs("Parsed shapes, count: ");
+	itoa_byte(tmp, shape_count);
+	cputs(tmp);
 
-    // for (i = 0; i < shape_count; i++) {
-    //     printf("Record %d - ID: %u, Width: %u, Data: %s\n", i, shapes[i].shape_id, shapes[i].shape_width, shapes[i].shape_data);
-    // }
+	for (i = 0; i < shape_count; i++) {
+		x = (i % 7) * 6;
+		y = ((uint8_t) (i / 7)) * 6 + 3;
+		displayShapeData(i, x, y);
+	}
+	cgetc();
 
 }

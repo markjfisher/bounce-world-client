@@ -12,7 +12,11 @@ uint8_t err = 0;
 
 void handle_err(char *reason) {
     if (err) {
-        printf("Error: %d (d: %d) %s\n", err, fn_device_error, reason);
+        clrscr();
+        gotoxy(0, 0);
+        cputs("Error: ");
+        cputs(reason);
+
         if (doesclrscrafterexit()) {
             cgetc();
         }
