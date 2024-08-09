@@ -1,8 +1,8 @@
 #include <stdint.h>
 
-#include "convertChars.h"
+#include "convert_chars.h"
 
-void convertChars(char *s) {
+void convert_chars(char *s) {
 	uint8_t i;
 	for (i = 0; s[i] != '\0'; i++) {
 		switch(s[i]) {

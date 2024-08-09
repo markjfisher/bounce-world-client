@@ -7,12 +7,12 @@
 
 #include "fujinet-network.h"
 
-#include "buffer.h"
-#include "errors.h"
+#include "app_errors.h"
+#include "convert_chars.h"
+#include "data.h"
+#include "main.h"
 #include "shapes.h"
-#include "convertChars.h"
 
-ShapeRecord *shapes;
 char *shapes_url = "/shapes";
 
 extern void itoa_byte(char *s, uint8_t v);
@@ -53,22 +53,22 @@ void parseShapeRecords(const char *input, uint8_t count, ShapeRecord *records) {
 
 		strncpy(records[i].shape_data, currentPos, dataLength);
 		records[i].shape_data[dataLength] = '\0'; // Ensure null-termination
-		convertChars(records[i].shape_data);
+		convert_chars(records[i].shape_data);
 		records[i].shape_data_len = dataLength;
 		currentPos = currentPos + dataLength + 1; // Prepare for the next record
     }
 }
 
-void createShapeURL(char *endpoint) {
+void createShapeURL() {
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, shapes_url);
 }
 
-uint8_t getShapeCount(char *endpoint) {
+uint8_t getShapeCount() {
 	int n = 0;
 	char shapes_tmp[3];
-	createShapeURL(endpoint);
+	createShapeURL();
 	strcat(url_buffer, "/count");
 
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
@@ -81,14 +81,14 @@ uint8_t getShapeCount(char *endpoint) {
 	return atoi(shapes_tmp);
 }
 
-void readAndParseShapesData(char *endpoint, uint8_t shape_count) {
+void readAndParseShapesData(uint8_t shape_count) {
 	char *buffer;
 	int n;
 
 	buffer = malloc(512); // shapes json fits in 392 bytes at the moment
 	memset(buffer, 0, 512);
 
-	createShapeURL(endpoint);
+	createShapeURL();
 	strcat(url_buffer, "/data");
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shapes open");
@@ -130,7 +130,7 @@ void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
 }
 
 // fetch the shapes data and assign it to values the application can use to draw
-void getShapes(char *endpoint) {
+void getShapes() {
 	uint8_t shape_count;
 	uint8_t i;
 	uint8_t x;
@@ -139,9 +139,9 @@ void getShapes(char *endpoint) {
 
 	cputsxy(0, 0, "Beginning parse of shapes data...");
 
-	shape_count = getShapeCount(endpoint);
+	shape_count = getShapeCount();
 	shapes = (ShapeRecord *)malloc(shape_count * sizeof(ShapeRecord));
-	readAndParseShapesData(endpoint, shape_count);
+	readAndParseShapesData(shape_count);
 
 	gotoxy(0, 1);
 	cputs("Parsed shapes, count: ");
@@ -153,6 +153,5 @@ void getShapes(char *endpoint) {
 		y = ((uint8_t) (i / 7)) * 6 + 3;
 		displayShapeData(i, x, y);
 	}
-	cgetc();
 
 }

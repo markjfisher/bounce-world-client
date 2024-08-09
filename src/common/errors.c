@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "app_errors.h"
 #include "fujinet-network.h"
-#include "errors.h"
 
 uint8_t err = 0;
 

@@ -20,3 +20,6 @@ AppleWin.log
 
 Makefile.options
 .DS_Store
+
+assets/*
+!assets/README.md

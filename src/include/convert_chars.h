@@ -34,7 +34,7 @@
 	'▞' -> 'p'.code
  */
 
-void convertChars(char *s);
+void convert_chars(char *s);
 
 
 #endif // CONVERT_CHARS_H

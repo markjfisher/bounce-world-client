@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 #include "cio.h"
-#include "getLine.h"
+#include "get_line.h"
 
 void get_line(char* buf, uint8_t len)
 {
