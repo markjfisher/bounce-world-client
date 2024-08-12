@@ -111,22 +111,22 @@ void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
 	char *c;
 	uint8_t actX;
 	uint8_t actY;
-    
+
 	shape = shapes[n];
-    width = shape.shape_width;
-    dataLength = shape.shape_data_len;
+	width = shape.shape_width;
+	dataLength = shape.shape_data_len;
 	c = &shape.shape_data[0];
 
-    for (i = 0; i < dataLength; i += width) {
-        for (j = 0; j < width; ++j) {
-            if (i + j < dataLength) {
+	for (i = 0; i < dataLength; i += width) {
+		for (j = 0; j < width; ++j) {
+			if (i + j < dataLength) {
 				actX = x + j;
 				actY = y + (i / width);
 				cputcxy(actX, actY, *c);
 				c++;
-            }
-        }
-    }
+			}
+		}
+	}
 }
 
 // fetch the shapes data and assign it to values the application can use to draw

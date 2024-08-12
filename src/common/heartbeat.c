@@ -12,4 +12,5 @@ void send_heartbeat() {
 	err = network_open(heartbeat, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("open heartbeat channel");
 	network_read(heartbeat, (uint8_t *)tmp, 2);
+	network_close(heartbeat);
 }

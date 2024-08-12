@@ -75,13 +75,18 @@ void connect_service() {
 	strcat(heartbeat, hb_str);
 	strcat(heartbeat, client_id);
 
-	// open the endpoint to begin data flow
-	err = network_open(endpoint, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("open data channel");
+	// // open the endpoint for the data flow (requires an actual GET to initiate data flow)
+	// err = network_open(endpoint, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+	// handle_err("open data channel");
 
 	send_heartbeat();
 
 	press_key();
 
 	free(post_data);
+}
+
+void disconnect() {
+	network_close(endpoint);
+	network_close(heartbeat);
 }
