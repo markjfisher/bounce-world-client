@@ -12,10 +12,12 @@ extern void debug();
 
 void show_shape(uint8_t shapeId, int8_t centerX, int8_t centerY) {
 	uint8_t i, j;
-	int8_t x, y, startX, startY;
+	int8_t x, y;
+	int8_t startX, startY;
 	ShapeRecord shape;
 	uint8_t width;
 	char *data;
+	bool firstXInRow;
 
 	shape = shapes[shapeId];
 	width = shape.shape_width;
@@ -25,13 +27,25 @@ void show_shape(uint8_t shapeId, int8_t centerX, int8_t centerY) {
 	startY = centerY - (width % 2 == 0 ? (width / 2 - 1) : (width / 2));
 
 	for (i = 0; i < width; ++i) {
-		for (j = 0; j < width; ++j) {
-			x = startX + j;
-			y = startY + i;
+		y = startY + i;
+		firstXInRow = false; // Reset for each row
 
-			// Only print characters within screen bounds
-			if (x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT) {
-				cputcxy(x, y, data[i * width + j]);
+		// Only proceed if the row is within the vertical screen bounds
+		if (y >= 0 && y < SCREEN_HEIGHT) {
+			for (j = 0; j < width; ++j) {
+				x = startX + j;
+
+				// Check if the current character is within the horizontal screen bounds
+				if (x >= 0 && x < SCREEN_WIDTH) {
+					if (!firstXInRow) {
+						firstXInRow = true;  // Found the first x position in this row within bounds
+						gotoxy(x, y);
+					}
+					cputc(data[i * width + j]);  // Print and move to the next position
+				} else if (firstXInRow) {
+					// If we were printing characters and have now gone out of bounds, break
+					break;
+				}
 			}
 		}
 	}

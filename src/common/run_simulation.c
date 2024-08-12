@@ -24,31 +24,16 @@ void run_simulation() {
 	// the core loop for grabbing data from FN and then displaying it
 
 	while(is_running_sim) {
-
-		if (!is_connected) {
-			err = network_open(endpoint, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-			handle_err("open data");
-			is_connected = true;
-		}
-
-		n = network_read_nb(endpoint, location_data, 256);
-
-		// gotoxy(0,22);
-		// printf("%u\n", n);
-		// pause(5);
-		// debug();
-
-		if (fn_network_error == 136) {
-			is_connected = false;
-			continue;
-		}
+		network_open(endpoint, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+		n = network_read(endpoint, location_data, 256);
+		network_close(endpoint);
 
 		if (n > 0) {
 			display_positions();
 		}
 
 		current_frame++;
-		if (current_frame == 100) {
+		if (current_frame == 40) {
 			send_heartbeat();
 			current_frame = 0;
 		}

@@ -36,9 +36,6 @@ PICOBOOT_DOWNLOAD_URL = https://github.com/FujiNetWIFI/assets/releases/download/
 
 ALTIRRA ?= $(ALTIRRA_HOME)/Altirra64.exe \
   $(XS)/portable $(XS)/portablealt:altirra-debug.ini \
-  $(XS)/debug \
-  $(XS)/debugcmd: ".loadsym build\$(PROGRAM).$(CURRENT_TARGET).lbl" \
-  $(XS)/debugcmd: "bp _debug" \
 
 # Additional args that can be copied into the above lines
 #   $(XS)/debug \
