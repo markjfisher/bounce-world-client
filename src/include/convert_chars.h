@@ -34,7 +34,7 @@
 	'▞' -> 'p'.code
  */
 
-void convert_chars(char *s);
+void convert_chars(uint8_t *data, uint8_t len);
 
 
 #endif // CONVERT_CHARS_H

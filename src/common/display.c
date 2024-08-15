@@ -21,7 +21,7 @@ void show_shape(uint8_t shapeId, int8_t centerX, int8_t centerY) {
 
 	shape = shapes[shapeId];
 	width = shape.shape_width;
-	data = shape.shape_data;
+	data = (char *) shape.shape_data;
 
 	startX = centerX - (width % 2 == 0 ? (width / 2 - 1) : (width / 2));
 	startY = centerY - (width % 2 == 0 ? (width / 2 - 1) : (width / 2));
@@ -65,7 +65,6 @@ void display_positions() {
 	uint8_t index = 2;  // Start reading shapes data after the first two bytes
 
 	clrscr();
-	// debug();
 
 	for (i = 0; i < numberOfShapes; ++i) {
 		shapeId = location_data[index++];

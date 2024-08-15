@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-void get_line(char* buf, uint8_t len);
+void get_line(char* buf);
 
 #endif // GETLINE_H

@@ -6,7 +6,6 @@
 #include "app_errors.h"
 #include "data.h"
 #include "fujinet-network.h"
-#include "heartbeat.h"
 #include "press_key.h"
 #include "shapes.h"
 
@@ -20,18 +19,16 @@ char *hb_str     = "/hb/";
 
 extern void itoa_byte(char *s, uint8_t v);
 
-
 void connect_service() {
-	char *post_data;
 	char tmp[4]; // for the itoa string
 	int n;
+	memset(tmp, 0, sizeof(tmp));
 
 	// send a POST to <endpoint>/client with "name,version,screenX,screenY", and get the client id back
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, client_url);
 
-	post_data = malloc(80);
 	memset(post_data, 0, 80);
 	strcpy(post_data, name);
 	strcat(post_data, comma_str);
@@ -55,38 +52,27 @@ void connect_service() {
 	handle_err("post:data");
 
 	// finally read the client id in the response. client ids are 8 chars, we have 9 char buffer, with 0 at end so can treat it as a string
-	memset(client_id, 0, sizeof(client_id));
-	n = network_read(url_buffer, (uint8_t *)client_id, 8);
+	// memset(client_id, 0, sizeof(client_id));
+	n = network_read(url_buffer, (uint8_t *)client_id, 1);
 	if (n < 0) {
 		err = -n;
 		handle_err("client_id");
 	}
+	network_close(url_buffer);
+
+	memset(tmp, 0, sizeof(tmp));
+	itoa_byte(tmp, client_id[0]);
 
 	cputsxy(10, 19, "Client ID: ");
-	cputsxy(21, 19, client_id);
-
-	// now append this to the 2 strings we have:
-	// <endpoint>/w/<client> on n1: for data
-	// <heartbeat>/hb/<client> on n2: for heartbeat
+	cputsxy(21, 19, tmp);
 
 	strcat(endpoint, world_str);
-	strcat(endpoint, client_id);
-
-	strcat(heartbeat, hb_str);
-	strcat(heartbeat, client_id);
-
-	// // open the endpoint for the data flow (requires an actual GET to initiate data flow)
-	// err = network_open(endpoint, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	// handle_err("open data channel");
-
-	send_heartbeat();
+	strcat(endpoint, tmp);
 
 	press_key();
 
-	free(post_data);
 }
 
 void disconnect() {
 	network_close(endpoint);
-	network_close(heartbeat);
 }

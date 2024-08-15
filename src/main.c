@@ -17,7 +17,6 @@
 #include "connection.h"
 #include "data.h"
 #include "get_info.h"
-#include "main.h"
 #include "run_simulation.h"
 #include "shapes.h"
 
@@ -38,8 +37,5 @@ int main(void)
 
   disconnect();
 
-  free(name);
-  free(heartbeat);
-  free(endpoint);
   return 0;
 }

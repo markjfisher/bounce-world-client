@@ -9,9 +9,9 @@ typedef struct {
     uint8_t shape_id;
     uint8_t shape_width;
 	uint8_t shape_data_len;
-    char *shape_data;
+    uint8_t *shape_data;
 } ShapeRecord;
 
-extern ShapeRecord *shapes;
+extern ShapeRecord shapes[50];
 
 #endif // SHAPES_H

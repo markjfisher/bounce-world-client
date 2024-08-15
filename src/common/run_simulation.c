@@ -1,21 +1,9 @@
-#include <conio.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include "app_errors.h"
-#include "connection.h"
 #include "data.h"
 #include "display.h"
-#include "heartbeat.h"
 #include "fujinet-network.h"
-#include "get_line.h"
-
-extern void debug();
-extern void wait_vsync();
-extern void pause(uint8_t t);
 
 void run_simulation() {
 	int n = 0;
@@ -30,12 +18,6 @@ void run_simulation() {
 
 		if (n > 0) {
 			display_positions();
-		}
-
-		current_frame++;
-		if (current_frame == 40) {
-			send_heartbeat();
-			current_frame = 0;
 		}
 
 		// handle_kb();

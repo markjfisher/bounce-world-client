@@ -10,53 +10,51 @@
 #include "app_errors.h"
 #include "convert_chars.h"
 #include "data.h"
-#include "main.h"
+#include "debug.h"
 #include "shapes.h"
 
 char *shapes_url = "/shapes";
 
 extern void itoa_byte(char *s, uint8_t v);
 
-void parseShapeRecords(const char *input, uint8_t count, ShapeRecord *records) {
-    uint8_t i;
+void parseShapeRecords(const uint8_t *input, uint8_t count) {
+	uint8_t i, j;
 	uint8_t dataLength;
 	uint8_t w;
-	const char *currentPos = input;
-    char *end;
+	const uint8_t *currentPos = input;
 
-	// printf("data: %s\n", input);
+	memset(shapes_buffer, 0, sizeof(shapes_buffer));
 
-    for (i = 0; i < count; i++) {
-        // Initialize shape_data to NULL for each record
-        records[i].shape_data = NULL;
+	for (i = 0; i < count; i++) {
+		shapes[i].shape_id = *currentPos++;
 
-        // Parse shape_id
-        records[i].shape_id = (uint8_t)strtol(currentPos, &end, 10);
-        if (currentPos == end) break; // No conversion happened
-        currentPos = end + 1; // Move past the comma
+		w = *currentPos++;
+		shapes[i].shape_width = w;
 
-        // Parse shape_width
-        w = (uint8_t)strtol(currentPos, &end, 10);
-        records[i].shape_width = w;
-        if (currentPos == end) break; // No conversion happened
-        currentPos = end + 1; // Move past the comma
+		// allocate space in shapes_buffer to each shape_data
+		dataLength = w * w;
+		if (current_offset + dataLength <= SHAPES_BUFFER_SIZE) {
+            // Point shape_data to the current position in the buffer
+            shapes[i].shape_data = &shapes_buffer[current_offset];
 
-        // Calculate the length of the string based on shape_width squared (lookup less time/memory than multiplication)
-        dataLength = w * w;
+            // Copy the data into the shapes_buffer
+            for (j = 0; j < dataLength; j++) {
+                shapes_buffer[current_offset + j] = *currentPos++;
+            }
 
-        // Allocate memory for shape_data
-        records[i].shape_data = (char *)malloc(dataLength + 1); // +1 for the null terminator
-        if (records[i].shape_data == NULL) {
-			err = 1;
-			handle_err("malloc shapes");
+            // Update the current_offset
+            current_offset += dataLength;
+
+            convert_chars(shapes[i].shape_data, dataLength);
+            shapes[i].shape_data_len = dataLength;
+        } else {
+            // Handle the error for insufficient buffer space
+            err = 1;
+            handle_err("Insufficient buffer space");
+            break;
         }
 
-		strncpy(records[i].shape_data, currentPos, dataLength);
-		records[i].shape_data[dataLength] = '\0'; // Ensure null-termination
-		convert_chars(records[i].shape_data);
-		records[i].shape_data_len = dataLength;
-		currentPos = currentPos + dataLength + 1; // Prepare for the next record
-    }
+	}
 }
 
 void createShapeURL() {
@@ -67,39 +65,37 @@ void createShapeURL() {
 
 uint8_t getShapeCount() {
 	int n = 0;
-	char shapes_tmp[3];
+	uint8_t shapes_tmp[1];
 	createShapeURL();
 	strcat(url_buffer, "/count");
 
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shape count open");
-	n = network_read(url_buffer, (uint8_t *)shapes_tmp, 2);
+	n = network_read(url_buffer, shapes_tmp, 1);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape count read");
 	}
-	return atoi(shapes_tmp);
+	return shapes_tmp[0];
 }
 
 void readAndParseShapesData(uint8_t shape_count) {
-	char *buffer;
 	int n;
 
-	buffer = malloc(512); // shapes json fits in 392 bytes at the moment
-	memset(buffer, 0, 512);
+	// use the location_data buffer as a scratch buffer, as it's only needed when initially parsing
+	memset(location_data, 0, 512);
 
 	createShapeURL();
 	strcat(url_buffer, "/data");
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shapes open");
-	n = network_read(url_buffer, (uint8_t *) buffer, 512);
+	n = network_read(url_buffer, location_data, 512);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape data read");
 	}
 
-	parseShapeRecords(buffer, shape_count, shapes);
-	free(buffer);
+	parseShapeRecords(location_data, shape_count);
 }
 
 void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
@@ -115,7 +111,7 @@ void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
 	shape = shapes[n];
 	width = shape.shape_width;
 	dataLength = shape.shape_data_len;
-	c = &shape.shape_data[0];
+	c = (char *) &shape.shape_data[0];
 
 	for (i = 0; i < dataLength; i += width) {
 		for (j = 0; j < width; ++j) {
@@ -140,7 +136,8 @@ void getShapes() {
 	cputsxy(0, 0, "Beginning parse of shapes data...");
 
 	shape_count = getShapeCount();
-	shapes = (ShapeRecord *)malloc(shape_count * sizeof(ShapeRecord));
+	memset(shapes, 0, 250); // room for 50 shapes
+	// shapes = (ShapeRecord *)malloc(shape_count * sizeof(ShapeRecord));
 	readAndParseShapesData(shape_count);
 
 	gotoxy(0, 1);
