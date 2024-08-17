@@ -1,3 +1,4 @@
+#include <atari.h>
 #include <stdint.h>
 
 #include "convert_chars.h"
@@ -6,17 +7,17 @@ void convert_chars(uint8_t *data, uint8_t len) {
 	uint8_t i;
 	for (i = 0; i < len; i++) {
 		switch(data[i]) {
-			case 'r': data[i] = 17; break;         // ┌
-			case ')': data[i] = 5; break;          // ┐
-			case 'L': data[i] = 26; break;         // └
-			case '!': data[i] = 3; break;          // ┘
-			case 'J': data[i] = 4; break;          // ┤
-			case 't': data[i] = 1; break;          // ├
-			case 'T': data[i] = 23; break;         // ┬
-			case '2': data[i] = 24; break;         // ┴
-			case '|': data[i] = 124; break;        // │
-			case '-': data[i] = 18; break;         // ─
-			case '+': data[i] = 19; break;         // ┼
+			case 'r': data[i] = CH_ULCORNER; break;     // ┌
+			case ')': data[i] = CH_URCORNER; break;     // ┐
+			case 'L': data[i] = CH_LLCORNER; break;     // └
+			case '!': data[i] = CH_LRCORNER; break;     // ┘
+			case 'J': data[i] = CH_RTEE;     break;     // ┤
+			case 't': data[i] = CH_LTEE;     break;     // ├
+			case 'T': data[i] = CH_TTEE;     break;     // ┬
+			case '2': data[i] = CH_BTEE;     break;     // ┴
+			case '|': data[i] = CH_VLINE;    break;     // │
+			case '-': data[i] = CH_HLINE;    break;     // ─
+			case '+': data[i] = CH_CROSS;    break;     // ┼
 
 			case 'a': data[i] = 25; break;         // >▌<
 			case 'b': data[i] = 25+128; break;     // >▐< inverted version of previous

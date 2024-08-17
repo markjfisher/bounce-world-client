@@ -1,4 +1,4 @@
-#include <apple2enh.h>
+#include <cbm.h>
 
 #include <conio.h>
 #include <ctype.h>

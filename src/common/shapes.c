@@ -72,6 +72,7 @@ uint8_t getShapeCount() {
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shape count open");
 	n = network_read(url_buffer, shapes_tmp, 1);
+	network_close(url_buffer);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape count read");
@@ -90,6 +91,7 @@ void readAndParseShapesData(uint8_t shape_count) {
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shapes open");
 	n = network_read(url_buffer, location_data, 512);
+	network_close(url_buffer);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape data read");
