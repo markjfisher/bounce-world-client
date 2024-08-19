@@ -38,9 +38,10 @@ ALTIRRA ?= $(ALTIRRA_HOME)/Altirra64.exe \
   $(XS)/portable $(XS)/portablealt:altirra-debug.ini \
   $(XS)/debug \
   $(XS)/debugcmd: ".loadsym build\$(PROGRAM).$(CURRENT_TARGET).lbl" \
-  $(XS)/debugcmd: "bp _debug" \
-  $(XS)/debugcmd: "bp _swap_buffer" \
-  $(XS)/debugcmd: "bp _set_dlist" \
+
+#  $(XS)/debugcmd: "bp _debug" \
+#   $(XS)/debugcmd: "bp _swap_buffer" \
+#   $(XS)/debugcmd: "bp _set_dlist" \
 
 # Additional args that can be copied into the above lines
 #   $(XS)/debugcmd: "bp _debug" \

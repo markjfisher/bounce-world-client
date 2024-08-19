@@ -14,17 +14,17 @@ SAVMSC = $58
         lda     _is_orig_screen_mem
         beq     :+
 
-        lda     #<_d1
-        ldx     #>_d1
         lda     #$00
         sta     _is_orig_screen_mem
-        beq     over
+        lda     #<_d1
+        ldx     #>_d1
+        bne     over            ; always true, temp buffer is never in ZP
 
 :
-        lda     _screen_mem_orig
-        ldx     _screen_mem_orig+1
         lda     #$01
         sta     _is_orig_screen_mem
+        lda     _screen_mem_orig
+        ldx     _screen_mem_orig+1
 
 over:
         sta     SAVMSC

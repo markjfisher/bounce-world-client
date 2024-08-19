@@ -87,22 +87,19 @@ void display_positions() {
 	uint8_t index = 2;  // Start reading shapes data after the first two bytes
 
 	// make all writes go to the other screen/memory
-	// wait_vsync();
 	swap_buffer();
-	// clear other screen for double buffering
 	target_clr();
 
-	// print shapes in the other screen
 	for (i = 0; i < numberOfShapes; ++i) {
 		shapeId = location_data[index++];
-		x = (int8_t)location_data[index++];  // Cast to signed int8_t
-		y = (int8_t)location_data[index++];  // Cast to signed int8_t
+		x = (int8_t)location_data[index++];
+		y = (int8_t)location_data[index++];
 
 		show_shape(shapeId, x, y);
 	}
 
 	// show the other screen
-	// wait_vsync();
+	wait_vsync();
 	show_other_screen();
 
 }
