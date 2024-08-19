@@ -1,12 +1,12 @@
-        .export _set_dlist
-        .export _swap_buffer
+        .export         _show_other_screen
+        .export         _swap_buffer
 
-        .import _d1
-        .import _dlist_scr_ptr
-        .import _is_orig_screen_mem
-        .import _screen_mem_orig
+        .export         _d1
+        .export         _dlist_scr_ptr
+        .export         _screen_mem_orig
+        .export         _is_orig_screen_mem
 
-        .importzp ptr1
+        .importzp       ptr1
 
 SAVMSC = $58
 
@@ -16,13 +16,15 @@ SAVMSC = $58
 
         lda     #<_d1
         ldx     #>_d1
-        dec     _is_orig_screen_mem
+        lda     #$00
+        sta     _is_orig_screen_mem
         beq     over
 
 :
         lda     _screen_mem_orig
         ldx     _screen_mem_orig+1
-        inc     _is_orig_screen_mem
+        lda     #$01
+        sta     _is_orig_screen_mem
 
 over:
         sta     SAVMSC
@@ -31,8 +33,8 @@ over:
 
 .endproc
 
-.proc   _set_dlist
-        ; copy SAVMSC values into location pointed to by _dlist_scr_ptr
+.proc   _show_other_screen
+        ; copy SAVMSC values into location pointed to by _dlist_scr_ptr, which will flip memory of dlist to new screen
         lda     _dlist_scr_ptr
         sta     ptr1
         lda     _dlist_scr_ptr+1
@@ -46,3 +48,10 @@ over:
         sta     (ptr1), y
         rts
 .endproc
+
+
+.bss
+_d1:                    .res 960      ; full 40x24 for screen data
+_dlist_scr_ptr:         .res 2
+_screen_mem_orig:       .res 2
+_is_orig_screen_mem:    .res 1

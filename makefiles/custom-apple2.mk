@@ -1,6 +1,8 @@
 ################################################################
 # COMPILE FLAGS
 
+# Using second screen requires higher starting address
+LDFLAGS += --start-addr 0x0C00
 
 ################################################################
 # DISK creation

@@ -4,6 +4,7 @@
 
 #include "data.h"
 #include "display.h"
+#include "double_buffer.h"
 #include "fujinet-network.h"
 
 #ifdef __ATARI__
@@ -18,9 +19,8 @@ void run_simulation() {
 #ifdef __ATARI__
 	dlist_scr_ptr = get_dlist_screen_ptr();
 	screen_mem_orig = (uint8_t *) ((uint16_t)(dlist_scr_ptr[0]) | ((uint16_t)(dlist_scr_ptr[1]) << 8));
-	// current_screen_mem = screen_mem_orig;
-	is_orig_screen_mem = 1;
 #endif
+	is_orig_screen_mem = 1;
 
 	// the core loop for grabbing data from FN and then displaying it
 	while(is_running_sim) {

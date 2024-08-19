@@ -1,4 +1,4 @@
-        .export _fast_clr
+        .export         _target_clr
 
         .include        "atari.inc"
         .importzp       ptr1
@@ -7,7 +7,7 @@
 ; just clears 800 (40x20) bytes of the screen
 BW_SCREEN_SIZE = 800
 
-.proc _fast_clr
+.proc _target_clr
 
         lda     SAVMSC
         sta     ptr1

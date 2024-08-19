@@ -1,30 +1,21 @@
 #include <conio.h>
-#include <stdio.h>
+// #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
 #include "data.h"
 #include "debug.h"
+#include "double_buffer.h"
 #include "screen.h"
 #include "shapes.h"
+#include "target_clr.h"
 
 #ifdef __ATARI__
 #include <atari.h>
-#include "fast_clr.h"
 #include "get_dlist_screen_ptr.h"
-
-#define SAVMSC_P ((uint8_t*) 0x0058)
-
-char d1[960];
-char *dlist_scr_ptr;
-char *screen_mem_orig;
-uint8_t is_orig_screen_mem;
-
-extern void swap_buffer();
-extern void set_dlist();
-
 #endif
+
 
 extern void itoa_byte(char *s, uint8_t v);
 extern void debug();
@@ -66,7 +57,12 @@ void show_shape(uint8_t shapeId, int8_t centerX, int8_t centerY) {
 					if (!firstXInRow) {
 						firstXInRow = true;  // Found the first x position in this row within bounds
 						gotoxy(x, y);
+#ifdef __APPLE2__
+// handle double buffer on apple2, always done after a gotoxy. this ensures we are writing to the correct location
+						check_text_buffer_location();
+#endif
 					}
+
 					cputc(data[i * width + j]);  // Print and move to the next position
 				} else if (firstXInRow) {
 					// If we were printing characters and have now gone out of bounds, break
@@ -90,14 +86,13 @@ void display_positions() {
 	uint8_t numberOfShapes = location_data[1];
 	uint8_t index = 2;  // Start reading shapes data after the first two bytes
 
+	// make all writes go to the other screen/memory
 	// wait_vsync();
-#ifdef __ATARI__
 	swap_buffer();
-	fast_clr(); // slightly faster on atari, only 40x20, and no set cursor, so 160 fewer iterations
-#else
-	clrscr();
-#endif
+	// clear other screen for double buffering
+	target_clr();
 
+	// print shapes in the other screen
 	for (i = 0; i < numberOfShapes; ++i) {
 		shapeId = location_data[index++];
 		x = (int8_t)location_data[index++];  // Cast to signed int8_t
@@ -106,9 +101,8 @@ void display_positions() {
 		show_shape(shapeId, x, y);
 	}
 
-#ifdef __ATARI__
-	wait_vsync();
-	set_dlist();
-#endif
+	// show the other screen
+	// wait_vsync();
+	show_other_screen();
 
 }
