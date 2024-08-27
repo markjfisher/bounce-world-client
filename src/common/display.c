@@ -6,6 +6,8 @@
 
 #include "data.h"
 #include "debug.h"
+#include "delay.h"
+#include "display.h"
 #include "double_buffer.h"
 #include "screen.h"
 #include "shapes.h"
@@ -13,12 +15,19 @@
 
 #ifdef __ATARI__
 #include <atari.h>
-#include "get_dlist_screen_ptr.h"
+#include "dlist.h"
 #endif
 
-extern void itoa_byte(char *s, uint8_t v);
 extern void debug();
-extern void wait_vsync();
+
+void init_screen() {
+
+#ifdef __ATARI__
+	debug();
+	setup_dli();
+#endif
+
+}
 
 void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	uint8_t i, j;
@@ -78,7 +87,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	}
 }
 
-void display_positions() {
+void show_screen() {
 	// positions to display are in app_data
 	// byte 0: world step number (0-255, looping)
 	// byte 1: status byte
@@ -95,6 +104,7 @@ void display_positions() {
 	// make all writes go to the other screen/memory
 	swap_buffer();
 	target_clr();
+	show_info();
 
 	for (i = 0; i < number_of_shapes; ++i) {
 		shape_id = app_data[index++];

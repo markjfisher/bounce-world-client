@@ -32,9 +32,9 @@ _url_buffer:        .res 128
 _app_data:          .res 512
 _shapes_buffer:     .res 512
 _post_data:         .res 64
-_name:              .res 64
+_name:              .res 9
 _endpoint:          .res 64
-_client_id:         .res 9
+_client_id:         .res 1
 _app_status:        .res 1
 
 ; room for 50 shapes is 50 * 5 = 250 bytes, in BSS so not saved to disk

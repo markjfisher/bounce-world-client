@@ -4,12 +4,12 @@
 #include "cio.h"
 #include "get_line.h"
 
-void get_line(char* buf)
+void get_line(char* buf, uint8_t max_len)
 {
 	uint8_t i = 0;
 
 	OS.iocb[0].buffer  = buf;
-	OS.iocb[0].buflen  = 128;
+	OS.iocb[0].buflen  = max_len;
 	OS.iocb[0].command = 5; // Get text record
 	ciov();
 

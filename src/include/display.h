@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
-void display_positions();
+void show_screen();
+void show_info();
+void init_screen();
 
 #endif // BWC_DISPLAY_H

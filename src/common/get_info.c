@@ -27,20 +27,19 @@ void get_info() {
 
   chlinexy(2, yps + 6, 36);
 
-  cputsxy(txp, yps +  9, "Please enter the URL of the");
-  cputsxy(txp, yps + 10, "Bounce Service:");
+  cputsxy(txp, yps +  9, "Bounce Server URL:");
   cursor(1);
-  cputsxy(txp, yps + 12, "> ");
+  cputsxy(txp, yps + 10, "> ");
 
   // while the user is reading the message, create and clear the memory for the url
-  memset(endpoint, 0, 128);
-  memset(name, 0, 64);
+  memset(endpoint, 0, 64);
+  memset(name, 0, 9);
 
-  get_line(endpoint);
+  get_line(endpoint, 60);
 
-  cputsxy(txp, yps + 15, "Please enter your name:");
-  cputsxy(txp, yps + 17, "> ");  
-  get_line(name);
+  cputsxy(txp, yps + 12, "Your name (max 8):");
+  cputsxy(txp, yps + 13, "> ");  
+  get_line(name, 9);
   cursor(0);
 
   // move it forward 3 bytes, and prepend n1:

@@ -11,7 +11,7 @@
 #include "status.h"
 
 #ifdef __ATARI__
-#include "get_dlist_screen_ptr.h"
+#include "dlist.h"
 #endif
 
 extern bool is_playing_collision;
@@ -19,6 +19,7 @@ extern bool is_playing_collision;
 void run_simulation() {
 	uint8_t new_step_id = 0;
 	clrscr();
+	init_screen();
 
 #ifdef __ATARI__
 	// setup double buffering for atari
@@ -47,7 +48,7 @@ void run_simulation() {
 		new_step_id = app_data[0];
 		if (new_step_id != current_step) {
 			current_step = new_step_id;
-			display_positions();
+			show_screen();
 		}
 
 		app_status = app_data[1];
