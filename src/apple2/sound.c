@@ -1,4 +1,4 @@
-#include <atari.h>
+#include <apple2.h>
 #include <conio.h>
 #include <stdbool.h>
 #include <stdint.h>

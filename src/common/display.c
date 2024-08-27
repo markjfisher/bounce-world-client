@@ -23,7 +23,6 @@ extern void debug();
 void init_screen() {
 
 #ifdef __ATARI__
-	debug();
 	setup_dli();
 #endif
 

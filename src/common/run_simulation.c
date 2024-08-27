@@ -12,9 +12,9 @@
 
 #ifdef __ATARI__
 #include "dlist.h"
+extern bool is_playing_collision;
 #endif
 
-extern bool is_playing_collision;
 
 void run_simulation() {
 	uint8_t new_step_id = 0;
@@ -35,10 +35,6 @@ void run_simulation() {
 		// became clear it's easier to pull from client, so it didn't fall behind, and fetched current when it can.
 		// I thought the push model would provide more consistency across views for the client, but it turns out
 		// there's negligible delay between platforms constantly polling and the screens being updated, so pull model is better.
-		if (is_playing_collision) {
-			pause(1);
-			continue;
-		}
 
 		network_open(endpoint, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 		// this is a huge buffer, received data is only 3 bytes per body displayed, plus 2 overhead bytes, e.g. 10 bodies on screen would be 32 bytes only.
