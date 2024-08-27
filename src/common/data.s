@@ -1,13 +1,14 @@
-        .export _url_buffer
-        .export _location_data
-        .export _shapes_buffer
-        .export _post_data
-        .export _name
-        .export _endpoint
-        .export _current_offset
+        .export _app_data
+        .export _app_status
         .export _client_id
-        .export _shapes
+        .export _current_step
+        .export _endpoint
         .export _is_running_sim
+        .export _name
+        .export _post_data
+        .export _shapes
+        .export _shapes_buffer
+        .export _url_buffer
 
 ; typedef struct {
 ;     uint8_t shape_id;
@@ -26,18 +27,20 @@
 
 
 .bss
+
 _url_buffer:        .res 128
-_location_data:     .res 512
+_app_data:          .res 512
 _shapes_buffer:     .res 512
 _post_data:         .res 64
 _name:              .res 64
 _endpoint:          .res 64
 _client_id:         .res 9
+_app_status:        .res 1
 
 ; room for 50 shapes is 50 * 5 = 250 bytes, in BSS so not saved to disk
 _shapes:            .res 50 * .sizeof(ShapeRecord)
 
 
 .data
-_is_running_sim: .byte $01
-_current_offset: .word $0000
+_is_running_sim:    .byte $01
+_current_step:      .byte $ff

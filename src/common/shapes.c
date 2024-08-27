@@ -21,9 +21,10 @@ void parseShapeRecords(const uint8_t *input, uint8_t count) {
 	uint8_t i, j;
 	uint8_t dataLength;
 	uint8_t w;
+	uint16_t current_offset = 0;
 	const uint8_t *currentPos = input;
 
-	memset(shapes_buffer, 0, sizeof(shapes_buffer));
+	memset(shapes_buffer, 0, SHAPES_BUFFER_SIZE);
 
 	for (i = 0; i < count; i++) {
 		shapes[i].shape_id = *currentPos++;
@@ -42,7 +43,6 @@ void parseShapeRecords(const uint8_t *input, uint8_t count) {
                 shapes_buffer[current_offset + j] = *currentPos++;
             }
 
-            // Update the current_offset
             current_offset += dataLength;
 
             convert_chars(shapes[i].shape_data, dataLength);
@@ -83,21 +83,21 @@ uint8_t getShapeCount() {
 void readAndParseShapesData(uint8_t shape_count) {
 	int n;
 
-	// use the location_data buffer as a scratch buffer, as it's only needed when initially parsing
-	memset(location_data, 0, 512);
+	// use the app_data buffer as a scratch buffer, as it's only needed when initially parsing
+	memset(app_data, 0, 512);
 
 	createShapeURL();
 	strcat(url_buffer, "/data");
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shapes open");
-	n = network_read(url_buffer, location_data, 512);
+	n = network_read(url_buffer, app_data, 512);
 	network_close(url_buffer);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape data read");
 	}
 
-	parseShapeRecords(location_data, shape_count);
+	parseShapeRecords(app_data, shape_count);
 }
 
 void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
@@ -128,7 +128,7 @@ void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
 }
 
 // fetch the shapes data and assign it to values the application can use to draw
-void getShapes() {
+void get_shapes() {
 	uint8_t shape_count;
 	uint8_t i;
 	uint8_t x;

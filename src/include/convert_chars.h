@@ -1,5 +1,5 @@
-#ifndef CONVERT_CHARS_H
-#define CONVERT_CHARS_H
+#ifndef BWC_CONVERT_CHARS_H
+#define BWC_CONVERT_CHARS_H
 
 // Platform specific character conversion from the "neutral" format to chars to display
 // The string contains mappings as follows on the server side, we need functions to convert them back to local chars to print.
@@ -37,4 +37,4 @@
 void convert_chars(uint8_t *data, uint8_t len);
 
 
-#endif // CONVERT_CHARS_H
+#endif // BWC_CONVERT_CHARS_H

@@ -1,5 +1,5 @@
-#ifndef DOUBLE_BUFFER_H
-#define DOUBLE_BUFFER_H
+#ifndef BWC_DOUBLE_BUFFER_H
+#define BWC_DOUBLE_BUFFER_H
 
 #include <stdint.h>
 
@@ -19,4 +19,4 @@ extern void check_text_buffer_location();
 #endif
 
 
-#endif // DOUBLE_BUFFER_H
+#endif // BWC_DOUBLE_BUFFER_H

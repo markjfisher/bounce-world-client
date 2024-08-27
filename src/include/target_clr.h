@@ -1,6 +1,6 @@
-#ifndef target_clr_H
-#define target_clr_H
+#ifndef BWC_TARGET_CLR_H
+#define BWC_TARGET_CLR_H
 
 void target_clr();
 
-#endif // target_clr_H
+#endif // BWC_TARGET_CLR_H

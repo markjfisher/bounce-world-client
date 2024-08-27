@@ -16,90 +16,96 @@
 #include "get_dlist_screen_ptr.h"
 #endif
 
-
 extern void itoa_byte(char *s, uint8_t v);
 extern void debug();
 extern void wait_vsync();
 
-void show_shape(uint8_t shapeId, int8_t centerX, int8_t centerY) {
+void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	uint8_t i, j;
 	int8_t x, y;
-	int8_t startX, startY;
+	int8_t start_x, start_y;
 	ShapeRecord shape;
 	uint8_t width;
+	uint8_t iw = 0;
 	char *data;
-	bool firstXInRow;
+	bool first_x_in_row;
 
-	shape = shapes[shapeId];
+	shape = shapes[shape_id];
 	width = shape.shape_width;
 	data = (char *) shape.shape_data;
 
-	startX = centerX - width / 2;
-	startY = centerY - width / 2;
+	start_x = center_x - (width >> 1);
+	start_y = center_y - (width >> 1);
 
-	// cater for even width shapes, mod 2 is same as testing last bit
+	// cater for even width shapes which are slightly off centre.
+	// this is actually a "mod 2" calc, but that's the same as checking last bit set or not.
 	if ((width & 1) == 0) {
-		startX++;
-		startY++;
+		start_x++;
+		start_y++;
 	}
 
 	for (i = 0; i < width; ++i) {
-		y = startY + i;
-		firstXInRow = false; // Reset for each row
+		y = start_y + i;
+		first_x_in_row = false; // Reset for each row
 
 		// Only proceed if the row is within the vertical screen bounds
 		if (y >= 0 && y < SCREEN_HEIGHT) {
 			for (j = 0; j < width; ++j) {
-				x = startX + j;
+				x = start_x + j;
 
 				// Check if the current character is within the horizontal screen bounds
 				if (x >= 0 && x < SCREEN_WIDTH) {
-					if (!firstXInRow) {
-						firstXInRow = true;  // Found the first x position in this row within bounds
+					// only jump to location if it's the first character on the row and it needs to be displayed
+					if (!first_x_in_row) {
+						first_x_in_row = true;
 						gotoxy(x, y);
 #ifdef __APPLE2__
-// handle double buffer on apple2, always done after a gotoxy. this ensures we are writing to the correct location
+						// handle double buffer on apple2, always done after a gotoxy.
+						// this ensures we are writing to the correct location
 						check_text_buffer_location();
 #endif
 					}
 
-					cputc(data[i * width + j]);  // Print and move to the next position
-				} else if (firstXInRow) {
+					cputc(data[iw + j]);  // Print and move to the next position
+				} else if (first_x_in_row) {
 					// If we were printing characters and have now gone out of bounds, break
 					break;
 				}
 			}
 		}
+		// iw = i * width, but as i starts at 0, we want to accumulate at the end. this saves a multiplication.
+		iw += width;
 	}
 }
 
 void display_positions() {
-	// positions to display are in location_data
+	// positions to display are in app_data
 	// byte 0: world step number (0-255, looping)
-	// byte 1: number of shapes to display for client, 3 bytes per shape follow
-	// byte 2-4: {shapeId, x, y}
-	// byte 5-7: ...
+	// byte 1: status byte
+	// byte 2: number of shapes to display for client, 3 bytes per shape follow
+	// byte 3-5: {shape_id, x, y}
+	// byte 6-8: ...
 
-	uint8_t i, shapeId;
+	uint8_t i, shape_id;
 	int8_t x, y;
-	uint8_t stepNumber = location_data[0]; // TODO: show this somewhere
-	uint8_t numberOfShapes = location_data[1];
-	uint8_t index = 2;  // Start reading shapes data after the first two bytes
+	// Number of bytes to skip before starting to read shapes data
+	uint8_t index = 3;
+	uint8_t number_of_shapes = app_data[2];
 
 	// make all writes go to the other screen/memory
 	swap_buffer();
 	target_clr();
 
-	for (i = 0; i < numberOfShapes; ++i) {
-		shapeId = location_data[index++];
-		x = (int8_t)location_data[index++];
-		y = (int8_t)location_data[index++];
+	for (i = 0; i < number_of_shapes; ++i) {
+		shape_id = app_data[index++];
+		x = (int8_t)app_data[index++];
+		y = (int8_t)app_data[index++];
 
-		show_shape(shapeId, x, y);
+		show_shape(shape_id, x, y);
 	}
 
 	// show the other screen
-	wait_vsync();
+	// wait_vsync();
 	show_other_screen();
 
 }

@@ -1,6 +1,6 @@
-#ifndef RUN_SIMULATION_H
-#define RUN_SIMULATION_H
+#ifndef BWC_RUN_SIMULATION_H
+#define BWC_RUN_SIMULATION_H
 
 void run_simulation();
 
-#endif // RUN_SIMULATION_H
+#endif // BWC_RUN_SIMULATION_H

@@ -1,10 +1,13 @@
+// #include <atari.h>
 #include <conio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "data.h"
+#include "delay.h"
 #include "get_line.h"
+#include "sound.h"
 
 void get_info() {
   char hxp = 4;
@@ -12,7 +15,7 @@ void get_info() {
   char yps = 3;
 
   clrscr();
-
+  init_sound();
   chlinexy(2, yps - 1, 36);
 
   revers(1);

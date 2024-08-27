@@ -29,8 +29,8 @@ void connect_service() {
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, client_url);
 
-	memset(post_data, 0, 80);
-	strcpy(post_data, name);
+	memset(post_data, 0, 64);
+	strcat(post_data, name);
 	strcat(post_data, comma_str);
 	strcat(post_data, "1");
 	strcat(post_data, comma_str);

@@ -1,6 +1,6 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef BWC_DEBUG_H
+#define BWC_DEBUG_H
 
 void debug();
 
-#endif // DEBUG_H
+#endif // BWC_DEBUG_H

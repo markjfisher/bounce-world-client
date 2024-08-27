@@ -1,8 +1,8 @@
-#ifndef GETLINE_H
-#define GETLINE_H
+#ifndef BWC_GETLINE_H
+#define BWC_GETLINE_H
 
 #include <stdint.h>
 
 void get_line(char* buf);
 
-#endif // GETLINE_H
+#endif // BWC_GETLINE_H

@@ -1,8 +1,8 @@
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#ifndef BWC_DISPLAY_H
+#define BWC_DISPLAY_H
 
 #include <stdint.h>
 
 void display_positions();
 
-#endif // DISPLAY_H
+#endif // BWC_DISPLAY_H

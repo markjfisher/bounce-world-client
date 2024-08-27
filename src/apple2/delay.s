@@ -4,14 +4,16 @@
 ;
 ; This version removes the "APPLE2ENH" only enforcement.
 ;
-; void waitvsync (void);
-;
 
+        .export         _pause
         .export         _wait_vsync
+
         .import         ostype
 
         .include        "apple2.inc"
 
+; void wait_vsync();
+;
 _wait_vsync:
         bit     ostype
         bmi     iigs            ; $8x
@@ -43,4 +45,15 @@ iic:    sei
         bit     DISVBL
 :       sta     IOUDISON        ; IIc Tech Ref Man: The firmware normally leaves IOUDIS on.
         cli
+        rts
+
+; void pause(uint8_t count);
+;
+; does 'count' vsync waits
+
+_pause:
+        tax
+:       jsr     _wait_vsync
+        dex
+        bne     :-
         rts

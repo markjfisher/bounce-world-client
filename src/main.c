@@ -30,7 +30,7 @@ int main(void)
   get_info();
 
   clrscr();
-  getShapes();
+  get_shapes();
   connect_service();
 
   run_simulation();

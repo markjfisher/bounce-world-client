@@ -1,9 +1,9 @@
-#ifndef SHAPES_H
-#define SHAPES_H
+#ifndef BWC_SHAPES_H
+#define BWC_SHAPES_H
 
 #include <stdint.h>
 
-void getShapes();
+void get_shapes();
 
 typedef struct {
     uint8_t shape_id;
@@ -23,4 +23,4 @@ typedef struct {
 extern ShapeRecord shapes[50];
 extern ShapeLocation previous_locs[50];
 
-#endif // SHAPES_H
+#endif // BWC_SHAPES_H

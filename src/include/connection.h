@@ -1,7 +1,7 @@
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#ifndef BWC_CONNECTION_H
+#define BWC_CONNECTION_H
 
 void connect_service();
 void disconnect();
 
-#endif // CONNECTION_H
+#endif // BWC_CONNECTION_H
