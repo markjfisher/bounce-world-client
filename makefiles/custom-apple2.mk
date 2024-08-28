@@ -30,7 +30,6 @@ endif
 		awk '{printf("sym %s = %s\n", substr($$3, 2), $$2)}' < build/$(PROGRAM_TGT).lbl >> build/debug.scr; \
 		echo 'bpx _main' >> build/debug.scr; \
 		echo 'bpx _debug' >> build/debug.scr; \
-		echo 'bpx _itoa_byte' >> build/debug.scr; \
 	fi
 
 ALL_TASKS += .gendebug

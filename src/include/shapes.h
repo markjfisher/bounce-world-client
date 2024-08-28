@@ -21,6 +21,6 @@ typedef struct {
 } ShapeLocation;
 
 extern ShapeRecord shapes[50];
-extern ShapeLocation previous_locs[50];
+// extern ShapeLocation previous_locs[50];
 
 #endif // BWC_SHAPES_H

@@ -9,6 +9,7 @@
 #include "keyboard.h"
 #include "sound.h"
 #include "status.h"
+#include "world.h"
 
 #ifdef __ATARI__
 #include "dlist.h"
@@ -17,8 +18,7 @@ extern bool is_playing_collision;
 
 
 void run_simulation() {
-	uint8_t new_step_id = 0;
-	clrscr();
+	uint8_t new_step_id;
 	init_screen();
 
 #ifdef __ATARI__
@@ -36,20 +36,19 @@ void run_simulation() {
 		// I thought the push model would provide more consistency across views for the client, but it turns out
 		// there's negligible delay between platforms constantly polling and the screens being updated, so pull model is better.
 
-		network_open(endpoint, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-		// this is a huge buffer, received data is only 3 bytes per body displayed, plus 2 overhead bytes, e.g. 10 bodies on screen would be 32 bytes only.
-		network_read(endpoint, app_data, APP_DATA_SIZE);
-		network_close(endpoint);
+		network_open(client_data_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+		network_read(client_data_url, app_data, APP_DATA_SIZE);
+		network_close(client_data_url);
+
+		app_status = app_data[1];
+		if (app_status != 0) {
+			handle_app_status();
+		}
 
 		new_step_id = app_data[0];
 		if (new_step_id != current_step) {
 			current_step = new_step_id;
 			show_screen();
-		}
-
-		app_status = app_data[1];
-		if (app_status != 0) {
-			handle_app_status();
 		}
 
 		handle_kb();

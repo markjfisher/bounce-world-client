@@ -31,8 +31,9 @@ void get_info() {
   cursor(1);
   cputsxy(txp, yps + 10, "> ");
 
-  // while the user is reading the message, create and clear the memory for the url
-  memset(endpoint, 0, 64);
+  // while the user is reading the message, create and clear various memory buffers
+  memset(endpoint, 0, 80);
+  memset(client_data_url, 0, 96);
   memset(name, 0, 9);
 
   get_line(endpoint, 60);
@@ -47,4 +48,5 @@ void get_info() {
   endpoint[0] = 'n';
   endpoint[1] = '1';
   endpoint[2] = ':';
+
 }

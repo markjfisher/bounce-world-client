@@ -39,7 +39,6 @@ ALTIRRA ?= $(ALTIRRA_HOME)/Altirra64.exe \
   $(XS)/debug \
   $(XS)/debugcmd: ".loadsym build\$(PROGRAM).$(CURRENT_TARGET).lbl" \
   $(XS)/debugcmd: "bp _debug" \
-  $(XS)/debugcmd: "bp _dli" \
 
 #   $(XS)/debugcmd: "bp _swap_buffer" \
 #   $(XS)/debugcmd: "bp _set_dlist" \

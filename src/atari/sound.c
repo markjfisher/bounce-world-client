@@ -71,7 +71,6 @@ void stop_sound() {
 // }
 
 void sound_collision() {
-	// debug();
 	// if (is_playing_collision) {
 	// 	stop_sound();
 	// }

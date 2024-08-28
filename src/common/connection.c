@@ -17,7 +17,7 @@ char *comma_str  = ",";
 char *world_str  = "/w/";
 char *hb_str     = "/hb/";
 
-extern void itoa_byte(char *s, uint8_t v);
+// extern void itoa_byte(char *s, uint8_t v);
 
 void connect_service() {
 	char tmp[4]; // for the itoa string
@@ -29,16 +29,16 @@ void connect_service() {
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, client_url);
 
-	memset(post_data, 0, 64);
-	strcat(post_data, name);
-	strcat(post_data, comma_str);
-	strcat(post_data, "1");
-	strcat(post_data, comma_str);
-	itoa_byte(tmp, SCREEN_WIDTH);
-	strcat(post_data, tmp);
-	strcat(post_data, comma_str);
-	itoa_byte(tmp, SCREEN_HEIGHT);
-	strcat(post_data, tmp);
+	memset((char *) app_data, 0, 64);
+	strcat((char *) app_data, name);
+	strcat((char *) app_data, comma_str);
+	strcat((char *) app_data, "1");
+	strcat((char *) app_data, comma_str);
+	itoa(SCREEN_WIDTH, tmp, 10);
+	strcat((char *) app_data, tmp);
+	strcat((char *) app_data, comma_str);
+	itoa(SCREEN_HEIGHT, tmp, 10);
+	strcat((char *) app_data, tmp);
 
     err = network_open(url_buffer, OPEN_MODE_HTTP_POST, OPEN_TRANS_NONE);
 	handle_err("post:open");
@@ -48,11 +48,10 @@ void connect_service() {
     network_http_add_header(url_buffer, "Content-Type: text/plain");
     network_http_end_add_headers(url_buffer);
 
-	err = network_http_post(url_buffer, post_data);
+	err = network_http_post(url_buffer, app_data);
 	handle_err("post:data");
 
-	// finally read the client id in the response. client ids are 8 chars, we have 9 char buffer, with 0 at end so can treat it as a string
-	// memset(client_id, 0, sizeof(client_id));
+	// finally read the client id in the response, this is just 1 byte
 	n = network_read(url_buffer, (uint8_t *)client_id, 1);
 	if (n < 0) {
 		err = -n;
@@ -61,18 +60,16 @@ void connect_service() {
 	network_close(url_buffer);
 
 	memset(tmp, 0, sizeof(tmp));
-	itoa_byte(tmp, client_id[0]);
+	itoa(client_id[0], tmp, 10);
 
 	cputsxy(10, 19, "Client ID: ");
 	cputsxy(21, 19, tmp);
 
-	strcat(endpoint, world_str);
-	strcat(endpoint, tmp);
+	// create the world update endpoint for this client
+	strcpy(client_data_url, endpoint);
+	strcat(client_data_url, world_str);
+	strcat(client_data_url, tmp);
 
 	press_key();
 
-}
-
-void disconnect() {
-	network_close(endpoint);
 }

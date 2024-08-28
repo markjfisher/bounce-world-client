@@ -9,12 +9,13 @@
 #include "dlist.h"
 
 extern void dli(void);
+extern void enable_dli(void);
 
+// retrieves the pointer to the screen location pointed to by the current DLIST
 uint8_t *get_dlist_screen_ptr() {
 	uint8_t *mem_loc;
 	uint8_t *dlist = (uint8_t *) OS.sdlst;
 
-	// debug();
 	// skip blank line instructions
 	while ((*dlist & 0x0F) == 0) {
 		dlist++;
@@ -38,15 +39,13 @@ void setup_dli() {
 	uint8_t *dlist = (uint8_t *) OS.sdlst;
 	ANTIC.nmien = 0x40;						// Unset the DLI bit in nmien in case it's on while we install our routine
 
-	// make the colour change before the first lines of the display, and before last 4 lines of text
+	// make the colour change before the first lines of the display, and in the text area
 	dlist[0]  = 0x70 + 0x80; 				// add DLI to the LMS on first line
 	dlist[24] = 0x02 + 0x80; 				// add DLI to the 20th
+	dlist[26] = 0x02 + 0x80; 				// add DLI to the 22nd
 
-	// set the DLI routine.
+	// set the DLI routine, and then enable DLIs on display
 	OS.vdslst = dli;
-
-	// set nmien when we're in VBI at top so the DLI colouring is correct.
-	while(OS.rtclok[2] != 0) ;
-	ANTIC.nmien = 0xC0;						// enable DLI
+	enable_dli();
 
 }

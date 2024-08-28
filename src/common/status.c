@@ -3,9 +3,11 @@
 #include <stdlib.h>
 
 #include "data.h"
+#include "debug.h"
 #include "display.h"
 #include "sound.h"
 #include "status.h"
+#include "world.h"
 
 void handle_app_status() {
 	// if ((app_status & CLIENT_CHANGE) != 0) {
@@ -16,9 +18,14 @@ void handle_app_status() {
 	// 	// an object was added or removed from the world, fetch the latest 
 	// }
 
-	// if ((app_status & FROZEN_TOGGLE) != 0) {
-	// 	// world frozen state changed
-	// }
+	// someone else may freeze the world, so we have to react to it from an event
+	if ((app_status & FROZEN_TOGGLE) != 0) {
+		// world frozen state changed
+		get_world_state();
+
+		// redisplay the state
+		info_display_count = 0;
+	}
 
 	// if ((app_status & WRAPPING_TOGGLE) != 0) {
 	// 	// world wrapping state changed

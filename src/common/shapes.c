@@ -15,8 +15,6 @@
 
 char *shapes_url = "/shapes";
 
-extern void itoa_byte(char *s, uint8_t v);
-
 void parseShapeRecords(const uint8_t *input, uint8_t count) {
 	uint8_t i, j;
 	uint8_t dataLength;
@@ -144,7 +142,7 @@ void get_shapes() {
 
 	gotoxy(0, 1);
 	cputs("Parsed shapes, count: ");
-	itoa_byte(tmp, shape_count);
+	itoa(shape_count, tmp, 10);
 	cputs(tmp);
 
 	for (i = 0; i < shape_count; i++) {

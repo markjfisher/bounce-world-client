@@ -21,9 +21,12 @@
 extern void debug();
 
 void init_screen() {
+	clrscr();
 
 #ifdef __ATARI__
 	setup_dli();
+	// turn off key clicking
+	OS.noclik = 0xFF;
 #endif
 
 }
@@ -89,7 +92,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 void show_screen() {
 	// positions to display are in app_data
 	// byte 0: world step number (0-255, looping)
-	// byte 1: status byte
+	// byte 1: status byte (used elsewhere)
 	// byte 2: number of shapes to display for client, 3 bytes per shape follow
 	// byte 3-5: {shape_id, x, y}
 	// byte 6-8: ...
@@ -102,8 +105,17 @@ void show_screen() {
 
 	// make all writes go to the other screen/memory
 	swap_buffer();
-	target_clr();
-	show_info();
+
+	// displays world stats. allow for double buffering. To redisplay this, reset info_display_count to 0
+	if (info_display_count < 2) {
+		// do a full clear screen to clear the text area
+		clrscr();
+		show_info();
+		info_display_count++;
+	} else {
+		// just a partial clear, the text display is now setup correctly.
+		target_clr();
+	}
 
 	for (i = 0; i < number_of_shapes; ++i) {
 		shape_id = app_data[index++];

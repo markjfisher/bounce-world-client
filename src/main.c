@@ -19,6 +19,8 @@
 #include "get_info.h"
 #include "run_simulation.h"
 #include "shapes.h"
+#include "shutdown.h"
+#include "world.h"
 
 extern uint16_t fn_network_bw;
 extern uint8_t fn_network_conn;
@@ -32,10 +34,12 @@ int main(void)
   clrscr();
   get_shapes();
   connect_service();
+  get_world_state();
 
   run_simulation();
 
-  disconnect();
+  // when simulation ends, clean up any screen/sound etc
+  cleanup_client();
 
   return 0;
 }
