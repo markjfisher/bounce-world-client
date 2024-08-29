@@ -18,6 +18,12 @@
 #include "dlist.h"
 #endif
 
+#ifdef BWC_CUSTOM_CPUTC
+void cputc_fast(char c);
+void cincx();
+void gotoxy_fast (uint8_t x, uint8_t y);
+#endif
+
 extern void debug();
 
 void init_screen() {
@@ -40,6 +46,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	uint8_t iw = 0;
 	char *data;
 	bool first_x_in_row;
+	char c;
 
 	shape = shapes[shape_id];
 	width = shape.shape_width;
@@ -50,10 +57,10 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 
 	// cater for even width shapes which are slightly off centre.
 	// this is actually a "mod 2" calc, but that's the same as checking last bit set or not.
-	if ((width & 1) == 0) {
-		start_x++;
-		start_y++;
-	}
+	// if ((width & 1) == 0) {
+	// 	start_x++;
+	// 	start_y++;
+	// }
 
 	for (i = 0; i < width; ++i) {
 		y = start_y + i;
@@ -69,15 +76,32 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 					// only jump to location if it's the first character on the row and it needs to be displayed
 					if (!first_x_in_row) {
 						first_x_in_row = true;
+#ifdef BWC_CUSTOM_CPUTC
+						gotoxy_fast(x, y);
+#else
 						gotoxy(x, y);
+#endif
+
 #ifdef __APPLE2__
 						// handle double buffer on apple2, always done after a gotoxy.
 						// this ensures we are writing to the correct location
 						check_text_buffer_location();
 #endif
 					}
+					c = data[iw + j];
 
-					cputc(data[iw + j]);  // Print and move to the next position
+#ifdef BWC_CUSTOM_CPUTC
+					// handles space char as just moving x directly
+					cputc_fast(c);
+#else
+					if (c != ' ') {
+						cputc(c);  // Print and move to the next position
+					} else {
+						// don't print spaces, we already cleared the screen, just advance 1 char.
+						// Means no "rubout" on slightly overlapping shapes
+						gotox(wherex() + 1);
+					}
+#endif
 				} else if (first_x_in_row) {
 					// If we were printing characters and have now gone out of bounds, break
 					break;

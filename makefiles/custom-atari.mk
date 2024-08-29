@@ -7,6 +7,8 @@
 #LDFLAGS += --start-addr 0x4400
 #LDFLAGS += -C cfg/atari.cfg
 
+CFLAGS += -DBWC_CUSTOM_CPUTC
+
 ################################################################
 # DISK creation
 
