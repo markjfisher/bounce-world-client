@@ -8,12 +8,28 @@
 #include "delay.h"
 #include "dlist.h"
 
-extern void dli(void);
-extern void enable_dli(void);
+// void main_dlist = {
+// 	DL_DLI(DL_BLK6),	// drop 2 lines - is it worth it?
+// 	DL_BLK8,
+// 	DL_BLK8,
+// 	DL_LMS(DL_GRAPHICS0), 0x00, 0x00, // this needs the address of the memory for screen
+// 	DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0,
+// 	DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0,
+// 	DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0, DL_GRAPHICS0,
+// 	// add a blank line with DLI which should help with timing the colour to the GR0 lines
+// 	DL_DLI(BL_BLK1),
+// 	DL_GRAPHICS0, DL_GRAPHICS0,
+// 	// same
+// 	DL_DLI(BL_BLK1),
+// 	DL_GRAPHICS0, DL_GRAPHICS0,
+
+// 	// and point back to the start
+// 	DL_JVB, &main_dlist
+// };
+
 
 // retrieves the pointer to the screen location pointed to by the current DLIST
 uint8_t *get_dlist_screen_ptr() {
-	uint8_t *mem_loc;
 	uint8_t *dlist = (uint8_t *) OS.sdlst;
 
 	// skip blank line instructions

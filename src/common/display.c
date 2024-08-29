@@ -32,7 +32,7 @@ void init_screen() {
 
 #ifdef __ATARI__
 	setup_dli();
-	// init_flash_vbi();
+	init_flash_vbi();
 	// turn off key clicking
 	OS.noclik = 0xFF;
 #endif
@@ -141,6 +141,12 @@ void show_screen() {
 	} else {
 		// just a partial clear, the text display is now setup correctly.
 		target_clr();
+
+#ifdef __APPLE2__
+		// target_clr() clears whole screen on apple2, so need to redo the info part every frame. TODO: fix
+		show_info();
+#endif
+
 	}
 
 	for (i = 0; i < number_of_shapes; ++i) {
