@@ -2,6 +2,8 @@
         .export   _enable_dli
         .export   current_section
 
+        .import   _is_flashing_screen
+
         .import   _wait_vsync
 
         .include  "atari.inc"
@@ -12,10 +14,14 @@
 .proc _dli
         pha                     ; store A while we do our routine
 
+        lda     _is_flashing_screen
+        bne     :+
+
+        ; the screen flash is just changing background for couple of frames, so don't set to black if flashing
         lda     #$00
         sta     COLBK
 
-        lda     current_section ; which part of the screen are we in? 0, 1, 2. 0 = top
+:       lda     current_section ; which part of the screen are we in? 0, 1, 2. 0 = top
         sta     WSYNC           ; ensure we're at start of scan line for color change
         beq     section_0
         cmp     #$01

@@ -16,6 +16,7 @@
 #ifdef __ATARI__
 #include <atari.h>
 #include "dlist.h"
+#include "fx.h"
 #endif
 
 #ifdef BWC_CUSTOM_CPUTC
@@ -31,6 +32,7 @@ void init_screen() {
 
 #ifdef __ATARI__
 	setup_dli();
+	// init_flash_vbi();
 	// turn off key clicking
 	OS.noclik = 0xFF;
 #endif

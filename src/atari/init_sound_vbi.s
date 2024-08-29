@@ -13,7 +13,6 @@
 
 .proc _init_sound_vbi
         ; jsr     _debug
-        ; Y/X contain lo/high address of the routine to call
         ldy     #<_continue_sounds
         ldx     #>_continue_sounds
         ; immediate VBI, gives us 2000 cycles to play with.

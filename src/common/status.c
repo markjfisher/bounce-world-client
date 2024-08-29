@@ -2,10 +2,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "collision.h"
 #include "data.h"
 #include "debug.h"
 #include "display.h"
-#include "sound.h"
 #include "status.h"
 #include "world.h"
 
@@ -23,7 +23,7 @@ void handle_app_status() {
 		// world frozen state changed
 		get_world_state();
 
-		// redisplay the state
+		// redisplay the state, setting this causes the display area to update in both buffers
 		info_display_count = 0;
 	}
 
@@ -35,8 +35,8 @@ void handle_app_status() {
 	// 	// all objects had speed change
 	// }
 
-	// if ((app_status && COLLISION) != 0) {
-	// 	// there was a collision in our screen, start the noise going
-	// 	sound_collision();
-	// }
+	if ((app_status && COLLISION) != 0) {
+		// there was a collision in our screen, apply our fx
+		collision_fx();
+	}
 }
