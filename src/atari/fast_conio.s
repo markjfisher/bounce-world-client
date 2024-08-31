@@ -46,7 +46,6 @@ cputdirect:
         sta     (ptr4), y
 
         inc     COLCRS
-
         rts
 
 

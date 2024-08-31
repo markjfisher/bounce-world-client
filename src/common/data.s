@@ -9,6 +9,7 @@
         .export _name
         .export _shapes
         .export _shapes_buffer
+        .export _shape_count
         .export _url_buffer
 
         .export _world_width
@@ -44,6 +45,7 @@ _client_data_url:   .res 96
 
 ; room for 50 shapes is 50 * 5 = 250 bytes, in BSS so not saved to disk. The data for the shapes strings is stored in _shapes_buffer above.
 _shapes:            .res 50 * .sizeof(ShapeRecord)
+_shape_count:       .res 1
 
 ;; CLIENT INFO
 _client_id:         .res 1

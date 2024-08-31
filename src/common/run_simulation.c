@@ -1,5 +1,7 @@
 #include <conio.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "data.h"
 #include "display.h"
@@ -36,6 +38,7 @@ void run_simulation() {
 		// I thought the push model would provide more consistency across views for the client, but it turns out
 		// there's negligible delay between platforms constantly polling and the screens being updated, so pull model is better.
 
+		memset(app_data, 0, APP_DATA_SIZE);
 		network_open(client_data_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 		network_read(client_data_url, app_data, APP_DATA_SIZE);
 		network_close(client_data_url);

@@ -29,6 +29,7 @@ extern char    client_id[1];
 
 // each record is 5 bytes, so this requires 250 bytes
 extern ShapeRecord shapes[50];
+extern uint8_t shape_count;
 
 extern bool is_running_sim;
 extern uint8_t current_step;

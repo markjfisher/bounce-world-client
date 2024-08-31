@@ -3,6 +3,7 @@
         .export   current_section
 
         .import   _is_flashing_screen
+        .import   _debug
 
         .import   _wait_vsync
 
@@ -28,6 +29,7 @@
         beq     section_1
 
 section_2:
+        jsr     _debug
         lda     #$94            ; blue at bottom
         sta     COLPF2
         lda     #$00
@@ -35,11 +37,13 @@ section_2:
         beq     done            ; always
 
 section_1:
+        jsr     _debug
         lda     #$28            ; orange
         sta     COLPF2
         bne     inc_and_done
 
 section_0:
+        jsr     _debug
         ; a is 0 for BLACK
         sta     COLPF2
 

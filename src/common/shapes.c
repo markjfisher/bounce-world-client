@@ -15,7 +15,7 @@
 
 char *shapes_url = "/shapes";
 
-void parseShapeRecords(const uint8_t *input, uint8_t count) {
+void parse_shape_records(const uint8_t *input) {
 	uint8_t i, j;
 	uint8_t dataLength;
 	uint8_t w;
@@ -24,7 +24,7 @@ void parseShapeRecords(const uint8_t *input, uint8_t count) {
 
 	memset(shapes_buffer, 0, SHAPES_BUFFER_SIZE);
 
-	for (i = 0; i < count; i++) {
+	for (i = 0; i < shape_count; i++) {
 		shapes[i].shape_id = *currentPos++;
 
 		w = *currentPos++;
@@ -55,16 +55,16 @@ void parseShapeRecords(const uint8_t *input, uint8_t count) {
 	}
 }
 
-void createShapeURL() {
+void create_shape_url() {
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, shapes_url);
 }
 
-uint8_t getShapeCount() {
+uint8_t get_shape_count() {
 	int n = 0;
 	uint8_t shapes_tmp[1];
-	createShapeURL();
+	create_shape_url();
 	strcat(url_buffer, "/count");
 
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
@@ -78,13 +78,13 @@ uint8_t getShapeCount() {
 	return shapes_tmp[0];
 }
 
-void readAndParseShapesData(uint8_t shape_count) {
+void read_and_parse_shapes_data() {
 	int n;
 
 	// use the app_data buffer as a scratch buffer, as it's only needed when initially parsing
 	memset(app_data, 0, 512);
 
-	createShapeURL();
+	create_shape_url();
 	strcat(url_buffer, "/data");
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("shapes open");
@@ -95,10 +95,10 @@ void readAndParseShapesData(uint8_t shape_count) {
 		handle_err("shape data read");
 	}
 
-	parseShapeRecords(app_data, shape_count);
+	parse_shape_records(app_data);
 }
 
-void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
+void display_shape_data(uint8_t n, uint8_t x, uint8_t y) {
 	uint8_t i;
 	uint8_t j;
 	uint8_t dataLength;
@@ -127,7 +127,6 @@ void displayShapeData(uint8_t n, uint8_t x, uint8_t y) {
 
 // fetch the shapes data and assign it to values the application can use to draw
 void get_shapes() {
-	uint8_t shape_count;
 	uint8_t i;
 	uint8_t x;
 	uint8_t y;
@@ -135,10 +134,10 @@ void get_shapes() {
 
 	cputsxy(0, 0, "Beginning parse of shapes data...");
 
-	shape_count = getShapeCount();
+	shape_count = get_shape_count();
 	memset(shapes, 0, 250); // room for 50 shapes
 	// shapes = (ShapeRecord *)malloc(shape_count * sizeof(ShapeRecord));
-	readAndParseShapesData(shape_count);
+	read_and_parse_shapes_data();
 
 	gotoxy(0, 1);
 	cputs("Parsed shapes, count: ");
@@ -148,7 +147,7 @@ void get_shapes() {
 	for (i = 0; i < shape_count; i++) {
 		x = (i % 7) * 6;
 		y = ((uint8_t) (i / 7)) * 6 + 3;
-		displayShapeData(i, x, y);
+		display_shape_data(i, x, y);
 	}
 
 }

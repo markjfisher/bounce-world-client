@@ -26,3 +26,12 @@ Supported at the moment is Altirra on Atari, simply set the `ALTIRRA_HOME` value
 ```shell
 make test
 ```
+
+## copying to SD
+
+The fujinet supports webdav copying to the SD, and the cyberduck cli command `duck` can be used to do this on the command line.
+This is particularly useful for testing c64 programs.
+
+```shell
+duck --upload dav://anonymous@fujinet.home/dav/bwc.prg dist/bwc.c64.prg -existing overwrite
+```

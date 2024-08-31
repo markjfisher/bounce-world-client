@@ -12,6 +12,7 @@
 #include "screen.h"
 #include "shapes.h"
 #include "target_clr.h"
+#include "world.h"
 
 #ifdef __ATARI__
 #include <atari.h>
@@ -26,14 +27,16 @@ void gotoxy_fast (uint8_t x, uint8_t y);
 #endif
 
 extern void debug();
+extern void hd(void* data, unsigned int size);
 
 void init_screen() {
 	clrscr();
 
 #ifdef __ATARI__
-	setup_dli();
-	init_flash_vbi();
+	// setup_dli();
+	// init_flash_vbi();
 	// turn off key clicking
+	OS.color2 = 0;
 	OS.noclik = 0xFF;
 #endif
 
@@ -128,6 +131,15 @@ void show_screen() {
 	// Number of bytes to skip before starting to read shapes data
 	uint8_t index = 3;
 	uint8_t number_of_shapes = app_data[2];
+	if (number_of_shapes > body_count * 4) {
+		clrscr();
+		cputsxy(0, 0, "error in app_data - too many bodies");
+		gotoxy(0,2);
+		hd(app_data, 64);
+		wait_vsync();
+		debug();
+		while(1) ;
+	}
 
 	// make all writes go to the other screen/memory
 	swap_buffer();
@@ -154,7 +166,18 @@ void show_screen() {
 		x = (int8_t)app_data[index++];
 		y = (int8_t)app_data[index++];
 
-		show_shape(shape_id, x, y);
+		if (shape_id < shape_count) {
+			show_shape(shape_id, x, y);
+		} else {
+			show_other_screen();
+			clrscr();
+			cputsxy(0, 0, "error in app_data - bad shape id");
+			gotoxy(0,2);
+			hd(app_data, 64);
+			wait_vsync();
+			debug();
+			while(1) ;
+		}
 	}
 
 	// show the other screen
