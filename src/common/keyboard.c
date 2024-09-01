@@ -63,7 +63,7 @@ void handle_kb() {
 
 	c = cgetc();
 	switch (c) {
-		case '+': do_command(add_endpoint); break;
+		case '+': do_command(inc_endpoint); break;
 		case '-': do_command(dec_endpoint); break;
 		case 'f': do_command(freeze_endpoint); break;
 		

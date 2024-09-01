@@ -63,15 +63,15 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	width = shape.shape_width;
 	data = (char *) shape.shape_data;
 
-	start_x = center_x - (width >> 1);
-	start_y = center_y - (width >> 1);
+	start_x = center_x - (width >> 1) - 1;
+	start_y = center_y - (width >> 1) - 1;
 
 	// cater for even width shapes which are slightly off centre.
 	// this is actually a "mod 2" calc, but that's the same as checking last bit set or not.
-	// if ((width & 1) == 0) {
-	// 	start_x++;
-	// 	start_y++;
-	// }
+	if ((width & 1) == 0) {
+		start_x++;
+		start_y++;
+	}
 
 	for (i = 0; i < width; ++i) {
 		y = start_y + i;
