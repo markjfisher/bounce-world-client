@@ -61,7 +61,6 @@ void show_info() {
 	xtra = (world_height > 99) ? 0 : 1;
 	gotoxy_buffer(33 + xtra, 21);
 	if (world_is_frozen) {
-		debug();
 		revers(1);
 	}
 	print_justified(world_width, 0);
