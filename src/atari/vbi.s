@@ -1,72 +1,95 @@
-        .export    _init_flash_vbi
-        .export    _init_sound_vbi
-        .export    curr_round
+        .export    _init_vbi
+
+        .export    vbi_main
 
         .import    _debug
 
+        ;; DLI values
+        ; track where we are in the screen for the colour changes
+        .import    current_section
+
+        ; set in C for the iteration of the flash pulse
         .import    _current_flash_time
+        ; boolean to say we want to flash screen or not. when true, C is indicating we want to start
         .import    _is_flashing_screen
 
+        ; boolean to say we want to play a collision sound
         .import    _is_playing_collision
+        ; which index of the sound envelope we are at
         .import    _current_volume_index
+        ; the volume shape data
         .import    _sc0
         .import    _sc1
         .import    _sc2
 
-
         .include   "atari.inc"
 
-.proc _init_flash_vbi
-        ; jsr     _debug
-        ldy     #<_continue_flash
-        ldx     #>_continue_flash
-        ; immediate VBI, gives us 2000 cycles to play with.
+.proc _init_vbi
+        ldy     #<vbi_main
+        ldx     #>vbi_main
         lda     #$06
         jmp     SETVBV
 .endproc
 
-.proc _continue_flash
-        ; are we flashing screen?
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; VBI routines
+
+; we are at the top of the screen, so set the colour to black, a DLI will change the colour on rest of screen
+.proc vbi_main
+        ;; uncomment if you want attract to be honoured
+        ; lda     ATRACT
+        ; cmp     #$7F
+        ; bcs     skip_PF2
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; set PF2 to BLACK
+
+        lda     #$00
+        sta     COLPF2
+        sta     current_section
+
+skip_PF2:
+
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; DO BG SCREEN FLASH FOR COLLISION
+
         lda     _is_flashing_screen
-        beq     done
+        beq     done_flash
 
         ldy     _current_flash_time
-        cmp     #20
+        cpy     #20
         bcs     end_flash
 
         lda     flash_data, y
         sta     COLBK
         inc     _current_flash_time
-        bne     done
+        bne     done_flash
 
 end_flash:
         lda     #$00
         sta     _is_flashing_screen
-		sta 	_current_flash_time
-		sta 	COLBK
+        sta     _current_flash_time
+        sta     COLBK
 
-done:
+done_flash:
+
+
+
+
+        ; END VBI
         jmp     SYSVBV
-
 .endproc
 
-.proc _init_sound_vbi
-        ; jsr     _debug
-        ldy     #<_continue_sounds
-        ldx     #>_continue_sounds
-        ; immediate VBI, gives us 2000 cycles to play with.
-        lda     #$06
-        jmp     SETVBV
-.endproc
 
-.proc _continue_sounds
+.proc vbi_continue_sounds
         ; are we playing a collision sound?
         lda     _is_playing_collision
         beq     done
 
         ; check if the count has moved on enough to change to next sound
-        inc     curr_round
-        lda     curr_round
+        inc     sound_round
+        lda     sound_round
 
         lsr     a                       ; we are executing every 2 VBIs, so divide count by 2 to get current index
         cmp     _current_volume_index
@@ -80,7 +103,7 @@ done:
         ; jsr     _debug
         lda     #$00
         sta     _is_playing_collision
-        sta     curr_round
+        sta     sound_round
         beq     done
 
 :
@@ -133,10 +156,13 @@ done:
         lda     sound_data, y           ; get freq (aka pitch)
         sta     AUDF1, x
 
+; THIS PART BREAKS SIO
         lda     #$00
         sta     AUDCTL
         lda     #$03
         sta     SKCTL
+;
+
         iny
         lda     sound_data, y           ; this is pre-multiplied by 16 into high nibble, and is the distortion
         clc
@@ -153,5 +179,5 @@ sound_data:     .res 4
 
 
 .data
-curr_round:     .byte 0
+sound_round:     .byte 0
 flash_data:     .byte 15, 13, 11, 9, 8, 7, 6, 5, 4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 0

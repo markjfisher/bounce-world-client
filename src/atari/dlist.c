@@ -55,8 +55,7 @@ void setup_dli() {
 	uint8_t *dlist = (uint8_t *) OS.sdlst;
 	ANTIC.nmien = 0x40;						// Unset the DLI bit in nmien in case it's on while we install our routine
 
-	// make the colour change before the first lines of the display, and in the text area
-	dlist[0]  = 0x70 + 0x80; 				// add DLI to the LMS on first line
+	// DLIs are in latter part of entire display
 	dlist[24] = 0x02 + 0x80; 				// add DLI to the 20th
 	dlist[26] = 0x02 + 0x80; 				// add DLI to the 22nd
 

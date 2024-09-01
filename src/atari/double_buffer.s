@@ -1,7 +1,7 @@
         .export         _show_other_screen
         .export         _swap_buffer
 
-        .export         _d1
+        .export         _display_buffer
         .export         _dlist_scr_ptr
         .export         _screen_mem_orig
         .export         _is_orig_screen_mem
@@ -16,8 +16,8 @@ SAVMSC = $58
 
         lda     #$00
         sta     _is_orig_screen_mem
-        lda     #<_d1
-        ldx     #>_d1
+        lda     #<_display_buffer
+        ldx     #>_display_buffer
         bne     over            ; always true, temp buffer is never in ZP
 
 :
@@ -51,7 +51,9 @@ over:
 
 
 .bss
-_d1:                    .res 960      ; full 40x24 for screen data
 _dlist_scr_ptr:         .res 2
 _screen_mem_orig:       .res 2
 _is_orig_screen_mem:    .res 1
+
+.segment "BUFFER"
+_display_buffer:        .res 960      ; full 40x24 for screen data

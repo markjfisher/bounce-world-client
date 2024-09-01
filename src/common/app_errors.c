@@ -12,7 +12,7 @@ uint8_t err = 0;
 
 void handle_err(char *reason) {
     if (err) {
-        gotoxy(20, 0);
+        gotoxy(0, 20);
         cputs("Error: ");
         cputs(reason);
 

@@ -5,7 +5,7 @@
 # LDFLAGS += -Wl -D,__RESERVED_MEMORY__=0x2000
 
 #LDFLAGS += --start-addr 0x4400
-#LDFLAGS += -C cfg/atari.cfg
+LDFLAGS += -C cfg/atari.cfg
 
 CFLAGS += -DBWC_CUSTOM_CPUTC
 
@@ -42,8 +42,7 @@ ALTIRRA ?= $(ALTIRRA_HOME)/Altirra64.exe \
   $(XS)/debugcmd: ".loadsym build\$(PROGRAM).$(CURRENT_TARGET).lbl" \
   $(XS)/debugcmd: "bp _debug" \
 
-#   $(XS)/debugcmd: "bp _swap_buffer" \
-#   $(XS)/debugcmd: "bp _set_dlist" \
+#   $(XS)/debugcmd: "bp _dli" \
 
 # Additional args that can be copied into the above lines
 #   $(XS)/debugcmd: "bp _debug" \

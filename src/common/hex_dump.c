@@ -1,39 +1,50 @@
 #ifdef _CMOC_VERSION_
 #include <cmoc.h>
 #else
+#include <conio.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #endif /* _CMOC_VERSION_ */
 
-void hd(void* data, unsigned int size) {
-    unsigned int i = 0;
-    unsigned int j = 0;
-    unsigned int p = 0;
-    unsigned int start = 0;
-    unsigned int padding = 0;
-    unsigned char c;
+// NON printf version of hex dump routine, saving about 1k from app size
+
+void hd(void* data, uint8_t size) {
+    uint8_t i = 0;
+    uint8_t j = 0;
+    uint8_t p = 0;
+    uint8_t start = 0;
+    uint8_t padding = 0;
+    uint8_t c;
+    char hexStr[3]; // For two hex digits and null terminator
 
     for (i = 0; i < size; i++) {
-        printf("%02x ", *((unsigned char*)data + i));
+        memset(hexStr, 0, 3);
+        itoa(*((uint8_t*)data + i), hexStr, 16);
+        if (strlen(hexStr) < 2) { // Ensure two digits are printed
+            cputs("0");
+        }
+        cputs(hexStr);
+        cputs(" ");
 
         if ((i + 1) % 8 == 0 || i == size - 1) {
             padding = ((i + 1) % 8) ? (8 - (i + 1) % 8) : 0;
             for (p = 0; p < padding; p++) {
-                printf("   "); // for alignment
+                cputs("   "); // for alignment
             }
-            printf(" | ");
+            cputs(" | ");
             start = i - (i % 8);
             for (j = start; j <= i; j++) {
-                c = *((unsigned char*)data + j);
+                c = *((uint8_t *)data + j);
                 if (isprint(c)) {
-                    printf("%c", c);
+                    cputc(c);
                 } else {
-                    printf(".");
+                    cputc('.');
                 }
             }
-            printf("\n");
+            cputs("\r\n"); // Move to the next line
         }
     }
 }

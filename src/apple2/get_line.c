@@ -10,7 +10,6 @@
 // This function adds 900 bytes to the app. The atari CIO routine is much cleaner and handles cursor movement better, so this
 // code is only used for systems without an OS based read line ability that we want to use
 
-// no check on the length at the moment
 void get_line(char* buf, uint8_t max_len) {
 	uint8_t c;
 	uint16_t i = 0;

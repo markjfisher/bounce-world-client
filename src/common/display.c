@@ -9,6 +9,7 @@
 #include "delay.h"
 #include "display.h"
 #include "double_buffer.h"
+#include "hex_dump.h"
 #include "screen.h"
 #include "shapes.h"
 #include "target_clr.h"
@@ -17,6 +18,7 @@
 #ifdef __ATARI__
 #include <atari.h>
 #include "dlist.h"
+#include "vbi.h"
 #include "fx.h"
 #endif
 
@@ -27,16 +29,20 @@ void gotoxy_fast (uint8_t x, uint8_t y);
 #endif
 
 extern void debug();
-extern void hd(void* data, unsigned int size);
+// extern void hd(void* data, unsigned int size);
 
 void init_screen() {
 	clrscr();
 
 #ifdef __ATARI__
-	// setup_dli();
-	// init_flash_vbi();
-	// turn off key clicking
 	OS.color2 = 0;
+	init_vbi();
+
+	wait_vsync();
+	setup_dli();
+	wait_vsync();
+
+	// turn off key clicking
 	OS.noclik = 0xFF;
 #endif
 
@@ -99,6 +105,12 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 					// handles space char as just moving x directly
 					cputc_fast(c);
 #else
+
+#ifdef __APPLE2__
+					// no optimization for the space on apple2
+					cputc(c);
+#else
+
 					if (c != ' ') {
 						cputc(c);  // Print and move to the next position
 					} else {
@@ -107,6 +119,9 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 						gotox(wherex() + 1);
 					}
 #endif
+
+#endif // BWC_CUSTOM_CPUTC
+
 				} else if (first_x_in_row) {
 					// If we were printing characters and have now gone out of bounds, break
 					break;
@@ -131,15 +146,6 @@ void show_screen() {
 	// Number of bytes to skip before starting to read shapes data
 	uint8_t index = 3;
 	uint8_t number_of_shapes = app_data[2];
-	if (number_of_shapes > body_count * 4) {
-		clrscr();
-		cputsxy(0, 0, "error in app_data - too many bodies");
-		gotoxy(0,2);
-		hd(app_data, 64);
-		wait_vsync();
-		debug();
-		while(1) ;
-	}
 
 	// make all writes go to the other screen/memory
 	swap_buffer();
@@ -147,7 +153,13 @@ void show_screen() {
 	// displays world stats. allow for double buffering. To redisplay this, reset info_display_count to 0
 	if (info_display_count < 2) {
 		// do a full clear screen to clear the text area
+
+#ifdef __APPLE2__
+		target_clr();
+#else
 		clrscr();
+#endif
+
 		show_info();
 		info_display_count++;
 	} else {
@@ -169,6 +181,7 @@ void show_screen() {
 		if (shape_id < shape_count) {
 			show_shape(shape_id, x, y);
 		} else {
+			// crash out
 			show_other_screen();
 			clrscr();
 			cputsxy(0, 0, "error in app_data - bad shape id");
@@ -181,7 +194,7 @@ void show_screen() {
 	}
 
 	// show the other screen
-	// wait_vsync();
+	wait_vsync();
 	show_other_screen();
 
 }

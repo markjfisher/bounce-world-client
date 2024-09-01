@@ -20,6 +20,8 @@ extern bool is_playing_collision;
 
 
 void run_simulation() {
+	int n;
+	uint16_t error_delay = 30;
 	uint8_t new_step_id;
 	init_screen();
 
@@ -40,8 +42,20 @@ void run_simulation() {
 
 		memset(app_data, 0, APP_DATA_SIZE);
 		network_open(client_data_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-		network_read(client_data_url, app_data, APP_DATA_SIZE);
+		n = network_read(client_data_url, app_data, APP_DATA_SIZE);
 		network_close(client_data_url);
+		if (n < 0) {
+			// there was an error, so don't process this round. try again after a small pause
+			// TODO: add some resillience here, backoff exponentially for max number of attempts.
+			// cputcxy(39, 23, 'E');
+			pause(error_delay);
+			error_delay = error_delay * 14 / 10; // roughly sqrt(2) times previous delay if keep getting errors
+			if (error_delay > 255) error_delay = 255;
+			continue;
+		}
+		// reset error delay when we have a good read.
+		error_delay = 30;
+		// cputcxy(39, 23, ' ');
 
 		app_status = app_data[1];
 		if (app_status != 0) {

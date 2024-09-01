@@ -44,7 +44,7 @@ void get_info() {
   cursor(0);
 
   // move it forward 3 bytes, and prepend n1:
-  memmove(endpoint + 3, endpoint, 100);
+  memmove(endpoint + 3, endpoint, 76);
   endpoint[0] = 'n';
   endpoint[1] = '1';
   endpoint[2] = ':';

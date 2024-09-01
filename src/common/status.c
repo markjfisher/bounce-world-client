@@ -1,4 +1,4 @@
-#include <conio.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -10,33 +10,18 @@
 #include "world.h"
 
 void handle_app_status() {
-	// if ((app_status & CLIENT_CHANGE) != 0) {
-	// 	// fetch client list, and the world size as that may have increased
-	// }
+	bool is_client_change = (app_status & CLIENT_CHANGE) != 0;
+	bool is_frozen_change = (app_status & FROZEN_TOGGLE) != 0;
+	bool is_object_change = (app_status & OBJECT_CHANGE) != 0;
+	bool is_collision     = (app_status & COLLISION) != 0;
 
-	// if ((app_status & OBJECT_CHANGE) != 0) {
-	// 	// an object was added or removed from the world, fetch the latest 
-	// }
-
-	// someone else may freeze the world, so we have to react to it from an event
-	if ((app_status & FROZEN_TOGGLE) != 0) {
-		// world frozen state changed
+	if (is_client_change || is_frozen_change || is_object_change) {
 		get_world_state();
-
-		// redisplay the state, setting this causes the display area to update in both buffers
 		info_display_count = 0;
 	}
 
-	// if ((app_status & WRAPPING_TOGGLE) != 0) {
-	// 	// world wrapping state changed
-	// }
-
-	// if ((app_status & SPEED_CHANGE) != 0) {
-	// 	// all objects had speed change
-	// }
-
-	if ((app_status && COLLISION) != 0) {
-		// there was a collision in our screen, apply our fx
+	if (is_collision) {
 		collision_fx();
 	}
+
 }
