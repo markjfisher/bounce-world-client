@@ -7,7 +7,7 @@
 #include "debug.h"
 #include "world.h"
 
-
+// spaces are printed on the right
 void print_justified(uint16_t v, uint8_t len) {
 	char tmp[8];
 	int i, extra;
@@ -16,8 +16,8 @@ void print_justified(uint16_t v, uint8_t len) {
 	itoa(v, tmp, 10);
 	extra = len - strlen(tmp);
 
-	for (i = 0; i < extra; i++) cputc(' ');
 	cputs(tmp);
+	for (i = 0; i < extra; i++) cputc(' ');
 }
 
 void print_reverse(char *s) {
@@ -25,31 +25,20 @@ void print_reverse(char *s) {
 }
 
 void show_info() {
-	uint8_t xtra;
-	// show the current frame
-	// show number of bodies by size
-	// show all names
-	// show is wrapping
-	// show is frozen
+	uint8_t xtra = 0;
 
-	cputsxy(0, 20, name);
+	cputsxy(0, 22, name);
 
-	cputsxy(16, 20, "1:");
-	print_justified(body_1, 2);
-	cputs("|2:");
-	print_justified(body_2, 2);
-	cputs("|3:");
-	print_justified(body_3, 2);
-	cputs("|4:");
-	print_justified(body_4, 2);
-	cputs("|5:");
-	print_justified(body_5, 2);
+	revers(1); cputsxy(9, 22, "C:"); revers(0); print_justified(num_clients, 2);
 
-	cputsxy(0, 21, "Clients:");
-	print_justified(num_clients, 2);
+	revers(1); cputs("1:"); revers(0); print_justified(body_1, 2);
+	revers(1); cputs("2:"); revers(0); print_justified(body_2, 2);
+	revers(1); cputs("3:"); revers(0); print_justified(body_3, 2);
+	revers(1); cputs("4:"); revers(0); print_justified(body_4, 2);
+	revers(1); cputs("5:"); revers(0); print_justified(body_5, 2);
 
 	xtra = (world_height > 99) ? 0 : 1;
-	gotoxy(33 + xtra, 21);
+	gotoxy(33 + xtra, 22);
 	if (world_is_frozen) {
 		revers(1);
 	}
@@ -60,15 +49,11 @@ void show_info() {
 		revers(0);
 	}
 
-	gotoxy(2, 22);
+	gotoxy(0, 23);
 	print_reverse("F");    cputs("reeze ");
-	print_reverse("C");    cputs("lients ");
-	print_reverse("W");    cputs("rap ");
 	print_reverse("R");    cputs("eset ");
 	print_reverse("+/-");  cputs(" Speed ");
-
-	gotoxy(4, 23);
-	print_reverse("1-5");  cputs(" Add   ");
-	print_reverse("SH 1-5");  cputs(" Del   ");
-	print_reverse("Q");    cputs("uit");
+	print_reverse("1-5");  cputs(" Add ");
+	print_reverse("Q");    cputs("uit ");
+	print_reverse("D");    cputs("ark");
 }

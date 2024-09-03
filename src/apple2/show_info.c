@@ -13,6 +13,7 @@
  * APPLE2 version of the text area. Needs special double buffer handling around goto commands for text.
  */
 
+// spaces are printed on the right
 void print_justified(uint16_t v, uint8_t len) {
 	char tmp[8];
 	int i, extra;
@@ -21,8 +22,8 @@ void print_justified(uint16_t v, uint8_t len) {
 	itoa(v, tmp, 10);
 	extra = len - strlen(tmp);
 
-	for (i = 0; i < extra; i++) cputc(' ');
 	cputs(tmp);
+	for (i = 0; i < extra; i++) cputc(' ');
 }
 
 void print_reverse(char *s) {
@@ -42,24 +43,19 @@ void cputsxy_buffer(uint8_t x, uint8_t y, char *s) {
 void show_info() {
 	uint8_t xtra;
 
-	cputsxy_buffer(0, 20, name);
+	cputsxy_buffer(0, 22, name);
 
-	cputsxy_buffer(16, 20, "1:");
-	print_justified(body_1, 2);
-	cputs("|2:");
-	print_justified(body_2, 2);
-	cputs("|3:");
-	print_justified(body_3, 2);
-	cputs("|4:");
-	print_justified(body_4, 2);
-	cputs("|5:");
-	print_justified(body_5, 2);
+	revers(1); cputsxy_buffer(9, 22, "C:"); revers(0); print_justified(num_clients, 2);
 
-	cputsxy_buffer(0, 21, "Clients:");
-	print_justified(num_clients, 2);
+	revers(1); cputs("1:"); revers(0); print_justified(body_1, 2);
+	revers(1); cputs("2:"); revers(0); print_justified(body_2, 2);
+	revers(1); cputs("3:"); revers(0); print_justified(body_3, 2);
+	revers(1); cputs("4:"); revers(0); print_justified(body_4, 2);
+	revers(1); cputs("5:"); revers(0); print_justified(body_5, 2);
+
 
 	xtra = (world_height > 99) ? 0 : 1;
-	gotoxy_buffer(33 + xtra, 21);
+	gotoxy_buffer(33 + xtra, 22);
 	if (world_is_frozen) {
 		revers(1);
 	}
@@ -70,15 +66,10 @@ void show_info() {
 		revers(0);
 	}
 
-	gotoxy_buffer(2, 22);
+	gotoxy_buffer(2, 23);
 	print_reverse("F");    cputs("reeze ");
-	print_reverse("C");    cputs("lients ");
-	print_reverse("W");    cputs("rap ");
 	print_reverse("R");    cputs("eset ");
 	print_reverse("+/-");  cputs(" Speed ");
-
-	gotoxy_buffer(4, 23);
-	print_reverse("1-5");  cputs(" Add   ");
-	print_reverse("SH 1-5");  cputs(" Del   ");
-	print_reverse("Q");    cputs("uit");
+	print_reverse("1-5");  cputs(" Add ");
+	print_reverse("Q");    cputs("uit ");
 }

@@ -4,8 +4,8 @@
         .importzp       ptr1
 
 
-; just clears 800 (40x20) bytes of the screen
-BW_SCREEN_SIZE = 800
+; just clears this many bytes (40x??)
+BW_SCREEN_SIZE = 880
 
 .proc _target_clr
 

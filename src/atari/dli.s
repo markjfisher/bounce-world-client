@@ -4,6 +4,8 @@
 
         .import   _is_flashing_screen
         .import   _debug
+        .import   _txt_c1
+        .import   _txt_c2
 
         .import   _wait_vsync
 
@@ -15,25 +17,16 @@
 .proc _dli
         pha                     ; store A while we do our routine
 
-        lda     _is_flashing_screen
-        bne     :+
-
-        ; the screen flash is just changing background for a few frames, so skip this if it is flashing
-        lda     #$00
-        sta     COLBK
-
 :       lda     current_section ; which part of the screen are we in? 0 means we have just done a VBI and reset
         sta     WSYNC           ; ensure we're at start of scan line for color change
         bne     section_1
 
 section_0:
-        lda     #$94            ; blue at bottom
-
-        .byte   $2C             ; BIT [2 bytes] (skips the next LDA)
-        ;bne     set_and_inc
+        lda     _txt_c1         ; first colour change
+        bne     set_and_inc
 
 section_1:
-        lda     #$28            ; orange
+        lda     _txt_c2         ; second colour change
 
 set_and_inc:
         sta     COLPF2

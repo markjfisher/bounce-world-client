@@ -9,7 +9,19 @@ You will need to run a bouncy world service from https://github.com/markjfisher/
 Standard make for cc65 projects with fujinet-lib:
 
 ```shell
-make clear release
+make clear
+make release disk
+```
+
+Specify `TARGETS` value if you only wish to compile a set of clients. This is normal cc65 behaviour.
+
+## endpoint URL
+
+You can specify the endpoint URL when compiling the application which will embed it in the application and not aske for it when the application is run.
+This is useful for shows etc or distrubuting a client for a known DNS endpoint.
+
+```shell
+make ENDPOINT_URL="http://192.168.0.200" release disk
 ```
 
 ## running

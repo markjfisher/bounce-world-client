@@ -9,6 +9,11 @@
 #include "get_line.h"
 #include "sound.h"
 
+#ifndef ENDPOINT_URL
+#define ENDPOINT_URL ""
+#endif
+
+
 void get_info() {
   char hxp = 4;
   char txp = 3;
@@ -27,16 +32,21 @@ void get_info() {
 
   chlinexy(2, yps + 6, 36);
 
-  cputsxy(txp, yps +  9, "Bounce Server URL:");
-  cursor(1);
-  cputsxy(txp, yps + 10, "> ");
-
-  // while the user is reading the message, create and clear various memory buffers
   memset(endpoint, 0, 80);
   memset(client_data_url, 0, 96);
   memset(name, 0, 9);
 
-  get_line(endpoint, 60);
+  cputsxy(txp, yps +  9, "Bounce Server URL:");
+
+  cursor(1);
+  if (strlen(ENDPOINT_URL) == 0) {
+    cputsxy(txp, yps + 10, "> ");
+    get_line(endpoint, 60);
+  } else {
+    strcpy(endpoint, ENDPOINT_URL);
+    cputsxy(txp, yps + 10, "> ");
+    cputs(endpoint);
+  }
 
   cputsxy(txp, yps + 12, "Your name (max 8):");
   cputsxy(txp, yps + 13, "> ");  

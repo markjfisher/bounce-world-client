@@ -1,7 +1,3 @@
-#ifdef __ATARI__
-#include <atari.h>
-#endif
-
 #include <conio.h>
 #include <screen.h>
 #include <stdbool.h>
@@ -15,6 +11,11 @@
 #include "display.h"
 #include "fujinet-network.h"
 #include "world.h"
+
+#ifdef __ATARI__
+#include "dlist.h"
+bool is_darkmode = false;
+#endif
 
 char *freeze_endpoint = "/freeze";
 char *reset_endpoint = "/reset";
@@ -57,6 +58,20 @@ void add_body(uint8_t size) {
 
 }
 
+#ifdef __ATARI__
+void toggle_darkmode() {
+	is_darkmode = !is_darkmode;
+	if (is_darkmode) {
+		txt_c1 = 0;
+		txt_c2 = 0;
+	} else {
+		txt_c1 = INIT_COLOUR_1;
+		txt_c2 = INIT_COLOUR_2;
+	}
+}
+#endif
+
+
 void handle_kb() {
 	char c;
 	if (kbhit() == 0) return;
@@ -76,6 +91,10 @@ void handle_kb() {
 		case 'r': do_command(reset_endpoint); break;
 		case 'w': do_command(wrapping_endpoint); break;
 		case 'q': is_running_sim = false; break;
+
+#ifdef __ATARI__
+		case 'd': toggle_darkmode(); break;
+#endif
 
 		default: break;
 	}

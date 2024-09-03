@@ -28,6 +28,9 @@
 // };
 
 
+uint8_t txt_c1 = INIT_COLOUR_1;
+uint8_t txt_c2 = INIT_COLOUR_2;
+
 // retrieves the pointer to the screen location pointed to by the current DLIST
 uint8_t *get_dlist_screen_ptr() {
 	uint8_t *dlist = (uint8_t *) OS.sdlst;
@@ -56,8 +59,8 @@ void setup_dli() {
 	ANTIC.nmien = 0x40;						// Unset the DLI bit in nmien in case it's on while we install our routine
 
 	// DLIs are in latter part of entire display
-	dlist[24] = 0x02 + 0x80; 				// add DLI to the 20th
-	dlist[26] = 0x02 + 0x80; 				// add DLI to the 22nd
+	dlist[26] = 0x02 + 0x80; 				// add DLI to line 22
+	dlist[27] = 0x02 + 0x80; 				// add DLI to line 23
 
 	// set the DLI routine, and then enable DLIs on display
 	OS.vdslst = dli;
