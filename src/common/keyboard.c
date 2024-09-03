@@ -64,9 +64,11 @@ void toggle_darkmode() {
 	if (is_darkmode) {
 		txt_c1 = 0;
 		txt_c2 = 0;
+		txt_c3 = 0;
 	} else {
 		txt_c1 = INIT_COLOUR_1;
 		txt_c2 = INIT_COLOUR_2;
+		txt_c3 = INIT_COLOUR_3;
 	}
 }
 #endif

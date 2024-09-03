@@ -3,6 +3,7 @@
         .export    vbi_main
 
         .import    _debug
+        .import   _txt_c3
 
         ;; DLI values
         ; track where we are in the screen for the colour changes
@@ -48,7 +49,8 @@
         lda     #$00
         sta     COLPF2
         sta     current_section
-        lda     #$02
+        sta     ATRACT
+        lda     _txt_c3
         sta     COLBK
         sta     COLOR4
 
@@ -61,7 +63,7 @@ skip_PF2:
         beq     done_flash
 
         ldy     _current_flash_time
-        cpy     #20
+        cpy     #16
         bcs     end_flash
 
         lda     flash_data, y
@@ -74,7 +76,7 @@ end_flash:
         lda     #$00
         sta     _is_flashing_screen
         sta     _current_flash_time
-        lda     #$02
+        lda     _txt_c3
         sta     COLBK
         sta     COLOR4
 
@@ -184,4 +186,4 @@ done_flash:
 
 .data
 ; sound_round:     .byte 0
-flash_data:     .byte 15, 13, 11, 9, 8, 7, 6, 5, 4, 3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 0
+flash_data:     .byte 15, 13, 11, 9, 8, 7, 6, 5, 4, 3, 3, 2, 2, 1, 1, 0
