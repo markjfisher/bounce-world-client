@@ -14,6 +14,7 @@
 #include "shapes.h"
 #include "target_clr.h"
 #include "world.h"
+#include "who.h"
 
 #ifdef __ATARI__
 #include <atari.h>
@@ -191,6 +192,10 @@ void show_screen() {
 			debug();
 			while(1) ;
 		}
+	}
+
+	if (is_showing_clients) {
+		show_clients();
 	}
 
 	// show the other screen

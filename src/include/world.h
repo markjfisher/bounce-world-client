@@ -16,5 +16,6 @@ extern uint8_t  body_4;
 extern uint8_t  body_5;
 
 void get_world_state();
+void get_world_clients();
 
 #endif // BWC_WORLD_H

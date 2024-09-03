@@ -20,6 +20,10 @@ void handle_app_status() {
 		info_display_count = 0;
 	}
 
+	if (is_client_change) {
+		get_world_clients();
+	}
+
 	if (is_collision) {
 		collision_fx();
 	}

@@ -8,10 +8,16 @@
 #include "debug.h"
 #include "world.h"
 
+// double buffering macros, apple2 needs a hand.
+#ifdef __APPLE2__
+#include "conio_helpers.h"
+#define GOTOXY gotoxy_buffer
+#define CPUTSXY cputsxy_buffer
+#else
+#define GOTOXY gotoxy
+#define CPUTSXY cputsxy
+#endif
 
-/*
- * APPLE2 version of the text area. Needs special double buffer handling around goto commands for text.
- */
 
 // spaces are printed on the right
 void print_justified(uint16_t v, uint8_t len) {
@@ -30,22 +36,13 @@ void print_reverse(char *s) {
 	revers(1); cputs(s); revers(0);
 }
 
-void gotoxy_buffer(uint8_t x, uint8_t y) {
-	gotoxy(x, y);
-	check_text_buffer_location();
-}
-
-void cputsxy_buffer(uint8_t x, uint8_t y, char *s) {
-	gotoxy_buffer(x, y);
-	cputs(s);
-}
 
 void show_info() {
 	uint8_t xtra;
 
-	cputsxy_buffer(0, 22, name);
+	CPUTSXY(0, 22, name);
 
-	revers(1); cputsxy_buffer(9, 22, "C:"); revers(0); print_justified(num_clients, 2);
+	revers(1); CPUTSXY(9, 22, "C:"); revers(0); print_justified(num_clients, 2);
 
 	revers(1); cputs("1:"); revers(0); print_justified(body_1, 2);
 	revers(1); cputs("2:"); revers(0); print_justified(body_2, 2);
@@ -55,7 +52,7 @@ void show_info() {
 
 
 	xtra = (world_height > 99) ? 0 : 1;
-	gotoxy_buffer(33 + xtra, 22);
+	GOTOXY(33 + xtra, 22);
 	if (world_is_frozen) {
 		revers(1);
 	}
@@ -66,10 +63,14 @@ void show_info() {
 		revers(0);
 	}
 
-	gotoxy_buffer(2, 23);
+	GOTOXY(0, 23);
 	print_reverse("F");    cputs("reeze ");
 	print_reverse("R");    cputs("eset ");
-	print_reverse("+/-");  cputs(" Speed ");
-	print_reverse("1-5");  cputs(" Add ");
+	print_reverse("+-");  cputs("Spd ");
+	print_reverse("1-5");  cputs("Add ");
+	print_reverse("W");  cputs("ho ");
 	print_reverse("Q");    cputs("uit ");
+#ifdef __ATARI__
+	print_reverse("D");    cputs("ark");
+#endif
 }

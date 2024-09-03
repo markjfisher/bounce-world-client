@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "display.h"
 #include "fujinet-network.h"
+#include "who.h"
 #include "world.h"
 
 #ifdef __ATARI__
@@ -19,7 +20,6 @@ bool is_darkmode = false;
 
 char *freeze_endpoint = "/freeze";
 char *reset_endpoint = "/reset";
-char *wrapping_endpoint = "/wrap";
 char *inc_endpoint = "/inc";
 char *dec_endpoint = "/dec";
 char *add_endpoint = "/add/";
@@ -89,7 +89,7 @@ void handle_kb() {
 		case '5': add_body(c - '0'); break;
 
 		case 'r': do_command(reset_endpoint); break;
-		case 'w': do_command(wrapping_endpoint); break;
+		case 'w': is_showing_clients = !is_showing_clients; break;
 		case 'q': is_running_sim = false; break;
 
 #ifdef __ATARI__

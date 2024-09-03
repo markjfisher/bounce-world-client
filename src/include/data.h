@@ -17,6 +17,8 @@ extern uint8_t app_data[APP_DATA_SIZE];
 
 // This memory is carved up for the shapes data strings so we don't need to malloc them, and instead used slices of this memory
 extern uint8_t shapes_buffer[SHAPES_BUFFER_SIZE];
+extern char clients_buffer[240];	// room for 30 clients names!
+
 extern char    name[9];
 
 // this is the captured URL of the BW server without any controller endpoints added

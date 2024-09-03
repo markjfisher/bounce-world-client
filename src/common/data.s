@@ -3,6 +3,7 @@
         .export _client_id
         .export _current_step
         .export _client_data_url
+        .export _clients_buffer
         .export _endpoint
         .export _info_display_count
         .export _is_running_sim
@@ -42,6 +43,7 @@ _shapes_buffer:     .res 512
 _name:              .res 9
 _endpoint:          .res 80
 _client_data_url:   .res 96
+_clients_buffer:    .res 240
 
 ; room for 50 shapes is 50 * 5 = 250 bytes, in BSS so not saved to disk. The data for the shapes strings is stored in _shapes_buffer above.
 _shapes:            .res 50 * .sizeof(ShapeRecord)
