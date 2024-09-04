@@ -1,12 +1,15 @@
         .export _app_data
         .export _app_status
         .export _client_id
+        .export _client_str
         .export _current_step
         .export _client_data_url
         .export _clients_buffer
         .export _endpoint
         .export _info_display_count
+        .export _is_darkmode
         .export _is_running_sim
+        .export _is_showing_clients
         .export _name
         .export _shapes
         .export _shapes_buffer
@@ -51,6 +54,8 @@ _shape_count:       .res 1
 
 ;; CLIENT INFO
 _client_id:         .res 1
+_client_str:        .res 4
+
 ; status byte for client
 _app_status:        .res 1
 
@@ -69,6 +74,8 @@ _world_is_frozen:   .res 1
 _world_is_wrapped:  .res 1
 
 .data
-_is_running_sim:    .byte $01
-_current_step:      .byte $ff
+_is_running_sim:     .byte $01
+_current_step:       .byte $ff
 _info_display_count: .byte $00
+_is_darkmode:        .byte $00
+_is_showing_clients: .byte $00

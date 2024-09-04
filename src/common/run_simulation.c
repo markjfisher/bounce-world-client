@@ -34,6 +34,8 @@ void run_simulation() {
 	// flag we are on initial screen for double buffering across the platforms
 	is_orig_screen_mem = 1;
 
+	get_world_clients();
+
 	while(is_running_sim) {
 		// I originally used a continuous open channel that received data from server as it was pushed, but it
 		// became clear it's easier to pull from client, so it didn't fall behind, and fetched current when it can.

@@ -52,7 +52,7 @@ void show_info() {
 
 
 	xtra = (world_height > 99) ? 0 : 1;
-	GOTOXY(33 + xtra, 22);
+	GOTOXY(32 + xtra, 22);
 	if (world_is_frozen) {
 		revers(1);
 	}

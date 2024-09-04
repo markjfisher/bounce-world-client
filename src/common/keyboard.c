@@ -15,7 +15,6 @@
 
 #ifdef __ATARI__
 #include "dlist.h"
-bool is_darkmode = false;
 #endif
 
 char *freeze_endpoint = "/freeze";
@@ -58,9 +57,8 @@ void add_body(uint8_t size) {
 
 }
 
+void do_darkmode() {
 #ifdef __ATARI__
-void toggle_darkmode() {
-	is_darkmode = !is_darkmode;
 	if (is_darkmode) {
 		txt_c1 = 0;
 		txt_c2 = 0;
@@ -70,8 +68,14 @@ void toggle_darkmode() {
 		txt_c2 = INIT_COLOUR_2;
 		txt_c3 = INIT_COLOUR_3;
 	}
-}
 #endif
+
+}
+
+void toggle_darkmode() {
+	is_darkmode = !is_darkmode;
+	do_darkmode();
+}
 
 
 void handle_kb() {

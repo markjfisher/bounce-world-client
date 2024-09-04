@@ -14,6 +14,7 @@ void handle_app_status() {
 	bool is_frozen_change = (app_status & FROZEN_TOGGLE) != 0;
 	bool is_object_change = (app_status & OBJECT_CHANGE) != 0;
 	bool is_collision     = (app_status & COLLISION) != 0;
+	bool is_cmd           = (app_status & CLIENT_CMD) != 0;
 
 	if (is_client_change || is_frozen_change || is_object_change) {
 		get_world_state();
@@ -22,6 +23,10 @@ void handle_app_status() {
 
 	if (is_client_change) {
 		get_world_clients();
+	}
+
+	if (is_cmd) {
+		get_world_cmd();
 	}
 
 	if (is_collision) {

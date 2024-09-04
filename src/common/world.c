@@ -5,11 +5,14 @@
 #include "app_errors.h"
 #include "data.h"
 #include "debug.h"
+#include "keyboard.h"
 #include "fujinet-network.h"
+#include "who.h"
 #include "world.h"
 
 char *world_state = "/ws";
 char *who_endpoint = "/who";
+char *cmd_endpoint = "/cmd/get/";
 
 void get_world_state() {
 	memset(url_buffer, 0, sizeof(url_buffer));
@@ -35,4 +38,51 @@ void get_world_clients() {
 	handle_err("get:open:clients");
 	network_read(url_buffer, clients_buffer, 240);
 	network_close(url_buffer);
+}
+
+// this client has some commands to process
+void get_world_cmd() {
+	int n;
+	uint8_t i, cmd;
+	memset(url_buffer, 0, sizeof(url_buffer));
+	strcat(url_buffer, endpoint);
+	strcat(url_buffer, cmd_endpoint);
+	strcat(url_buffer, client_str);
+
+	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+	handle_err("get:open:cmd");
+	n = network_read(url_buffer, app_data, 240);
+	network_close(url_buffer);
+
+/*
+    ENABLE_DARK_MODE(1, "enableDarkMode"),
+    DISABLE_DARK_MODE(2, "disableDarkMode"),
+    ENABLE_WHO(3, "enableWho"),
+    DISABLE_WHO(4, "disableWho");
+ */
+
+	if (n > 0) {
+		for (i = 0; i < n; i++) {
+			cmd = app_data[i];
+			switch (cmd) {
+				case 1: // enable dark mode
+					is_darkmode = true;
+					do_darkmode();
+					break;
+				case 2: // disable dark mode
+					is_darkmode = false;
+					do_darkmode();
+					break;
+				case 3: // enable who
+					is_showing_clients = true;
+					break;
+				case 4: // disable who
+					is_showing_clients = false;
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
 }

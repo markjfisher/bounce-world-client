@@ -26,8 +26,6 @@
 #include <cbm.h>
 #endif
 
-bool is_showing_clients = false;
-
 static char grid[2][10] = {
 	{CH_ULCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_URCORNER },
 	{CH_LLCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_LRCORNER }

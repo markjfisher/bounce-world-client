@@ -52,23 +52,23 @@ void connect_service() {
 	handle_err("post:data");
 
 	// finally read the client id in the response, this is just 1 byte
-	n = network_read(url_buffer, (uint8_t *)client_id, 1);
+	n = network_read(url_buffer, (uint8_t *) &client_id, 1);
 	if (n < 0) {
 		err = -n;
 		handle_err("client_id");
 	}
 	network_close(url_buffer);
 
-	memset(tmp, 0, sizeof(tmp));
-	itoa(client_id[0], tmp, 10);
+	memset(client_str, 0, 4);
+	itoa(client_id, client_str, 10);
 
 	cputsxy(10, 19, "Client ID: ");
-	cputsxy(21, 19, tmp);
+	cputsxy(21, 19, client_str);
 
 	// create the world update endpoint for this client
 	strcpy(client_data_url, endpoint);
 	strcat(client_data_url, world_str);
-	strcat(client_data_url, tmp);
+	strcat(client_data_url, client_str);
 
 	press_key();
 
