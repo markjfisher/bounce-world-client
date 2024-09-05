@@ -13,6 +13,7 @@
 #include "double_buffer.h"
 #include "full_clr.h"
 #include "hex_dump.h"
+#include "keyboard.h"
 #include "screen.h"
 #include "shapes.h"
 #include "playfield_clr.h"
@@ -227,6 +228,7 @@ void show_screen() {
 	// byte 3-5: {shape_id, x, y}
 	// byte 6-8: ...
 
+	char tmp[10];
 	uint8_t i, shape_id;
 	int8_t x, y;
 	// Number of bytes to skip before starting to read shapes data

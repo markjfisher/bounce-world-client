@@ -3,8 +3,8 @@
         .export _broadcast_message
         .export _client_id
         .export _client_str
+        .export _cmd_tmp
         .export _current_step
-        .export _client_data_url
         .export _clients_buffer
         .export _endpoint
         .export _flash_on_collision
@@ -19,7 +19,7 @@
         .export _shapes
         .export _shapes_buffer
         .export _shape_count
-        .export _url_buffer
+        .export _server_url
 
         .export _world_width
         .export _world_height
@@ -45,15 +45,15 @@
 .bss
 
 ;; GENERAL BUFFERS
-_url_buffer:        .res 128
+_server_url:        .res 128
 _app_data:          .res 512
 _shapes_buffer:     .res 512
 _name:              .res 9
 _name_pad:          .res 1
 _endpoint:          .res 80
-_client_data_url:   .res 96
-_clients_buffer:    .res 240
+_clients_buffer:    .res 512
 _broadcast_message: .res 120
+_cmd_tmp:           .res 32
 
 ; room for 50 shapes is 50 * 5 = 250 bytes, in BSS so not saved to disk. The data for the shapes strings is stored in _shapes_buffer above.
 _shapes:            .res 50 * .sizeof(ShapeRecord)
@@ -61,7 +61,7 @@ _shape_count:       .res 1
 
 ;; CLIENT INFO
 _client_id:         .res 1
-_client_str:        .res 4
+_client_str:        .res 10
 
 ; status byte for client
 _app_status:        .res 1

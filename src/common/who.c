@@ -6,6 +6,7 @@
 #include "app_errors.h"
 #include "data.h"
 #include "fujinet-network.h"
+#include "screen.h"
 #include "who.h"
 #include "world.h"
 
@@ -43,6 +44,11 @@ static char grid[2][10] = {
 
 void show_clients() {
 	uint8_t i, j;
+	uint8_t max_show = SCREEN_HEIGHT - 4;
+	uint8_t to_show = num_clients;
+	if (to_show > max_show) {
+		to_show = max_show;
+	}
 
 	// show a fake box on the screen, it will be displayed on the buffer screen, so should just overlay bodies
 
@@ -53,7 +59,7 @@ void show_clients() {
 	}
 
 	// all the clients, these are space buffered for us by server
-	for (i = 0; i < num_clients; i++) {
+	for (i = 0; i < to_show; i++) {
 		GOTOXY(29, 3+i);
 		CPUTC(CH_VLINE);
 		for (j = 0; j < 8; j++) {

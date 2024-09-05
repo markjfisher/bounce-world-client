@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "app_errors.h"
+#include "connection.h"
 #include "data.h"
 #include "display.h"
 #include "delay.h"
@@ -36,20 +36,15 @@ void run_simulation() {
 	get_world_clients();
 
 	while(is_running_sim) {
-		// I originally used a continuous open channel that received data from server as it was pushed, but it
-		// became clear it's easier to pull from client, so it didn't fall behind, and fetched current when it can.
-		// I thought the push model would provide more consistency across views for the client, but it turns out
-		// there's negligible delay between platforms constantly polling and the screens being updated, so pull model is better.
-
-		memset(app_data, 0, APP_DATA_SIZE);
-		try_open("loop:open", client_data_url, OPEN_MODE_HTTP_GET);
-
-		n = network_read(client_data_url, app_data, APP_DATA_SIZE);
-		network_close(client_data_url);
-
+		create_command("x-w");
+		append_command(client_str);
+		send_command();
+		n = read_response_with_error(app_data, APP_DATA_SIZE);
 		if (n < 0) {
 			// there was an error, so don't process this round. try again after a small pause
-			// TODO: add some resillience here, backoff exponentially for max number of attempts.
+			// We use some resillience here, backing off until the error delay is 255 (about 5 seconds)
+			// TODO: check if we errored too many times maybe? Or just let the user decide to reboot etc.
+			// cputcxy(39, 23, 'E');
 			pause(error_delay);
 			error_delay = error_delay * 14 / 10; // roughly sqrt(2) times previous delay if keep getting errors
 			if (error_delay > 255) error_delay = 255;

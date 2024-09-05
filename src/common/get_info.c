@@ -55,7 +55,6 @@ void get_info() {
 #endif
 
   memset(endpoint, 0, 80);
-  memset(client_data_url, 0, 96);
   memset(name, 0, 9);
 
   cputsxy(txp, yps +  9, "Bounce Server URL:");
