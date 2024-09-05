@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "broadcast.h"
 #include "data.h"
 #include "debug.h"
 #include "delay.h"
@@ -196,6 +197,10 @@ void show_screen() {
 
 	if (is_showing_clients) {
 		show_clients();
+	}
+
+	if (is_showing_broadcast) {
+		show_broadcast();
 	}
 
 	// show the other screen

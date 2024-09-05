@@ -1,5 +1,6 @@
         .export _app_data
         .export _app_status
+        .export _broadcast_message
         .export _client_id
         .export _client_str
         .export _current_step
@@ -9,6 +10,7 @@
         .export _info_display_count
         .export _is_darkmode
         .export _is_running_sim
+        .export _is_showing_broadcast
         .export _is_showing_clients
         .export _name
         .export _shapes
@@ -47,6 +49,7 @@ _name:              .res 9
 _endpoint:          .res 80
 _client_data_url:   .res 96
 _clients_buffer:    .res 240
+_broadcast_message: .res 120
 
 ; room for 50 shapes is 50 * 5 = 250 bytes, in BSS so not saved to disk. The data for the shapes strings is stored in _shapes_buffer above.
 _shapes:            .res 50 * .sizeof(ShapeRecord)
@@ -74,8 +77,9 @@ _world_is_frozen:   .res 1
 _world_is_wrapped:  .res 1
 
 .data
-_is_running_sim:     .byte $01
-_current_step:       .byte $ff
-_info_display_count: .byte $00
-_is_darkmode:        .byte $00
-_is_showing_clients: .byte $00
+_is_running_sim:        .byte $01
+_current_step:          .byte $ff
+_info_display_count:    .byte $00
+_is_darkmode:           .byte $00
+_is_showing_clients:    .byte $00
+_is_showing_broadcast:  .byte $00

@@ -18,6 +18,7 @@ extern uint8_t app_data[APP_DATA_SIZE];
 // This memory is carved up for the shapes data strings so we don't need to malloc them, and instead used slices of this memory
 extern uint8_t shapes_buffer[SHAPES_BUFFER_SIZE];
 extern char clients_buffer[240];	// room for 30 clients names!
+extern char broadcast_message[120]; // up to 120 chars for a broadcast message
 
 extern char    name[9];
 
@@ -37,6 +38,8 @@ extern uint8_t shape_count;
 extern bool is_darkmode;
 extern bool is_running_sim;
 extern bool is_showing_clients;
+extern bool is_showing_broadcast;
+
 extern uint8_t current_step;
 extern uint8_t app_status;
 

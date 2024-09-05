@@ -18,5 +18,6 @@ extern uint8_t  body_5;
 void get_world_state();
 void get_world_clients();
 void get_world_cmd();
+void get_broadcast();
 
 #endif // BWC_WORLD_H

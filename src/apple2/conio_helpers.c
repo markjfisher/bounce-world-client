@@ -15,4 +15,9 @@ void cputsxy_buffer(uint8_t x, uint8_t y, char *s) {
 	cputs(s);
 }
 
+void cputcxy_buffer(uint8_t x, uint8_t y, char c) {
+	gotoxy_buffer(x, y);
+	cputc(c);
+}
+
 #endif

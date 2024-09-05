@@ -13,6 +13,7 @@
 char *world_state = "/ws";
 char *who_endpoint = "/who";
 char *cmd_endpoint = "/cmd/get/";
+char *msg_endpoint = "/msg";
 
 void get_world_state() {
 	memset(url_buffer, 0, sizeof(url_buffer));
@@ -40,6 +41,24 @@ void get_world_clients() {
 	network_close(url_buffer);
 }
 
+void get_broadcast() {
+	int n;
+	memset(url_buffer, 0, sizeof(url_buffer));
+	strcat(url_buffer, endpoint);
+	strcat(url_buffer, msg_endpoint);
+
+	memset(broadcast_message, 0, 120);
+	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+	handle_err("get:open:broadcast");
+	n = network_read(url_buffer, broadcast_message, 119);
+	network_close(url_buffer);
+
+	if (n > 0) {
+		// terminate the string. We only read 119 bytes to not overrun the buffer, but always add a nul terminator.
+		broadcast_message[n] = '\0';
+	}
+}
+
 // this client has some commands to process
 void get_world_cmd() {
 	int n;
@@ -59,6 +78,9 @@ void get_world_cmd() {
     DISABLE_DARK_MODE(2, "disableDarkMode"),
     ENABLE_WHO(3, "enableWho"),
     DISABLE_WHO(4, "disableWho");
+	ENABLE_BROADCAST(5, "enableBroadcast"),
+    DISABLE_BROADCAST(6, "disableBroadcast"),
+
  */
 
 	if (n > 0) {
@@ -79,7 +101,12 @@ void get_world_cmd() {
 				case 4: // disable who
 					is_showing_clients = false;
 					break;
+				case 5: // enable broadcast
+					get_broadcast();
+					is_showing_broadcast = true;
+					break;
 				default:
+					is_showing_broadcast = false;
 					break;
 			}
 		}
