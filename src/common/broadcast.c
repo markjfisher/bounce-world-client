@@ -28,23 +28,24 @@
 #endif
 
 // How large the box can be for text. Add 2 for borders
-#define MAX_WIDTH 26
+#define MAX_WIDTH 22
 
 // Helper function to print the horizontal border of the box
 void print_horizontal_border(int start_x, int start_y, int width) {
 	int i;
     CPUTCXY(start_x, start_y, CH_ULCORNER);
     for (i = 1; i < width - 1; i++) {
-        CPUTCXY(start_x + i, start_y, CH_HLINE);
+        cputc(CH_HLINE);
     }
-    CPUTCXY(start_x + width - 1, start_y, CH_URCORNER);
+    cputc(CH_URCORNER);
 }
 
 // Helper function to print spaces
 void print_spaces(int x, int y, int count) {
 	int i;
+	GOTOXY(x, y);
     for (i = 0; i < count; i++) {
-        CPUTCXY(x + i, y, ' ');
+        cputc(' ');
     }
 }
 
@@ -59,12 +60,16 @@ void show_broadcast() {
 	int start_x, start_y;
 	int x, y;
 
-
     len = strlen(broadcast_message);
-    box_width = MAX_WIDTH + 2; // +2 for the vertical borders
+	if (len < MAX_WIDTH) {
+		box_width = len + 2;		
+	} else {
+		// +2 for the vertical borders
+	    box_width = MAX_WIDTH + 2;
+	}
 
     start_x = (SCREEN_WIDTH - box_width) / 2;
-    start_y = 10;
+    start_y = 5;
 
     x = start_x + 1; // One space after the left border
     y = start_y + 1; // One line below the top border
@@ -80,7 +85,7 @@ void show_broadcast() {
 
         if (x + wordlen - start_x > MAX_WIDTH) {
             // Fill the rest of the line with spaces
-            print_spaces(x, y, start_x + MAX_WIDTH - x);
+            print_spaces(x, y, start_x + MAX_WIDTH - x + 1);
 
             // Move to the next line
             y++;
@@ -91,6 +96,7 @@ void show_broadcast() {
         }
 
         // Print the word
+		GOTOXY(x, y);
         for (i = 0; i < wordlen; i++) {
             CPUTCXY(x + i, y, word[i]);
         }
@@ -110,7 +116,7 @@ void show_broadcast() {
     }
 
     // Fill the rest of the line with spaces
-    print_spaces(x, y, start_x + MAX_WIDTH - x);
+    print_spaces(x, y, start_x + MAX_WIDTH - x + 1);
 
     // Print bottom border
     y++;
