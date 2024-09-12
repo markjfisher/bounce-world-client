@@ -8,6 +8,10 @@
 #include "data.h"
 #include "screen.h"
 
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#endif
+
 #ifdef __APPLE2__
 #include <apple2enh.h>
 #include "conio_helpers.h"

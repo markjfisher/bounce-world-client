@@ -14,6 +14,14 @@
 #include "resilience.h"
 #include "shapes.h"
 
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#include "text_buffer.h"
+#include "shape_util.h"
+#include "itoa_wrapper.h"
+#include "double_buffer.h"
+#endif
+
 char *shapes_url = "/shapes";
 
 void parse_shape_records(const uint8_t *input) {
@@ -97,6 +105,21 @@ void read_and_parse_shapes_data() {
 	parse_shape_records(app_data);
 }
 
+#ifdef __PMD85__
+void display_shape_data(uint8_t n, uint8_t x, uint8_t y) {
+	ShapeRecord shape;
+	uint8_t w;
+	char *data;
+
+	shape = shapes[n];
+	w = shape.shape_width; // h = w
+	data = (char *) &shape.shape_data[0];
+	gotoxy_tb(x, y);
+	print_shape_tb(data, w, w, 0);
+	add_dirty_rect(x, y, w, w);
+}
+
+#else
 void display_shape_data(uint8_t n, uint8_t x, uint8_t y) {
 	uint8_t i;
 	uint8_t j;
@@ -123,6 +146,7 @@ void display_shape_data(uint8_t n, uint8_t x, uint8_t y) {
 		}
 	}
 }
+#endif
 
 // fetch the shapes data and assign it to values the application can use to draw
 void get_shapes() {
@@ -143,10 +167,19 @@ void get_shapes() {
 	itoa(shape_count, tmp, 10);
 	cputs(tmp);
 
+#ifdef __PMD85__
+	reset_dirty();
+#endif
+
 	for (i = 0; i < shape_count; i++) {
 		x = (i % 7) * 6;
 		y = ((uint8_t) (i / 7)) * 6 + 3;
 		display_shape_data(i, x, y);
 	}
+
+#ifdef __PMD85__
+	show_text_buffer();
+	clear_dirty();
+#endif
 
 }

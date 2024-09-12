@@ -19,6 +19,11 @@
 #include "dlist.h"
 #endif
 
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#include "itoa_wrapper.h"
+#endif
+
 char *freeze_endpoint = "/freeze";
 char *reset_endpoint = "/reset";
 char *inc_endpoint = "/inc";

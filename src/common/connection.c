@@ -10,6 +10,11 @@
 #include "resilience.h"
 #include "shapes.h"
 
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#include "itoa_wrapper.h"
+#endif
+
 // platform specific values will be supplied here:
 #include "screen.h"
 
