@@ -53,6 +53,19 @@ void get_info() {
   get_line(name, 9);
   cursor(0);
 
+  // prepend 'http://' if no protocol is included
+  if (strncasecmp(endpoint, "http://", 7) != 0 && strncasecmp(endpoint, "https://", 8)!= 0) {
+    size_t len = strlen(endpoint);
+    memmove(endpoint + 7, endpoint, len + 1);
+    endpoint[0] = 'h';
+    endpoint[1] = 't';
+    endpoint[2] = 't';
+    endpoint[3] = 'p';
+    endpoint[4] = ':';
+    endpoint[5] = '/';
+    endpoint[6] = '/';
+  }
+  
   // move it forward 3 bytes, and prepend n1:
   memmove(endpoint + 3, endpoint, 76);
   endpoint[0] = 'n';
