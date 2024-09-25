@@ -13,6 +13,8 @@
 #define ENDPOINT_URL ""
 #endif
 
+char endpoint_input[61];
+char *protocol = "n1:";
 
 void get_info() {
   char hxp = 4;
@@ -41,7 +43,12 @@ void get_info() {
   cursor(1);
   if (strlen(ENDPOINT_URL) == 0) {
     cputsxy(txp, yps + 10, "> ");
-    get_line(endpoint, 60);
+    memset(endpoint_input, 0, 60);
+    get_line(endpoint_input, 60);
+    if (strncasecmp(endpoint_input, "http", 4) != 0) {
+      strcat(endpoint, "http://");
+    }
+    strcat(endpoint, endpoint_input);
   } else {
     strcpy(endpoint, ENDPOINT_URL);
     cputsxy(txp, yps + 10, "> ");
@@ -55,8 +62,6 @@ void get_info() {
 
   // move it forward 3 bytes, and prepend n1:
   memmove(endpoint + 3, endpoint, 76);
-  endpoint[0] = 'n';
-  endpoint[1] = '1';
-  endpoint[2] = ':';
+  memcpy(endpoint, protocol, 3);
 
 }
