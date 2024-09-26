@@ -37,6 +37,7 @@ extern uint8_t shape_count;
 
 extern bool is_darkmode;
 extern bool is_running_sim;
+extern bool is_showing_info;
 extern bool is_showing_clients;
 extern bool is_showing_broadcast;
 
