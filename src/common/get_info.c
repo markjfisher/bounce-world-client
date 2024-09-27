@@ -63,5 +63,4 @@ void get_info() {
   // move it forward 3 bytes, and prepend n1:
   memmove(endpoint + 3, endpoint, 76);
   memcpy(endpoint, protocol, 3);
-
 }
