@@ -78,9 +78,10 @@ void get_world_cmd() {
     DISABLE_DARK_MODE(2, "disableDarkMode"),
     ENABLE_WHO(3, "enableWho"),
     DISABLE_WHO(4, "disableWho");
-		ENABLE_BROADCAST(5, "enableBroadcast"),
+    ENABLE_BROADCAST(5, "enableBroadcast"),
     DISABLE_BROADCAST(6, "disableBroadcast"),
-
+    ENABLE_INFO(7, "enableInfo"),
+    DISABLE_INFO(8, "disableInfo"),
  */
 
 	if (n > 0) {
@@ -89,11 +90,11 @@ void get_world_cmd() {
 			switch (cmd) {
 				case 1: // enable dark mode
 					is_darkmode = true;
-					do_darkmode();
+					set_screen_colours();
 					break;
 				case 2: // disable dark mode
 					is_darkmode = false;
-					do_darkmode();
+					set_screen_colours();
 					break;
 				case 3: // enable who
 					is_showing_clients = true;
@@ -105,14 +106,17 @@ void get_world_cmd() {
 					get_broadcast();
 					is_showing_broadcast = true;
 					break;
-				case 6: // enable info
+				case 6: // disable broadcast
+					get_broadcast();
+					is_showing_broadcast = false;
+					break;
+				case 7: // enable info
 					is_showing_info = true;
 					break;
-				case 7: // disable info
+				case 8: // disable info
 					is_showing_info = false;
 					break;
 				default:
-					is_showing_broadcast = false;
 					break;
 			}
 		}

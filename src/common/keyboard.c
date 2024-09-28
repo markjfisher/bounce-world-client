@@ -57,9 +57,9 @@ void add_body(uint8_t size) {
 
 }
 
-void do_darkmode() {
+void set_screen_colours() {
 #ifdef __ATARI__
-	if (is_darkmode) {
+	if (is_darkmode || !is_showing_info) {
 		txt_c1 = 0;
 		txt_c2 = 0;
 		txt_c3 = 0;
@@ -74,9 +74,16 @@ void do_darkmode() {
 
 void toggle_darkmode() {
 	is_darkmode = !is_darkmode;
-	do_darkmode();
+	set_screen_colours();
 }
 
+void toggle_info() {
+	is_showing_info = !is_showing_info;
+	set_screen_colours();
+	if (!is_showing_broadcast) {
+		info_display_count = 0;
+	}
+}
 
 void handle_kb() {
 	char c;
@@ -95,7 +102,7 @@ void handle_kb() {
 		case '5': add_body(c - '0'); break;
 
 		case 'r': do_command(reset_endpoint); break;
-		case 'i': is_showing_info = !is_showing_info; break;
+		case 'i': toggle_info(); break;
 		case 'w': is_showing_clients = !is_showing_clients; break;
 		case 'q': is_running_sim = false; break;
 

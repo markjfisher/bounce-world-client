@@ -50,7 +50,6 @@ void show_info() {
 	revers(1); cputs("4:"); revers(0); print_justified(body_4, 2);
 	revers(1); cputs("5:"); revers(0); print_justified(body_5, 2);
 
-
 	xtra = (world_height > 99) ? 0 : 1;
 	GOTOXY(32 + xtra, 22);
 	if (world_is_frozen) {
