@@ -48,7 +48,7 @@ void connect_service() {
     network_http_add_header(url_buffer, "Content-Type: text/plain");
     network_http_end_add_headers(url_buffer);
 
-	err = network_http_post(url_buffer, app_data);
+	err = network_http_post(url_buffer, (char *) app_data);
 	handle_err("post:data");
 
 	// finally read the client id in the response, this is just 1 byte

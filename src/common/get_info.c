@@ -58,6 +58,7 @@ void get_info() {
   cputsxy(txp, yps + 12, "Your name (max 8):");
   cputsxy(txp, yps + 13, "> ");  
   get_line(name, 9);
+  name_pad = 9 - strlen(name);    // pre-calculate this so it isn't constantly done in loops
   cursor(0);
 
   // move it forward 3 bytes, and prepend n1:

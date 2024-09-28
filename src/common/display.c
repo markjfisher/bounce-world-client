@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "broadcast.h"
 #include "data.h"
@@ -10,10 +11,11 @@
 #include "delay.h"
 #include "display.h"
 #include "double_buffer.h"
+#include "full_clr.h"
 #include "hex_dump.h"
 #include "screen.h"
 #include "shapes.h"
-#include "target_clr.h"
+#include "playfield_clr.h"
 #include "world.h"
 #include "who.h"
 
@@ -35,6 +37,11 @@ extern void debug();
 
 void init_screen() {
 	clrscr();
+
+#ifdef __APPLE2__
+	// clear the 2nd text area as we don't fully clear it on every screen swap to try and reduce blink in the info bar
+	memset((void *) 0x0800, 0xA0, 0x0400);
+#endif
 
 #ifdef __ATARI__
 	OS.color2 = 0;
@@ -156,11 +163,7 @@ void show_screen() {
 	if (info_display_count < 2) {
 		// do a full clear screen to clear the text area
 
-#ifdef __APPLE2__
-		target_clr();
-#else
-		clrscr();
-#endif
+		full_clr();
 
 		if (is_showing_info) {
 			show_info();
@@ -168,15 +171,7 @@ void show_screen() {
 		info_display_count++;
 	} else {
 		// just a partial clear, the text display is now setup correctly.
-		target_clr();
-
-#ifdef __APPLE2__
-		// target_clr() clears whole screen on apple2, so need to redo the info part every frame. TODO: fix
-		if (is_showing_info) {
-			show_info();
-		}
-#endif
-
+		playfield_clr();
 	}
 
 	for (i = 0; i < number_of_shapes; ++i) {

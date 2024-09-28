@@ -6,6 +6,6 @@
 
 extern void wait_vsync();
 
-void target_clr() {
+void playfield_clr() {
 	clrscr();
 }

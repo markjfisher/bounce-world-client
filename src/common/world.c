@@ -37,7 +37,7 @@ void get_world_clients() {
 	memset(clients_buffer, 0, 240);
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("get:open:clients");
-	network_read(url_buffer, clients_buffer, 240);
+	network_read(url_buffer, (uint8_t *) clients_buffer, 240);
 	network_close(url_buffer);
 }
 
@@ -50,7 +50,7 @@ void get_broadcast() {
 	memset(broadcast_message, 0, 120);
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("get:open:broadcast");
-	n = network_read(url_buffer, broadcast_message, 119);
+	n = network_read(url_buffer, (uint8_t *) broadcast_message, 119);
 	network_close(url_buffer);
 
 	if (n > 0) {
@@ -70,6 +70,7 @@ void get_world_cmd() {
 
 	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("get:open:cmd");
+
 	n = network_read(url_buffer, app_data, 240);
 	network_close(url_buffer);
 

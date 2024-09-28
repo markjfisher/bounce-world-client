@@ -7,6 +7,7 @@
         .export _client_data_url
         .export _clients_buffer
         .export _endpoint
+        .export _flash_on_collision
         .export _info_display_count
         .export _is_darkmode
         .export _is_running_sim
@@ -14,6 +15,7 @@
         .export _is_showing_info
         .export _is_showing_clients
         .export _name
+        .export _name_pad
         .export _shapes
         .export _shapes_buffer
         .export _shape_count
@@ -47,6 +49,7 @@ _url_buffer:        .res 128
 _app_data:          .res 512
 _shapes_buffer:     .res 512
 _name:              .res 9
+_name_pad:          .res 1
 _endpoint:          .res 80
 _client_data_url:   .res 96
 _clients_buffer:    .res 240
@@ -85,3 +88,4 @@ _is_darkmode:           .byte $00
 _is_showing_info:       .byte $01
 _is_showing_clients:    .byte $00
 _is_showing_broadcast:  .byte $00
+_flash_on_collision:    .byte $01

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "app_errors.h"
 #include "data.h"
 #include "display.h"
 #include "delay.h"
@@ -43,9 +44,12 @@ void run_simulation() {
 		// there's negligible delay between platforms constantly polling and the screens being updated, so pull model is better.
 
 		memset(app_data, 0, APP_DATA_SIZE);
-		network_open(client_data_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+		err = network_open(client_data_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+		handle_err("loop:open");
+
 		n = network_read(client_data_url, app_data, APP_DATA_SIZE);
 		network_close(client_data_url);
+
 		if (n < 0) {
 			// there was an error, so don't process this round. try again after a small pause
 			// TODO: add some resillience here, backoff exponentially for max number of attempts.
@@ -55,9 +59,12 @@ void run_simulation() {
 			if (error_delay > 255) error_delay = 255;
 			continue;
 		}
+
 		// reset error delay when we have a good read.
 		error_delay = 30;
-		// cputcxy(39, 23, ' ');
+
+		// check there was some data
+		if (n == 0) continue;
 
 		app_status = app_data[1];
 		if (app_status != 0) {

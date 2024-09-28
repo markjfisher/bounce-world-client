@@ -108,6 +108,7 @@ void handle_kb() {
 
 #ifdef __ATARI__
 		case 'd': toggle_darkmode(); break;
+		case 'l': flash_on_collision = !flash_on_collision; break;
 #endif
 
 		default: break;

@@ -21,6 +21,7 @@ extern char clients_buffer[240];	// room for 30 clients names!
 extern char broadcast_message[120]; // up to 120 chars for a broadcast message
 
 extern char    name[9];
+extern uint8_t name_pad;    // pre-calculate 9 - name.length();
 
 // this is the captured URL of the BW server without any controller endpoints added
 extern char    endpoint[80];
@@ -40,6 +41,7 @@ extern bool is_running_sim;
 extern bool is_showing_info;
 extern bool is_showing_clients;
 extern bool is_showing_broadcast;
+extern bool flash_on_collision;
 
 extern uint8_t current_step;
 extern uint8_t app_status;
