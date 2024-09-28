@@ -11,6 +11,7 @@
         .export _is_darkmode
         .export _is_running_sim
         .export _is_showing_broadcast
+        .export _is_showing_info
         .export _is_showing_clients
         .export _name
         .export _shapes
@@ -81,5 +82,6 @@ _is_running_sim:        .byte $01
 _current_step:          .byte $ff
 _info_display_count:    .byte $00
 _is_darkmode:           .byte $00
+_is_showing_info:       .byte $01
 _is_showing_clients:    .byte $00
 _is_showing_broadcast:  .byte $00

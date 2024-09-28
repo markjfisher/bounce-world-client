@@ -64,11 +64,12 @@ void show_info() {
 	}
 
 	GOTOXY(0, 23);
-	print_reverse("F");    cputs("reeze ");
-	print_reverse("R");    cputs("eset ");
-	print_reverse("+-");  cputs("Spd ");
+	print_reverse("F");    cputs("rz ");
+	print_reverse("R");    cputs("st ");
+	print_reverse("+-");   cputs("Spd ");
 	print_reverse("1-5");  cputs("Add ");
-	print_reverse("W");  cputs("ho ");
+	print_reverse("W");    cputs("ho ");
+	print_reverse("I");    cputs("nf ");
 	print_reverse("Q");    cputs("uit ");
 #ifdef __ATARI__
 	print_reverse("D");    cputs("ark");

@@ -162,7 +162,9 @@ void show_screen() {
 		clrscr();
 #endif
 
-		show_info();
+		if (is_showing_info) {
+			show_info();
+		}
 		info_display_count++;
 	} else {
 		// just a partial clear, the text display is now setup correctly.
@@ -170,7 +172,9 @@ void show_screen() {
 
 #ifdef __APPLE2__
 		// target_clr() clears whole screen on apple2, so need to redo the info part every frame. TODO: fix
-		show_info();
+		if (is_showing_info) {
+			show_info();
+		}
 #endif
 
 	}

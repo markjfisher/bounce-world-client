@@ -78,7 +78,7 @@ void get_world_cmd() {
     DISABLE_DARK_MODE(2, "disableDarkMode"),
     ENABLE_WHO(3, "enableWho"),
     DISABLE_WHO(4, "disableWho");
-	ENABLE_BROADCAST(5, "enableBroadcast"),
+		ENABLE_BROADCAST(5, "enableBroadcast"),
     DISABLE_BROADCAST(6, "disableBroadcast"),
 
  */
@@ -104,6 +104,12 @@ void get_world_cmd() {
 				case 5: // enable broadcast
 					get_broadcast();
 					is_showing_broadcast = true;
+					break;
+				case 6: // enable info
+					is_showing_info = true;
+					break;
+				case 7: // disable info
+					is_showing_info = false;
 					break;
 				default:
 					is_showing_broadcast = false;
