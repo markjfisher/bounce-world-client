@@ -7,6 +7,7 @@
 #include "data.h"
 #include "fujinet-network.h"
 #include "press_key.h"
+#include "resilience.h"
 #include "shapes.h"
 
 // platform specific values will be supplied here:
@@ -40,8 +41,7 @@ void connect_service() {
 	itoa(SCREEN_HEIGHT, tmp, 10);
 	strcat((char *) app_data, tmp);
 
-    err = network_open(url_buffer, OPEN_MODE_HTTP_POST, OPEN_TRANS_NONE);
-	handle_err("post:open");
+	try_open("post:open:connect", url_buffer, OPEN_MODE_HTTP_POST);
 
     network_http_start_add_headers(url_buffer);
     network_http_add_header(url_buffer, "Accept: */*");

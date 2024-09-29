@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-void show_broadcast();
+void broadcast();
 
 #endif // BWC_BROADCAST_H

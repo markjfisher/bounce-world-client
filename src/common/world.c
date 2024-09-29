@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,7 @@
 #include "debug.h"
 #include "keyboard.h"
 #include "fujinet-network.h"
+#include "resilience.h"
 #include "who.h"
 #include "world.h"
 
@@ -20,8 +22,7 @@ void get_world_state() {
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, world_state);
 
-    err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("ws_get:open");
+	try_open("ws_get:open", url_buffer, OPEN_MODE_HTTP_GET);
 
 	// read directly into the 14 bytes of memory starting at world_width
 	network_read(url_buffer, (uint8_t *) &world_width, 14);
@@ -33,10 +34,9 @@ void get_world_clients() {
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, who_endpoint);
-
 	memset(clients_buffer, 0, 240);
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:clients");
+
+	try_open("get:open:clients", url_buffer, OPEN_MODE_HTTP_GET);
 	network_read(url_buffer, (uint8_t *) clients_buffer, 240);
 	network_close(url_buffer);
 }
@@ -46,10 +46,9 @@ void get_broadcast() {
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, msg_endpoint);
-
 	memset(broadcast_message, 0, 120);
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:broadcast");
+
+	try_open("get:open:broadcast", url_buffer, OPEN_MODE_HTTP_GET);
 	n = network_read(url_buffer, (uint8_t *) broadcast_message, 119);
 	network_close(url_buffer);
 
@@ -68,7 +67,7 @@ void get_world_cmd() {
 	strcat(url_buffer, cmd_endpoint);
 	strcat(url_buffer, client_str);
 
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+	try_open("get:open:cmd", url_buffer, OPEN_MODE_HTTP_GET);
 	handle_err("get:open:cmd");
 
 	n = network_read(url_buffer, app_data, 240);

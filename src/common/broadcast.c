@@ -30,105 +30,82 @@
 // How large the box can be for text. Add 2 for borders
 #define MAX_WIDTH 22
 
-// Helper function to print the horizontal border of the box
-void print_horizontal_border(int start_x, int start_y, int width) {
-	int i;
-    CPUTCXY(start_x, start_y, CH_ULCORNER);
-    for (i = 1; i < width - 1; i++) {
-        cputc(CH_HLINE);
-    }
+void broadcast() {
+    char lineBuffer[MAX_WIDTH + 1]; // Buffer for a single line of text, +1 for null terminator
+    uint8_t i, lineLen, wordLen, startCol, startRow = 4;
+    char *msgPtr, *wordPtr;
+
+    // Calculate starting column to center the box
+    startCol = (SCREEN_WIDTH - MAX_WIDTH) / 2 - 1; // Subtracting 1 for the box border
+
+    // Top border of the box
+    GOTOXY(startCol, startRow++);
+    cputc(CH_ULCORNER);
+    for (i = 0; i < MAX_WIDTH; i++) cputc(CH_HLINE);
     cputc(CH_URCORNER);
-}
 
-// Helper function to print spaces
-void print_spaces(int x, int y, int count) {
-	int i;
-	GOTOXY(x, y);
-    for (i = 0; i < count; i++) {
-        cputc(' ');
-    }
-}
+    // Prepare message for word wrapping
+    msgPtr = broadcast_message;
+    lineBuffer[0] = '\0'; // Start with an empty line
+    lineLen = 0;
 
-// Main function to display the wrapped message
-void show_broadcast() {
-	int i;
-	int wordlen, space_width;
-	const char *word;
-	const char *space;
-	int len;
-	int box_width;
-	int start_x, start_y;
-	int x, y;
+    while (*msgPtr) {
+        // Find the next space or end of message
+        for (wordPtr = msgPtr; *wordPtr && *wordPtr != ' '; wordPtr++);
+        wordLen = wordPtr - msgPtr;
 
-    len = strlen(broadcast_message);
-	if (len < MAX_WIDTH) {
-		box_width = len + 2;		
-	} else {
-		// +2 for the vertical borders
-	    box_width = MAX_WIDTH + 2;
-	}
+        // Check if the word fits in the current line, including a space if not the first word
+        if (lineLen + wordLen + (lineLen > 0 ? 1 : 0) > MAX_WIDTH) {
+            // Fill the rest of the line with spaces for alignment
+            while (lineLen < MAX_WIDTH) {
+                lineBuffer[lineLen++] = ' ';
+            }
+            lineBuffer[lineLen] = '\0'; // Ensure null-termination
 
-    start_x = (SCREEN_WIDTH - box_width) / 2;
-    start_y = 5;
+            // Print the current line with right border
+            GOTOXY(startCol, startRow++);
+            cputc(CH_VLINE);
+            cputs(lineBuffer);
+            cputc(CH_VLINE);
 
-    x = start_x + 1; // One space after the left border
-    y = start_y + 1; // One line below the top border
-
-    // Print top border
-    print_horizontal_border(start_x, start_y, box_width);
-
-    word = broadcast_message;
-    space = strchr(broadcast_message, ' ');
-
-    while (word) {
-        wordlen = space ? (space - word) : strlen(word);
-
-        if (x + wordlen - start_x > MAX_WIDTH) {
-            // Fill the rest of the line with spaces
-            print_spaces(x, y, start_x + MAX_WIDTH - x + 1);
-
-            // Move to the next line
-            y++;
-            x = start_x + 1;
-
-            // Print left border for the new line
-            CPUTCXY(start_x, y, CH_VLINE);
+            // Reset the line buffer for the next line
+            lineLen = 0;
         }
 
-        // Print the word
-		GOTOXY(x, y);
-        for (i = 0; i < wordlen; i++) {
-            CPUTCXY(x + i, y, word[i]);
+        // If not the first word in the line, add a space
+        if (lineLen > 0 && (lineLen + wordLen) < MAX_WIDTH) {
+            lineBuffer[lineLen++] = ' ';
         }
 
-        // Update x position
-        x += wordlen;
+        // Copy the word to the line buffer
+        strncpy(lineBuffer + lineLen, msgPtr, wordLen);
+        lineLen += wordLen;
 
-        if (space) {
-            space_width = (x + 1 - start_x <= MAX_WIDTH) ? 1 : 0;
-            print_spaces(x, y, space_width); // Print a space if the next word fits
-            x += space_width; // Move x position after the space
-            word = space + 1; // Move to the next word
-            space = strchr(word, ' '); // Find the next space
-        } else {
-            word = NULL; // No more words
+        // Ensure null-termination
+        // lineBuffer[lineLen] = '\0';
+
+        // Move to the next word, skipping spaces
+        msgPtr = wordPtr;
+        while (*msgPtr == ' ') msgPtr++;
+    }
+
+    // Fill the rest of the last line with spaces for alignment
+    if (lineLen > 0) {
+        while (lineLen < MAX_WIDTH) {
+            lineBuffer[lineLen++] = ' ';
         }
+        lineBuffer[lineLen] = '\0'; // Ensure null-termination
+
+        // Print the last line with right border
+        GOTOXY(startCol, startRow++);
+        cputc(CH_VLINE);
+        cputs(lineBuffer);
+        cputc(CH_VLINE);
     }
 
-    // Fill the rest of the line with spaces
-    print_spaces(x, y, start_x + MAX_WIDTH - x + 1);
-
-    // Print bottom border
-    y++;
-    print_horizontal_border(start_x, y, box_width);
-
-    // Print the left and right borders
-    for (i = start_y + 1; i < y; i++) {
-        CPUTCXY(start_x, i, CH_VLINE);
-        CPUTCXY(start_x + box_width - 1, i, CH_VLINE);
-    }
-
-    // Print the bottom corners
-    CPUTCXY(start_x, y, CH_LLCORNER);
-    CPUTCXY(start_x + box_width - 1, y, CH_LRCORNER);
+    // Bottom border of the box
+    GOTOXY(startCol, startRow);
+    cputc(CH_LLCORNER);
+    for (i = 0; i < MAX_WIDTH; i++) cputc(CH_HLINE);
+    cputc(CH_LRCORNER);
 }

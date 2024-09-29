@@ -8,16 +8,6 @@
 #include "debug.h"
 #include "world.h"
 
-// double buffering macros, apple2 needs a hand.
-#ifdef __APPLE2__
-#include "conio_helpers.h"
-#define GOTOXY gotoxy_buffer
-#define CPUTSXY cputsxy_buffer
-#else
-#define GOTOXY gotoxy
-#define CPUTSXY cputsxy
-#endif
-
 // print a uint8_t into 2 spaces
 void printu8j2(uint8_t v) {
 	if (v < 10) {
@@ -79,7 +69,7 @@ void show_info() {
 	print_reverse("F"); cputs("rz ");
 	print_reverse("R"); cputs("st ");
 	print_reverse("+"); cputc('/'); print_reverse("-"); cputc(' ');
-	print_reverse("1"); cputc('-'); print_reverse("5"); cputs(" Add ");
+	print_reverse("1"); cputc('-'); print_reverse("5"); cputs("Add ");
 	print_reverse("W"); cputs("ho ");
 	print_reverse("I"); cputs("nf ");
 	print_reverse("Q"); cputs("uit ");

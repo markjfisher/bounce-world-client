@@ -72,6 +72,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	width = shape.shape_width;
 	data = (char *) shape.shape_data;
 
+	// find location of top left corner of the box (square) this shape needs to display
 	start_x = center_x - (width >> 1) - 1;
 	start_y = center_y - (width >> 1) - 1;
 
@@ -82,6 +83,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 		start_y++;
 	}
 
+	// print each char in the box for this shape
 	for (i = 0; i < width; ++i) {
 		y = start_y + i;
 		first_x_in_row = false; // Reset for each row
@@ -99,13 +101,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 #ifdef BWC_CUSTOM_CPUTC
 						gotoxy_fast(x, y);
 #else
-						gotoxy(x, y);
-#endif
-
-#ifdef __APPLE2__
-						// handle double buffer on apple2, always done after a gotoxy.
-						// this ensures we are writing to the correct location
-						check_text_buffer_location();
+						GOTOXY(x, y);
 #endif
 					}
 					c = data[iw + j];
@@ -114,21 +110,13 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 					// handles space char as just moving x directly
 					cputc_fast(c);
 #else
-
-#ifdef __APPLE2__
-					// no optimization for the space on apple2
-					cputc(c);
-#else
-
 					if (c != ' ') {
 						cputc(c);  // Print and move to the next position
 					} else {
 						// don't print spaces, we already cleared the screen, just advance 1 char.
-						// Means no "rubout" on slightly overlapping shapes
+						// Means no "rubout" on slightly overlapping shapes, which looks is better
 						gotox(wherex() + 1);
 					}
-#endif
-
 #endif // BWC_CUSTOM_CPUTC
 
 				} else if (first_x_in_row) {
@@ -159,51 +147,40 @@ void show_screen() {
 	// make all writes go to the other screen/memory
 	swap_buffer();
 
-	// displays world stats. allow for double buffering. To redisplay this, reset info_display_count to 0
+	// only do a full clear when we want to show changes in the info bar, which is at start, or if any state changes from server
 	if (info_display_count < 2) {
-		// do a full clear screen to clear the text area
-
 		full_clr();
-
 		if (is_showing_info) {
 			show_info();
 		}
+		// this increments to 2 so that we can clear/print info in both buffers
 		info_display_count++;
 	} else {
-		// just a partial clear, the text display is now setup correctly.
+		// just a partial clear, the info display is now setup correctly.
 		playfield_clr();
 	}
 
-	for (i = 0; i < number_of_shapes; ++i) {
-		shape_id = app_data[index++];
-		x = (int8_t)app_data[index++];
-		y = (int8_t)app_data[index++];
-
-		if (shape_id < shape_count) {
+	// if (!is_showing_broadcast) {
+		for (i = 0; i < number_of_shapes; ++i) {
+			shape_id = app_data[index++];
+			x = (int8_t)app_data[index++];
+			y = (int8_t)app_data[index++];
 			show_shape(shape_id, x, y);
-		} else {
-			// crash out
-			show_other_screen();
-			clrscr();
-			cputsxy(0, 0, "error in app_data - bad shape id");
-			gotoxy(0,2);
-			hd(app_data, 64);
-			wait_vsync();
-			debug();
-			while(1) ;
 		}
-	}
+	// }
 
 	if (is_showing_clients) {
 		show_clients();
 	}
 
 	if (is_showing_broadcast) {
-		show_broadcast();
+		CPUTSXY(0, 21, "B");	// debug: proving the B is written to both buffers
+		broadcast();
 	}
 
 	// show the other screen
 	wait_vsync();
 	show_other_screen();
+	wait_vsync();
 
 }

@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "display.h"
 #include "fujinet-network.h"
+#include "resilience.h"
 #include "who.h"
 #include "world.h"
 
@@ -29,8 +30,7 @@ void do_command(char *command) {
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, command);
 
-    err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:command");
+	try_open("get:open:command", url_buffer, OPEN_MODE_HTTP_GET);
 	network_read(url_buffer, tmp, 1);
 
 	get_world_state();
@@ -48,8 +48,7 @@ void add_body(uint8_t size) {
 	itoa(size, size_string, 10);
 	strcat(url_buffer, size_string);
 
-    err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:add");
+	try_open("get:open:add", url_buffer, OPEN_MODE_HTTP_GET);
 	network_read(url_buffer, tmp, 1);
 
 	get_world_state();

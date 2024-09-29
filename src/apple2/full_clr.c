@@ -4,10 +4,7 @@
 
 #include "double_buffer.h"
 
-extern void wait_vsync();
-
 void full_clr() {
-	// wait_vsync();
 	if (is_orig_screen_mem) {
 		clrscr();
 	} else {

@@ -11,6 +11,7 @@
 #include "convert_chars.h"
 #include "data.h"
 #include "debug.h"
+#include "resilience.h"
 #include "shapes.h"
 
 char *shapes_url = "/shapes";
@@ -67,8 +68,7 @@ uint8_t get_shape_count() {
 	create_shape_url();
 	strcat(url_buffer, "/count");
 
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("shape count open");
+	try_open("shape count open", url_buffer, OPEN_MODE_HTTP_GET);
 	n = network_read(url_buffer, shapes_tmp, 1);
 	network_close(url_buffer);
 	if (n < 0) {
@@ -86,8 +86,7 @@ void read_and_parse_shapes_data() {
 
 	create_shape_url();
 	strcat(url_buffer, "/data");
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("shapes open");
+	try_open("shapes open", url_buffer, OPEN_MODE_HTTP_GET);
 	n = network_read(url_buffer, app_data, 512);
 	network_close(url_buffer);
 	if (n < 0) {

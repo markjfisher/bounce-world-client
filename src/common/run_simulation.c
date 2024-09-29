@@ -10,6 +10,7 @@
 #include "double_buffer.h"
 #include "fujinet-network.h"
 #include "keyboard.h"
+#include "resilience.h"
 #include "sound.h"
 #include "status.h"
 #include "world.h"
@@ -18,7 +19,6 @@
 #include "dlist.h"
 extern bool is_playing_collision;
 #endif
-
 
 void run_simulation() {
 	int n;
@@ -44,8 +44,7 @@ void run_simulation() {
 		// there's negligible delay between platforms constantly polling and the screens being updated, so pull model is better.
 
 		memset(app_data, 0, APP_DATA_SIZE);
-		err = network_open(client_data_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-		handle_err("loop:open");
+		try_open("loop:open", client_data_url, OPEN_MODE_HTTP_GET);
 
 		n = network_read(client_data_url, app_data, APP_DATA_SIZE);
 		network_close(client_data_url);
@@ -53,7 +52,6 @@ void run_simulation() {
 		if (n < 0) {
 			// there was an error, so don't process this round. try again after a small pause
 			// TODO: add some resillience here, backoff exponentially for max number of attempts.
-			// cputcxy(39, 23, 'E');
 			pause(error_delay);
 			error_delay = error_delay * 14 / 10; // roughly sqrt(2) times previous delay if keep getting errors
 			if (error_delay > 255) error_delay = 255;

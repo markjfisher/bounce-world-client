@@ -3,6 +3,16 @@
 
 #include <stdint.h>
 
+// double buffering macros, apple2 needs a hand.
+#ifdef __APPLE2__
+#include "conio_helpers.h"
+#define GOTOXY gotoxy_buffer
+#define CPUTSXY cputsxy_buffer
+#else
+#define GOTOXY gotoxy
+#define CPUTSXY cputsxy
+#endif
+
 extern void swap_buffer();
 extern uint8_t is_orig_screen_mem;
 extern void show_other_screen();
