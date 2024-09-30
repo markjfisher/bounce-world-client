@@ -14,7 +14,7 @@
 #endif
 
 extern void swap_buffer();
-extern uint8_t is_orig_screen_mem;
+extern uint8_t is_alt_screen;
 extern void show_other_screen();
 
 #ifdef __ATARI__

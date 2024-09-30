@@ -4,29 +4,27 @@
         .export         _display_buffer
         .export         _dlist_scr_ptr
         .export         _screen_mem_orig
-        .export         _is_orig_screen_mem
+        .export         _is_alt_screen
 
         .importzp       ptr1
 
 SAVMSC = $58
 
 .proc   _swap_buffer
-        lda     _is_orig_screen_mem
+        lda     _is_alt_screen
+        eor     #$01
+        sta     _is_alt_screen
         beq     :+
 
-        lda     #$00
-        sta     _is_orig_screen_mem
         lda     #<_display_buffer
         ldx     #>_display_buffer
         bne     over            ; always true, temp buffer is never in ZP
 
-:
-        lda     #$01
-        sta     _is_orig_screen_mem
-        lda     _screen_mem_orig
+:       lda     _screen_mem_orig
         ldx     _screen_mem_orig+1
 
 over:
+        ; set the screen memory address to current buffer
         sta     SAVMSC
         stx     SAVMSC+1
         rts
@@ -53,7 +51,7 @@ over:
 .bss
 _dlist_scr_ptr:         .res 2
 _screen_mem_orig:       .res 2
-_is_orig_screen_mem:    .res 1
+_is_alt_screen:         .res 1
 
 .segment "BUFFER"
 _display_buffer:        .res 960      ; full 40x24 for screen data

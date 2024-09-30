@@ -1,6 +1,6 @@
         .export   _playfield_clr
 
-        .import   _is_orig_screen_mem
+        .import   _is_alt_screen
         .importzp ptr1
 
 ; Custom clear screen for rows 0-21
@@ -16,11 +16,11 @@ l0:
         sta     ptr1
         lda     scr_offsets_hi, x
 
-        ldy     _is_orig_screen_mem
-        bne     over                    ; if x = 1 we are on screen 1 of 2
+        ldy     _is_alt_screen
+        beq     over                    ; if y = 0 we are on screen 1 of 2, so address is $0400
 
         clc
-        adc     #$04
+        adc     #$04                    ; otherwise it's $0800, which get by adding 4 to table high byte values.
 
 over:
         sta     ptr1 + 1

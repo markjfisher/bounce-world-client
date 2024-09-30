@@ -1,7 +1,7 @@
         .export         _show_other_screen
         .export         _swap_buffer
 
-        .export         _is_orig_screen_mem
+        .export         _is_alt_screen
 
         .importzp       ptr1
 
@@ -15,4 +15,4 @@
 
 
 .bss
-_is_orig_screen_mem:    .res 1
+_is_alt_screen:    .res 1

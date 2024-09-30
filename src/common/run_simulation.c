@@ -33,7 +33,7 @@ void run_simulation() {
 #endif
 
 	// flag we are on initial screen for double buffering across the platforms
-	is_orig_screen_mem = 1;
+	is_alt_screen = 0;
 
 	get_world_clients();
 
