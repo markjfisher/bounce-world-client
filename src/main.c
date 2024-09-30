@@ -5,7 +5,9 @@
  *
  */
 
+#ifndef __PMD85__
 #include <cc65.h>
+#endif
 #include <conio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -22,6 +24,10 @@
 #include "shapes.h"
 #include "shutdown.h"
 #include "world.h"
+
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#endif
 
 extern uint16_t fn_network_bw;
 extern uint8_t fn_network_conn;

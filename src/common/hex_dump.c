@@ -9,6 +9,11 @@
 #include <ctype.h>
 #endif /* _CMOC_VERSION_ */
 
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#include "itoa_wrapper.h"
+#endif
+
 // NON printf version of hex dump routine, saving about 1k from app size
 
 void hd(void* data, uint8_t size) {

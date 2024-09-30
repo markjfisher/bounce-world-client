@@ -20,6 +20,10 @@
 extern bool is_playing_collision;
 #endif
 
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#endif
+
 void run_simulation() {
 	int n;
 	uint16_t error_delay = 30;

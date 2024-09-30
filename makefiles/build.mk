@@ -35,8 +35,6 @@ DISK_TASKS =
 
 -include ./makefiles/os.mk
 
-CC := cl65
-
 SRCDIR := src
 BUILD_DIR := build
 OBJDIR := obj
@@ -49,17 +47,30 @@ PROGRAM_TGT := $(PROGRAM).$(CURRENT_TARGET)
 
 SOURCES := $(wildcard $(SRCDIR)/*.c)
 SOURCES += $(wildcard $(SRCDIR)/*.s)
+SOURCES += $(wildcard $(SRCDIR)/*.asm)
 
 # allow for a src/common/ dir and recursive subdirs
+ifeq ($(CURRENT_TARGET),pmd85)
+SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.asm)
+else
 SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.s)
+endif
 SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.c)
 
 # allow src/<platform>/ and its recursive subdirs
+ifeq ($(CURRENT_TARGET),pmd85)
+SOURCES_PF := $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.asm)
+else
 SOURCES_PF := $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.s)
+endif
 SOURCES_PF += $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.c)
 
 # allow src/current-target/<target>/ and its recursive subdirs
+ifeq ($(CURRENT_TARGET),pmd85)
+SOURCES_TG := $(call rwildcard,$(SRCDIR)/current-target/$(CURRENT_TARGET)/,*.asm)
+else
 SOURCES_TG := $(call rwildcard,$(SRCDIR)/current-target/$(CURRENT_TARGET)/,*.s)
+endif
 SOURCES_TG += $(call rwildcard,$(SRCDIR)/current-target/$(CURRENT_TARGET)/,*.c)
 
 # remove trailing and leading spaces.
@@ -71,14 +82,17 @@ SOURCES_TG := $(strip $(SOURCES_TG))
 # we need the target because compiling for previous target does not pick up potential macro changes
 OBJ1 := $(SOURCES:.c=.o)
 OBJECTS := $(OBJ1:.s=.o)
+OBJECTS := $(OBJECTS:.asm=.o)
 OBJECTS := $(OBJECTS:$(SRCDIR)/%=$(OBJDIR)/$(CURRENT_TARGET)/%)
 
 OBJ2 := $(SOURCES_PF:.c=.o)
 OBJECTS_PF := $(OBJ2:.s=.o)
+OBJECTS_PF := $(OBJECTS_PF:.asm=.o)
 OBJECTS_PF := $(OBJECTS_PF:$(SRCDIR)/%=$(OBJDIR)/$(CURRENT_TARGET)/%)
 
 OBJ3 := $(SOURCES_TG:.c=.o)
 OBJECTS_TG := $(OBJ3:.s=.o)
+OBJECTS_TG := $(OBJECTS_TG:.asm=.o)
 OBJECTS_TG := $(OBJECTS_TG:$(SRCDIR)/%=$(OBJDIR)/$(CURRENT_TARGET)/%)
 
 OBJECTS += $(OBJECTS_PF)
@@ -86,13 +100,6 @@ OBJECTS += $(OBJECTS_TG)
 
 # Ensure make recompiles parts it needs to if src files change
 DEPENDS := $(OBJECTS:.o=.d)
-
-ASFLAGS += --asm-include-dir src/common --asm-include-dir src/$(CURRENT_PLATFORM) --asm-include-dir src/current-target/$(CURRENT_TARGET)
-CFLAGS += --include-dir src/common --include-dir src/$(CURRENT_PLATFORM) --include-dir src/current-target/$(CURRENT_TARGET)
-
-ASFLAGS += --asm-include-dir $(SRCDIR)
-CFLAGS += --include-dir $(SRCDIR)
-
 
 #
 # load the sub-makefiles
@@ -107,19 +114,11 @@ CFLAGS += --include-dir $(SRCDIR)
 # allow for local env specific deployment options
 -include ./deployment.mk
 
-
-define _listing_
-  CFLAGS += --listing $$(@:.o=.lst)
-  ASFLAGS += --listing $$(@:.o=.lst)
-endef
-
-define _mapfile_
-  LDFLAGS += --mapfile $$@.map
-endef
-
-define _labelfile_
-  LDFLAGS += -Ln $$@.lbl
-endef
+ifeq ($(CURRENT_TARGET),pmd85)
+-include ./makefiles/compiler-z88dk.mk
+else
+-include ./makefiles/compiler-cc65.mk
+endif
 
 .SUFFIXES:
 .PHONY: all clean release $(DISK_TASKS) $(BUILD_TASKS) $(PROGRAM_TGT) $(ALL_TASKS)
@@ -165,20 +164,8 @@ SRC_INC_DIRS := \
   $(SRCDIR)
 
 vpath %.c $(SRC_INC_DIRS)
-
-$(OBJDIR)/$(CURRENT_TARGET)/%.o: %.c $(VERSION_FILE) | $(OBJDIR)
-	@$(call MKDIR,$(dir $@))
-	$(CC) -t $(CURRENT_TARGET) -c --create-dep $(@:.o=.d) $(CFLAGS) -o $@ $<
-
 vpath %.s $(SRC_INC_DIRS)
-
-$(OBJDIR)/$(CURRENT_TARGET)/%.o: %.s $(VERSION_FILE) | $(OBJDIR)
-	@$(call MKDIR,$(dir $@))
-	$(CC) -t $(CURRENT_TARGET) -c --create-dep $(@:.o=.d) $(ASFLAGS) -o $@ $<
-
-
-$(BUILD_DIR)/$(PROGRAM_TGT): $(OBJECTS) $(LIBS) | $(BUILD_DIR)
-	$(CC) -t $(CURRENT_TARGET) $(LDFLAGS) -o $@ $^
+vpath %.asm $(SRC_INC_DIRS)
 
 $(PROGRAM_TGT): $(BUILD_DIR)/$(PROGRAM_TGT) | $(BUILD_DIR)
 

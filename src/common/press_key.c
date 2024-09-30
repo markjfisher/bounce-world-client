@@ -1,5 +1,9 @@
 #include <conio.h>
 
+#ifdef __PMD85__
+#include "conio_wrapper.h"
+#endif
+
 void press_key() {
 	chlinexy(6, 20, 28);
 	revers(1);

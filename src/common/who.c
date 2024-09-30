@@ -14,9 +14,19 @@
 #include "conio_helpers.h"
 #define GOTOXY gotoxy_buffer
 #define CPUTSXY cputsxy_buffer
+#define CPUTC(c) cputc(c)
+#elif __PMD85__
+#include "text_buffer.h"
+#include "chardef.h"
+#include "double_buffer.h"
+#undef GOTOXY
+#undef CPUTC
+#define GOTOXY(x, y) gotoxy_tb(x, y)
+#define CPUTC(c) putc_upper_tb(c)
 #else
 #define GOTOXY gotoxy
 #define CPUTSXY cputsxy
+#define CPUTC(c) cputc(c)
 #endif
 
 // for the corner chars
@@ -39,23 +49,26 @@ void show_clients() {
 	// top of box
 	GOTOXY(29, 2);
 	for (i = 0; i < 10; i++) {
-		cputc(grid[0][i]);
+		CPUTC(grid[0][i]);
 	}
 
 	// all the clients, these are space buffered for us by server
 	for (i = 0; i < num_clients; i++) {
 		GOTOXY(29, 3+i);
-		cputc(CH_VLINE);
+		CPUTC(CH_VLINE);
 		for (j = 0; j < 8; j++) {
-			cputc(clients_buffer[(i << 3) + j]);
+			CPUTC(clients_buffer[(i << 3) + j]);
 		}
-		cputc(CH_VLINE);
+		CPUTC(CH_VLINE);
 	}
 
 	// bottom of box
 	GOTOXY(29, 3+num_clients);
 	for (i = 0; i < 10; i++) {
-		cputc(grid[1][i]);
+		CPUTC(grid[1][i]);
 	}
 
+#ifdef __PMD85__
+	add_dirty_rect(29, 2, 10, 2+num_clients);
+#endif
 }

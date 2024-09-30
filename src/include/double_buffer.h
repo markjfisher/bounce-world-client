@@ -27,5 +27,10 @@ extern char *screen_mem_orig;
 extern void check_text_buffer_location();
 #endif
 
+#ifdef __PMD85__
+extern void reset_dirty();
+extern void add_dirty_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+extern void clear_dirty();
+#endif
 
 #endif // BWC_DOUBLE_BUFFER_H
