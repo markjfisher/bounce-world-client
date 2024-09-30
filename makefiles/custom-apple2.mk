@@ -4,6 +4,10 @@
 # Using second screen requires higher starting address
 LDFLAGS += --start-addr 0x0C00
 
+# don't use FN, simulate all the data
+LDFLAGS += -D,SIMULATE_FN
+CFLAGS += -DSIMULATE_FN
+
 ################################################################
 # DISK creation
 

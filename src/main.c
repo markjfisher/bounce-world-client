@@ -21,6 +21,7 @@
 #include "run_simulation.h"
 #include "shapes.h"
 #include "shutdown.h"
+#include "simulator.h"
 #include "world.h"
 
 extern uint16_t fn_network_bw;
@@ -36,7 +37,11 @@ int main(void)
 
   // fetch data from server for shapes, create the client and get the current world state for display
   get_shapes();
+
+#ifndef SIMULATE_FN
   connect_service();
+#endif
+
   get_world_state();
 
   // run it!

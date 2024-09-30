@@ -38,6 +38,8 @@ void get_info() {
   memset(client_data_url, 0, 96);
   memset(name, 0, 9);
 
+#ifndef SIMULATE_FN
+
   cputsxy(txp, yps +  9, "Bounce Server URL:");
 
   cursor(1);
@@ -64,4 +66,14 @@ void get_info() {
   // move it forward 3 bytes, and prepend n1:
   memmove(endpoint + 3, endpoint, 76);
   memcpy(endpoint, protocol, 3);
+
+#else
+  cputsxy(txp, yps +  9, "Bounce Simulator, press a key");
+  strcat(name, "sim-1");
+  name_pad = 9 - strlen(name);
+  cursor(0);
+  cgetc();
+
+#endif
+
 }

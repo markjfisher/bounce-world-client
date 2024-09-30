@@ -13,12 +13,17 @@
 #include "who.h"
 #include "world.h"
 
+#ifdef SIMULATE_FN
+#include "simulator.h"
+#endif
+
 char *world_state = "/ws";
 char *who_endpoint = "/who";
 char *cmd_endpoint = "/cmd/get/";
 char *msg_endpoint = "/msg";
 
 void get_world_state() {
+#ifndef SIMULATE_FN
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, world_state);
@@ -28,10 +33,14 @@ void get_world_state() {
 	// read directly into the 14 bytes of memory starting at world_width
 	network_read(url_buffer, (uint8_t *) &world_width, 14);
 	network_close(url_buffer);
+#else
+	simulate_get_world_state();
+#endif
 }
 
 // get up to 240 bytes for all connected clients. we live in hope
 void get_world_clients() {
+#ifndef SIMULATE_FN
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, who_endpoint);
@@ -40,9 +49,14 @@ void get_world_clients() {
 	try_open("get:open:clients", url_buffer, OPEN_MODE_HTTP_GET);
 	network_read(url_buffer, (uint8_t *) clients_buffer, 240);
 	network_close(url_buffer);
+#else
+	simulate_get_world_clients();
+#endif
+
 }
 
 void get_broadcast() {
+#ifndef SIMULATE_FN
 	int n;
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
@@ -57,12 +71,19 @@ void get_broadcast() {
 		// terminate the string. We only read 119 bytes to not overrun the buffer, but always add a nul terminator.
 		broadcast_message[n] = '\0';
 	}
+#else
+	simulate_get_broadcast();
+#endif
+
+
 }
 
 // this client has some commands to process
 void get_world_cmd() {
-	int n;
 	uint8_t i, cmd;
+	int n;
+
+#ifndef SIMULATE_FN
 	memset(url_buffer, 0, sizeof(url_buffer));
 	strcat(url_buffer, endpoint);
 	strcat(url_buffer, cmd_endpoint);
@@ -73,6 +94,9 @@ void get_world_cmd() {
 
 	n = network_read(url_buffer, app_data, 240);
 	network_close(url_buffer);
+#else
+	n = simulate_get_world_cmd();
+#endif
 
 /*
     ENABLE_DARK_MODE(1, "enableDarkMode"),

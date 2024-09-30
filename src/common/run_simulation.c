@@ -20,6 +20,10 @@
 extern bool is_playing_collision;
 #endif
 
+#ifdef SIMULATE_FN
+#include "simulator.h"
+#endif
+
 void run_simulation() {
 	int n;
 	uint16_t error_delay = 30;
@@ -43,11 +47,14 @@ void run_simulation() {
 		// I thought the push model would provide more consistency across views for the client, but it turns out
 		// there's negligible delay between platforms constantly polling and the screens being updated, so pull model is better.
 
+#ifndef SIMULATE_FN
 		memset(app_data, 0, APP_DATA_SIZE);
 		try_open("loop:open", client_data_url, OPEN_MODE_HTTP_GET);
-
 		n = network_read(client_data_url, app_data, APP_DATA_SIZE);
 		network_close(client_data_url);
+#else
+		n = simulate_get_client_data();
+#endif
 
 		if (n < 0) {
 			// there was an error, so don't process this round. try again after a small pause

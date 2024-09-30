@@ -14,6 +14,10 @@
 #include "resilience.h"
 #include "shapes.h"
 
+#ifdef SIMULATE_FN
+#include "simulator.h"
+#endif
+
 char *shapes_url = "/shapes";
 
 void parse_shape_records(const uint8_t *input) {
@@ -68,6 +72,7 @@ uint8_t get_shape_count() {
 	create_shape_url();
 	strcat(url_buffer, "/count");
 
+#ifndef SIMULATE_FN
 	try_open("shape count open", url_buffer, OPEN_MODE_HTTP_GET);
 	n = network_read(url_buffer, shapes_tmp, 1);
 	network_close(url_buffer);
@@ -75,6 +80,10 @@ uint8_t get_shape_count() {
 		err = -n;
 		handle_err("shape count read");
 	}
+#else
+	shapes_tmp[0] = 1;
+#endif
+
 	return shapes_tmp[0];
 }
 
@@ -84,6 +93,7 @@ void read_and_parse_shapes_data() {
 	// use the app_data buffer as a scratch buffer, as it's only needed when initially parsing
 	memset(app_data, 0, 512);
 
+#ifndef SIMULATE_FN
 	create_shape_url();
 	strcat(url_buffer, "/data");
 	try_open("shapes open", url_buffer, OPEN_MODE_HTTP_GET);
@@ -93,6 +103,9 @@ void read_and_parse_shapes_data() {
 		err = -n;
 		handle_err("shape data read");
 	}
+#else
+	create_mock_shapes();
+#endif
 
 	parse_shape_records(app_data);
 }
