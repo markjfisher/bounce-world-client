@@ -6,6 +6,7 @@
 #include "app_errors.h"
 #include "data.h"
 #include "debug.h"
+#include "display.h"
 #include "keyboard.h"
 #include "fujinet-network.h"
 #include "resilience.h"
@@ -110,11 +111,13 @@ void get_world_cmd() {
 					get_broadcast();
 					is_showing_broadcast = false;
 					break;
-				case 7: // enable info
-					is_showing_info = true;
+				case 7: // enable info. to use the toggle_info function we have to first set it to opposite state to what we eventually want
+					is_showing_info = false;
+					toggle_info();
 					break;
 				case 8: // disable info
-					is_showing_info = false;
+					is_showing_info = true;
+					toggle_info();
 					break;
 				default:
 					break;

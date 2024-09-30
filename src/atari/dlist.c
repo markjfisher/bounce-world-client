@@ -27,10 +27,9 @@
 // 	DL_JVB, &main_dlist
 // };
 
-
-uint8_t txt_c1 = INIT_COLOUR_1;
-uint8_t txt_c2 = INIT_COLOUR_2;
-uint8_t txt_c3 = INIT_COLOUR_3;
+uint8_t txt_c1 = 0;
+uint8_t txt_c2 = 0;
+uint8_t txt_c3 = 0;
 
 // retrieves the pointer to the screen location pointed to by the current DLIST
 uint8_t *get_dlist_screen_ptr() {

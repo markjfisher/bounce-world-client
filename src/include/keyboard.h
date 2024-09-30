@@ -3,7 +3,6 @@
 
 void handle_kb();
 void toggle_darkmode();
-void set_screen_colours();
-
+void toggle_info();
 
 #endif // BWC_KEYBOARD_H

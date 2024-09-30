@@ -3,7 +3,7 @@
         .export    vbi_main
 
         .import    _debug
-        .import   _txt_c3
+        .import    _txt_c3
 
         ;; DLI values
         ; track where we are in the screen for the colour changes

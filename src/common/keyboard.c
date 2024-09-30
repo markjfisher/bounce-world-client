@@ -8,6 +8,7 @@
 #include "app_errors.h"
 #include "data.h"
 #include "debug.h"
+#include "delay.h"
 #include "display.h"
 #include "fujinet-network.h"
 #include "resilience.h"
@@ -56,21 +57,6 @@ void add_body(uint8_t size) {
 
 }
 
-void set_screen_colours() {
-#ifdef __ATARI__
-	if (is_darkmode || !is_showing_info) {
-		txt_c1 = 0;
-		txt_c2 = 0;
-		txt_c3 = 0;
-	} else {
-		txt_c1 = INIT_COLOUR_1;
-		txt_c2 = INIT_COLOUR_2;
-		txt_c3 = INIT_COLOUR_3;
-	}
-#endif
-
-}
-
 void toggle_darkmode() {
 	is_darkmode = !is_darkmode;
 	set_screen_colours();
@@ -86,6 +72,7 @@ void toggle_info() {
 
 void handle_kb() {
 	char c;
+
 	if (kbhit() == 0) return;
 
 	c = cgetc();

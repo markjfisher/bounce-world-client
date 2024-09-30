@@ -35,6 +35,22 @@ void gotoxy_fast (uint8_t x, uint8_t y);
 extern void debug();
 // extern void hd(void* data, unsigned int size);
 
+void set_screen_colours() {
+
+#ifdef __ATARI__
+	if (is_darkmode || !is_showing_info) {
+		txt_c1 = 0;
+		txt_c2 = 0;
+		txt_c3 = 0;
+	} else {
+		txt_c1 = INIT_COLOUR_1;
+		txt_c2 = INIT_COLOUR_2;
+		txt_c3 = INIT_COLOUR_3;
+	}
+#endif
+
+}
+
 void init_screen() {
 	clrscr();
 
@@ -45,6 +61,7 @@ void init_screen() {
 
 #ifdef __ATARI__
 	OS.color2 = 0;
+	set_screen_colours();
 	init_vbi();
 
 	wait_vsync();
@@ -177,6 +194,12 @@ void show_screen() {
 		CPUTSXY(0, 21, "B");	// debug: proving the B is written to both buffers
 		broadcast();
 	}
+
+#ifdef __ATARI__
+	// if (key_pressed) {
+	// 	CPUTSXY(0,21,"K");
+	// }
+#endif
 
 	// show the other screen
 	wait_vsync();
