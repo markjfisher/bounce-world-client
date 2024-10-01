@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <peekpoke.h>
 
 #include "debug.h"
 #include "delay.h"

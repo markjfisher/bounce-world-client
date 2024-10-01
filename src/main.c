@@ -25,6 +25,10 @@
 #include "shutdown.h"
 #include "world.h"
 
+#ifdef __APPLE2__
+#include <peekpoke.h>
+#endif
+
 #ifdef __PMD85__
 #include "conio_wrapper.h"
 #endif
@@ -35,9 +39,14 @@ extern uint8_t fn_network_error;
 
 int main(void)
 {
+#ifdef __APPLE2__
+  // get lowercase and mouse text in early
+	allow_lowercase(true);
+	POKE(0xC00F, 0);
+#endif
+
   // print app information and get the URL/name
   get_info();
-
   clrscr();
 
   // fetch data from server for shapes, create the client and get the current world state for display

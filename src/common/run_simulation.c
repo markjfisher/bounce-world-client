@@ -30,12 +30,6 @@ void run_simulation() {
 	uint8_t new_step_id;
 	init_screen();
 
-#ifdef __ATARI__
-	// setup double buffering for atari
-	dlist_scr_ptr = get_dlist_screen_ptr();
-	screen_mem_orig = (uint8_t *) ((uint16_t)(dlist_scr_ptr[0]) | ((uint16_t)(dlist_scr_ptr[1]) << 8));
-#endif
-
 	// flag we are on initial screen for double buffering across the platforms
 	is_alt_screen = 0;
 

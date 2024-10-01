@@ -1,10 +1,9 @@
-#include <apple2enh.h>
-
 #include <conio.h>
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
 
+#include "compat.h"
 #include "get_line.h"
 
 // This function adds 900 bytes to the app. The atari CIO routine is much cleaner and handles cursor movement better, so this

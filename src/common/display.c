@@ -77,6 +77,10 @@ void init_screen() {
 
 	// turn off key clicking
 	OS.noclik = 0xFF;
+
+	// setup double buffering for atari
+	dlist_scr_ptr = get_dlist_screen_ptr();
+	screen_mem_orig = (uint8_t *) ((uint16_t)(dlist_scr_ptr[0]) | ((uint16_t)(dlist_scr_ptr[1]) << 8));
 #endif
 
 #ifdef __PMD85__
@@ -308,19 +312,10 @@ void show_screen() {
 	}
 
 	if (is_showing_broadcast) {
-		CPUTSXY(0, 21, "B");	// debug: proving the B is written to both buffers
 		broadcast();
 	}
 
-#ifdef __ATARI__
-	// if (key_pressed) {
-	// 	CPUTSXY(0,21,"K");
-	// }
-#endif
-
 	// show the other screen
-	wait_vsync();
 	show_other_screen();
-	wait_vsync();
 
 }

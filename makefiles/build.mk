@@ -1,33 +1,3 @@
-# Generic Build script for CC65
-#
-# This file is only responsible for compiling source code.
-# It has some hooks for additional behaviour, see Additional Make Files below.
-# 
-# The compilation will look in following directories for source:
-#
-#   src/*.[c|s]               # considered the "top level" dir, you can keep everything in here if you like, will not recurse into subdirs
-#   src/common/**/*.[c|s]     # ie. common files for all platforms not in root dir - allows for splitting functionality out into subdirs
-#   src/<target>/**/*.[c|s]   # ie. including its subdirs - only CURRENT_TARGET files will be found
-#
-# Additional Make Files
-#  This script sources the following files to add additional behaviour.
-#    makefiles/os.mk                 # for platform mappings (e.g. atarixl -> atari, apple2enh -> apple), emulator base settings
-#    makefiles/common.mk             # for things to be added for all platforms
-#    makefiles/custom-<platform>.mk  # for platform specific values, LDFLAGS etc for current PLATFORM (e.g. atari)
-#
-# Additional notes:
-#
-# - To add additional tasks to "all", in the sourced makefiles, add a value to "ALL_TASKS"
-# - For creating platform specific DISK images, add the disk creating task to "DISK_TASKS"
-# - Additional tasks in these makefiles MUST start with a ".", e.g. .atr, .po, .your-complex-rule
-# - To add a suffix to the generated executable, ensure "SUFFIX" variable is set in your platform specific makefile.
-# - All files referenced in this makefile are relative to the ORIGINAL Makefile in the root dir, not this dir
-# - This build supports a VERSION_FILE variable, this can point anywhere in your src tree, and will cause object files to recompile when changed
-#   Example usage:
-#     VERSION_FILE := src/version.txt
-#     VERSION_STRING := $(file < $(VERSION_FILE))
-#     CFLAGS += -DVERSION_STRING=\"$(VERSION_STRING)\"
-
 # Ensure WSL2 Ubuntu and other linuxes use bash by default instead of /bin/sh, which does not always like the shell commands.
 SHELL := /usr/bin/env bash
 ALL_TASKS =

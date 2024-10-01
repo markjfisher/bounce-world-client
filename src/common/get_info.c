@@ -31,8 +31,16 @@ void get_info() {
 
   revers(1);
   cputsxy(hxp, yps + 1, "                                ");
+
+#ifdef __APPLE2__
+  // can't easily have apple2 target with lower case inverse text without doing hacks, so just do upper case
+  cputsxy(hxp, yps + 2, " WELCOME TO BOUNCE WORLD CLIENT ");
+  cputsxy(hxp, yps + 3, "        BY MARK FISHER          ");
+#else
   cputsxy(hxp, yps + 2, " Welcome to Bounce World Client ");
   cputsxy(hxp, yps + 3, "        By Mark Fisher          ");
+#endif
+
 #ifdef __PMD85__
   cputsxy(hxp, yps + 4, "   PMD 85 version by Jan Krupa  ");
   cputsxy(hxp, yps + 5, "                                ");
