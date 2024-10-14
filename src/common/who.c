@@ -69,6 +69,6 @@ void show_clients() {
 	}
 
 #ifdef __PMD85__
-	add_dirty_rect(29, 2, 10, 2+num_clients);
+	add_dirty_rect(29, 2, 10, num_clients+2);
 #endif
 }

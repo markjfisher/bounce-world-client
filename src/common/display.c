@@ -31,6 +31,12 @@
 #include "screen_util.h"
 #include "text_buffer.h"
 #include "shape_util.h"
+
+#include "itoa_wrapper.h"
+#include "timer.h"
+static unsigned int t1;
+static unsigned int t2;
+static char tmp[4];
 #endif
 
 #ifdef BWC_CUSTOM_CPUTC
@@ -56,6 +62,9 @@ void set_screen_colours() {
 	}
 #endif
 
+#ifdef __PMD85__
+	draw_border();
+#endif
 }
 
 void init_screen() {
@@ -84,104 +93,58 @@ void init_screen() {
 #endif
 
 #ifdef __PMD85__
-	// do some low level character drawing
-	char i;
-	// horizontal "lines"
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 -2) + 4);
-	for(i = 40; i--;) {
-		blit_char(14);
-		video_ptr++;
-	}
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 26 * 6 -2) + 4);
-	for(i = 40; i--;) {
-		blit_char(13);
-		video_ptr++;
-	}
-	// vertical "lines"
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 1 * 6 -2) + 3);
-	for(i = 25; i--;) {
-		blit_char(2);
-		video_ptr += 6*64;
-	}
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 1 * 6 -2) + 44);
-	for(i = 25; i--;) {
-		blit_char(22);
-		video_ptr += 6*64;
-	}
-    #if 0
-	// diagonals
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8) + 3);
-	blit_char(7);
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 24 * 6) + 44);
-	blit_char(7);
-	// diagonals /
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8) + 44);
-	blit_char(6);
-	video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 24 * 6) + 3);
-	blit_char(6);
-    #endif
-	screen_set_region(2, 4, 44, 2);
-	screen_fill_region(MASK_KEEP_BITMAP | ACE_BLUE);
-	screen_set_region(2, 24, 44, 2);
-	screen_fill_region(MASK_KEEP_BITMAP | ACE_BLUE);
-
-	screen_set_region(3, 6, 1, 18);
-	screen_fill_region(MASK_KEEP_BITMAP | ACE_BLUE);
-	screen_set_region(44, 6, 1, 18);
-	screen_fill_region(MASK_KEEP_BITMAP | ACE_BLUE);
+	set_screen_colours();
 #endif
-
 }
 
 #ifdef __PMD85__
+void draw_border() {
+	long pat;
 
-void shape_to_buffer(uint8_t shape_id, int8_t center_x, int8_t center_y) {
-	ShapeRecord shape;
-	static char *video;
-	static char *data;
-	static int8_t x;
-	static int8_t y;
-	static int8_t w;
-	static int8_t h;
-	static int8_t s;
-    static int8_t ox = 0;
-    static int8_t oy = 0;
-
-	shape = shapes[shape_id];
-	data = (char *) shape.shape_data;
-	
-	// assuming square W x W
-	w = h = shape.shape_width;
-	x = center_x - (w >> 1) - 1;
-	y = center_y - (w >> 1) - 1;
-	// cater for even width shapes which are slightly off centre.
-	// this is actually a "mod 2" calc, but that's the same as checking last bit set or not.
-	if ((w & 1) == 0) {
-		x++;
-		y++;
+	// print border using top|bottom hline and left|right vline chars
+	if (!is_darkmode) {
+		// do some low level character drawing
+		char i;
+		// horizontal "lines"
+		video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 -2) + 4);
+		for(i = 40; i--;) {
+			blit_char(14);
+			video_ptr++;
+		}
+		video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 26 * 6 -2) + 4);
+		for(i = 40; i--;) {
+			blit_char(13);
+			video_ptr++;
+		}
+		// vertical "lines"
+		video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 1 * 6 -2) + 3);
+		for(i = 25; i--;) {
+			blit_char(2);
+			video_ptr += 6*64;
+		}
+		video_ptr = (unsigned char *)(0xC000 + 64 * (5 * 8 + 1 * 6 -2) + 44);
+		for(i = 25; i--;) {
+			blit_char(22);
+			video_ptr += 6*64;
+		}
+		pat = MASK_KEEP_BITMAP | ACE_RED;
+	}
+	else {
+		pat = PATTERN_BLANK;
 	}
 
-    // top | bottom clip
-    if (y < 0) { oy = -y; h -= oy; y = 0; while(oy--) data += w;}
-    else if (y+h > SCREEN_HEIGHT) {h = SCREEN_HEIGHT - y;}
-    if (h <= 0) return; // nothing to draw
+	// apply color (MASK_KEEP_BITMAP | ACE_...) or erase previous border (PATTERN_BLANK)
+	screen_set_region(3, 5, 42, 1);
+	screen_fill_region(pat);
+	screen_set_region(3, 24, 42, 1);
+	screen_fill_region(pat);
 
-    // left | right clip
-    if (x < 0) { ox = -x; data += ox; w -= ox; x = 0;}
-    else if (x+w > SCREEN_WIDTH) {w = SCREEN_WIDTH - x;}
-    if (w <= 0 ) return; // nothing to draw
-	// skip (# bytes) to start next row
-    s = shape.shape_width - w;
-
-	// print shape into text buffer
-	gotoxy_tb(x, y);
-	print_shape_tb(data, w, h, s);
-
-	// add rectangle to clear
-	add_dirty_rect(x, y, w, h);
+	screen_set_region(3, 6, 1, 18);
+	screen_fill_region(pat);
+	screen_set_region(44, 6, 1, 18);
+	screen_fill_region(pat);
 }
-
-#else
+#endif // __PMD85__
 
 void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	uint8_t i, j;
@@ -255,7 +218,6 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 		iw += width;
 	}
 }
-#endif // __PMD85__
 
 void show_screen() {
 	// positions to display are in app_data
@@ -275,9 +237,12 @@ void show_screen() {
 	swap_buffer();
 
 #ifdef __PMD85__
-	if (info_display_count == 0) {
-		info_display_count++;
-		show_info();
+	if (info_display_count++ == 0) { // one shot
+		if (is_showing_info) {
+			show_info();
+		} else {
+			clear_info();
+		}
 	}
 #else
 	// only do a full clear when we want to show changes in the info bar, which is at start, or if any state changes from server
@@ -300,7 +265,11 @@ void show_screen() {
 			x = (int8_t)app_data[index++];
 			y = (int8_t)app_data[index++];
 #ifdef __PMD85__
+			// t1 = read_timer(1);
 			shape_to_buffer(shape_id, x, y);
+			// t2 = read_timer(1);
+			// uint8_to_a16((t1-t2)>>8, tmp);
+			// cputsxy(i*3, 0, tmp);
 #else
 			show_shape(shape_id, x, y);
 #endif

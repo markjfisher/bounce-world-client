@@ -3,7 +3,7 @@ PUBLIC _uint8_to_a
 PUBLIC _uint8_to_a10
 PUBLIC _uint8_to_a16
 
-SECTION data_user
+SECTION code_user
 
 ; _uint8_to_a10 is based on
 ; https://github.com/Zeda/Z80-Optimized-Routines/blob/master/conversion/itoa_8.z80
@@ -23,10 +23,31 @@ _uint8_to_a16:
     pop     hl                  ; return address
     pop     de                  ; str
     ex      (sp), hl            ; n
-    ex      de, hl              ; HL = str
-    ld      a, e                ; A = n
-; TODO
-    ld      (hl),0
+
+    ld      a, l
+    rrca
+    rrca
+    rrca
+    rrca
+    and     0xf
+    cp      10
+    jr      c, x1
+    add     7                   ; 'A' - '9' - 1
+x1: add     '0'
+    ld      (de), a
+    inc     de
+
+    ld      a, l
+    and     0xf
+    cp      10
+    jr      c, x2
+    add     7                   ; 'A' - '9' - 1
+x2: add     '0'
+    ld      (de), a
+    inc     de
+
+    xor     a
+    ld      (de), a
     ret
 
 ;----------------------------------------------------------------------------

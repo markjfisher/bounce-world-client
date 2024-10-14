@@ -18,9 +18,9 @@ extern void __FASTCALL__ puts_tb(const char *s);
 
 extern void __FASTCALL__ show_text_buffer(void);
 
-// // debugging stuff
-// extern char __FASTCALL__ *get_tb_buffer(void);
-// extern char __FASTCALL__ *get_tb_row_flags(void);
+// debugging stuff
+extern char __FASTCALL__ *get_tb_buffer(void);
+extern char __FASTCALL__ *get_tb_row_flags(void);
 // void debug_buffer(void);
 
 #endif // TEXT_BUFFER_H
