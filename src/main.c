@@ -31,6 +31,7 @@
 
 #ifdef __PMD85__
 #include "conio_wrapper.h"
+#include "timer.h"
 #endif
 
 extern uint16_t fn_network_bw;
@@ -43,6 +44,10 @@ int main(void)
   // get lowercase and mouse text in early
 	allow_lowercase(true);
 	POKE(0xC00F, 0);
+#endif
+
+#ifdef __PMD85__
+  reset_timer(1);
 #endif
 
   // print app information and get the URL/name

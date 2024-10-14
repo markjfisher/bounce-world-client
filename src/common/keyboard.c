@@ -97,7 +97,7 @@ void handle_kb() {
 		case 'w': is_showing_clients = !is_showing_clients; break;
 		case 'q': is_running_sim = false; break;
 
-#ifdef __ATARI__
+#if defined(__ATARI__) || defined(__PMD85__)
 		case 'd': toggle_darkmode(); break;
 		case 'l': flash_on_collision = !flash_on_collision; break;
 #endif

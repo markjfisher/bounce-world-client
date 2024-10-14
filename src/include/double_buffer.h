@@ -29,8 +29,8 @@ extern void check_text_buffer_location();
 
 #ifdef __PMD85__
 extern void reset_dirty();
-extern void add_dirty_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 extern void clear_dirty();
+extern void __CALLEE__ add_dirty_rect(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 #endif
 
 #endif // BWC_DOUBLE_BUFFER_H

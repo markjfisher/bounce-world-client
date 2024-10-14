@@ -158,13 +158,11 @@ _blit_char_upper:
     ld      l, a
     ; continue to _blit_char
 _blit_char:
-    xor     a
     ; DE = charset base
-    ld      d, _bounce_charset / 256
-    ld      e, _bounce_charset % 256
+    ld      de, _bounce_charset
     ; L = char
     ; HL *= 8
-    ld      h, a
+    ld      h, 0
     add     hl, hl
     add     hl, hl
     add     hl, hl
@@ -174,13 +172,11 @@ _blit_char:
 ; HL = source data ptr
 _blit_char_from:
     ; BC = 64 (bytes per line)
-    ld      b, 0
-    ld      c, 64
+    ld      bc, 64
     ; DE = src*
     ex      de, hl
     ; HL = dst*
     ld      hl, (_video_ptr)
-;l1: jp      l1
     ; copy char to screen
     ld      a, (de)
     ld      (hl), a
@@ -212,8 +208,7 @@ _blit_char_from:
 _clear_char:
     xor     a
     ; BC = 64 (bytes per line)
-    ld      b, a
-    ld      c, 64
+    ld      bc, 64
     ; HL = dst*
     ld      hl, (_video_ptr)
     ; zeros to screen

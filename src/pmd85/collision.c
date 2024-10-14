@@ -1,12 +1,11 @@
 #include <stdint.h>
 
 #include "collision.h"
-#include "sound.h"
-
+#include "data.h"
 #include "screen_util.h"
 
-uint8_t is_playing_collision = 0;
-uint8_t current_flash_time = 0;
+static uint8_t is_playing_collision = 0;
+static uint8_t current_flash_time = 0;
 
 static uint16_t flash_patterns[] = {
     ACE_GREEN | PATTERN_SOLID, 
@@ -37,7 +36,10 @@ void play_collision() {
 void collision_fx() {
 	current_flash_time = 0;
 	is_playing_collision = 1;
-    // play/animate collision now, it is slow to play it on screen refresh
-    while(is_playing_collision)
-        play_collision();
+
+	if (flash_on_collision) {
+		// play/animate collision now, it is slow to play it on screen refresh
+		while(is_playing_collision)
+			play_collision();
+	}
 }

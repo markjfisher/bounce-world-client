@@ -40,7 +40,7 @@ void show_info() {
 	uint8_to_a10(body_4, tmp); cputsxy(5+19, 21, tmp);
 	uint8_to_a10(body_5, tmp); cputsxy(5+23, 21, tmp);
 
-	// TODO uint16_to_a10, make the numbers smaller as a workaround ;-)
+	// TODO - add uint16_to_a10(), make the numbers smaller as a workaround ;-)
 	n = world_width / 160;
 	gotoxy(5+26, 21);
 	if (n < 10) cputc(' ');
@@ -51,7 +51,14 @@ void show_info() {
 	uint8_to_a10(n, tmp); cputs(tmp);
 
 	cputsxy(0, 22, "F:Freeze R:Reset +-:Speed 1-5:Add Q:Quit");
-	// TODO "W:Who"
+	cputsxy(7, 23, "W:Who I:Info D:Dark L:Flash");
+}
+
+void clear_info() {
+	screen_set_region(4+0, 4+0, 40, 1);
+	screen_fill_region(PATTERN_BLANK);
+	screen_set_region(4+0, 4+21, 40, 3);
+	screen_fill_region(PATTERN_BLANK);
 }
 
 #else

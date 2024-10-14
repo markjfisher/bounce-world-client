@@ -19,7 +19,7 @@ PUBLIC _get_tb_buffer
 PUBLIC _get_tb_row_flags
 
 ;; used in shape
-PUBLIC buf_x, buf_y, x2flag
+PUBLIC buf_x, buf_y
 PUBLIC buf_ptr, row_ptr
 
 ;----------------------------------------------------------------------------
@@ -36,9 +36,9 @@ defc    BUFFER_BPR  = (2 * BUFFER_COLS)
 ;; 8 for 6x8 usual pmd characters
 defc    BUFFER_CHAR_HEIGHT = 6
 
-;; buffer position on screen
+;; buffer position on screen (X0: bytes/chars from left; Y0: display lines from top)
 defc    BUFFER_SCREEN_X0 = 4
-defc    BUFFER_SCREEN_Y0 = 6
+defc    BUFFER_SCREEN_Y0 = (6 * 8 - 2)
 
 ;; video ram
 defc    DISPLAY     = 0xC000
@@ -51,8 +51,7 @@ defc    DISPLAY_BPL = 64
 defc    DISPLAY_BPR = (BUFFER_CHAR_HEIGHT * DISPLAY_BPL)
 
 ;; start of buffer in video ram
-;defc    DISPX0Y0    = 0xC804
-defc    DISPX0Y0    = (DISPLAY + (BUFFER_SCREEN_Y0 * 8 -2) * DISPLAY_BPL + BUFFER_SCREEN_X0)
+defc    DISPX0Y0    = (DISPLAY + BUFFER_SCREEN_Y0 * DISPLAY_BPL + BUFFER_SCREEN_X0)
 
 ;----------------------------------------------------------------------------
 
@@ -64,6 +63,8 @@ SECTION data_user
 buf_x:  db 0
 buf_y:  db 0
 
+ASSERT buf_x + 1 = buf_y
+
 ;; pointer into text buffer data
 buf_ptr:
         dw buffer
@@ -72,29 +73,7 @@ buf_ptr:
 row_ptr:
         dw row_flags
 
-
-;; pre-calculated buf_x -> dirty bit flag
-; char x2flag[BUFFER_COLS]
-x2flag:
-    ;; x: 0-4 => bit 0
-    db      0x01, 0x01, 0x01, 0x01, 0x01
-    ;; x: 5-9 => bit 1
-    db      0x02, 0x02, 0x02, 0x02, 0x02
-    ;; x: 10-14 => bit 2
-    db      0x04, 0x04, 0x04, 0x04, 0x04
-    ;; x: 15-19 => bit 3
-    db      0x08, 0x08, 0x08, 0x08, 0x08
-    ;; x: 20-24 => bit 4
-    db      0x10, 0x10, 0x10, 0x10, 0x10
-    ;; x: 25-29 => bit 5
-    db      0x20, 0x20, 0x20, 0x20, 0x20
-    ;; x: 30-34 => bit 6
-    db      0x40, 0x40, 0x40, 0x40, 0x40
-    ;; x: 35-39 => bit 7
-    db      0x80, 0x80, 0x80, 0x80, 0x80
-
-
-;; pre-calculated row addresses in text buffer
+;; 24 pre-calculated row addresses in text buffer
 buf_row_addr:
     dw      buffer, buffer + BUFFER_BPR, buffer + 2 * BUFFER_BPR, buffer + 3 * BUFFER_BPR
     dw      buffer +  4 * BUFFER_BPR, buffer +  5 * BUFFER_BPR, buffer +  6 * BUFFER_BPR, buffer +  7 * BUFFER_BPR
@@ -103,7 +82,7 @@ buf_row_addr:
     dw      buffer + 16 * BUFFER_BPR, buffer + 17 * BUFFER_BPR, buffer + 18 * BUFFER_BPR, buffer + 19 * BUFFER_BPR
     dw      buffer + 20 * BUFFER_BPR, buffer + 21 * BUFFER_BPR, buffer + 22 * BUFFER_BPR, buffer + 23 * BUFFER_BPR
 
-;; pre-calculated row addresses in video ram
+;; 24 pre-calculated row addresses in video ram
 video_row_addr:
     dw      DISPX0Y0, DISPX0Y0 + DISPLAY_BPR, DISPX0Y0 + 2 * DISPLAY_BPR, DISPX0Y0 + 3 * DISPLAY_BPR
     dw      DISPX0Y0 +  4 * DISPLAY_BPR, DISPX0Y0 +  5 * DISPLAY_BPR, DISPX0Y0 +  6 * DISPLAY_BPR, DISPX0Y0 +  7 * DISPLAY_BPR
@@ -112,7 +91,11 @@ video_row_addr:
     dw      DISPX0Y0 + 16 * DISPLAY_BPR, DISPX0Y0 + 17 * DISPLAY_BPR, DISPX0Y0 + 18 * DISPLAY_BPR, DISPX0Y0 + 19 * DISPLAY_BPR
     dw      DISPX0Y0 + 20 * DISPLAY_BPR, DISPX0Y0 + 21 * DISPLAY_BPR, DISPX0Y0 + 22 * DISPLAY_BPR, DISPX0Y0 + 23 * DISPLAY_BPR
 
-;; dirty regions bitmap per buffer row
+;----------------------------------------------------------------------------
+
+SECTION bss_user
+
+;; dirty row flags: 1 = dirty row, row needs to be painted on screen, 0 = no change on this row
 row_flags:
     ds      BUFFER_ROWS
 
@@ -128,10 +111,14 @@ SECTION code_user
 
 ;----------------------------------------------------------------------------
 
+;; some debugging stuff
+
+; extern char __FASTCALL__ *get_tb_buffer(void);
 _get_tb_buffer:
     ld      hl, buffer
     ret
 
+; extern char __FASTCALL__ *get_tb_row_flags(void);
 _get_tb_row_flags:
     ld      hl, row_flags
     ret
@@ -168,6 +155,8 @@ _gotoxy_tb:
 ;----------------------------------------------------------------------------
 
 ; extern void __FASTCALL__ update_tb_ptr(void);
+; input: buf_x, buf_y
+; output: row_ptr, buf_ptr
 _update_tb_ptr:
     ; row_ptr = &row_flags[buf_y]
     ld      a, (buf_y)
@@ -226,7 +215,7 @@ _update_video_ptr:
     ld	    hl, (buf_y)
     ld      h, 0
     add     hl, hl
-    ; HL += buf_row_addr
+    ; HL += video_row_addr
     ld      de, video_row_addr
     add     hl, de
     ; LD DE, (HL)
@@ -285,18 +274,8 @@ pc2:
     inc     hl
     ld      (buf_ptr), hl
     ; update row dirty flag
-    ; *row_ptr |= x2flag[buf_x];
-    ; HL = x2flag + buf_x
-    ld      hl, (buf_x)
-    ld      h, 0
-    ld      de, x2flag
-    add     hl, de
-    ; a = x2flag[buf_x]
-    ld      a, (hl)
-    ; *row_ptr |= a
-    ld      hl, (row_ptr)       
-    or      (hl)
-    ld      (hl), a
+    ld      hl, (row_ptr)       ; update row dirty flag
+    ld      (hl), h             ; any non-zero value
     ; buf_x++
     ld      hl, buf_x
     inc     (hl)
@@ -319,117 +298,115 @@ ps1:
 ;----------------------------------------------------------------------------
 ; extern void __FASTCALL__ show_text_buffer(void);
 _show_text_buffer:
-    ld      b, 0                ; B = buf_y = 0
-    ld      de, row_flags      ; row_ptr
+    ; buf_y = BUFFER_ROWS
+    ld      a, BUFFER_ROWS
+    ld      (buf_y), a
+    ; reset video_ptr (video ram)
+    ld      hl, DISPX0Y0
+    ld      (_video_ptr), hl
+    ; reset buf_ptr (text source)
+    ld      hl, buffer
+    ld      (buf_ptr), hl
+    ex      de, hl
+    ; reset row_ptr (row dirty flag)
+    ld      hl, row_flags
+    ld      (row_ptr), hl
+    ld      b, h
+    ld      c, l
 
 ; row loop
 stb1:
+; BC = row_ptr; DE = buf_ptr
     ; check row dirty flag
-    ld      a, (de)             ; A = dirty flags
+    ld      a, (bc)             ; A = dirty flags
     or      a
-    jp      z, stb2            ; -> clean row
-
-; process dirty row
-    ld      hl, buf_y          ; store updated buf_y
-    ld      (hl), b
-    ld      b, 0                ; B = buf_x = 0
-; region loop
-stb3:
-    ; C must be clear ! (by "or a")
-    rra                         ; CY = dirty region bit
-    jp      c, stb4             ; -> process dirty region
-; region is clean, advance to next region
-stb3b:
-    inc     b                   ; buf_x += 5
-    inc     b
-    inc     b
-    inc     b
-    inc     b
-    or      a
-    jp      nz, stb3            ; -> next region
-; dirty row completed, prepare for next row
-    ld      hl, buf_y          ; re-load B with buf_y
-    ld      b, (hl)
-
-; row is clean, advance to next row
-stb2:
-    inc     de                  ; row_ptr++
-    inc     b                   ; buf_y++
-    ld      a, b
-    cp      24
+    jp      nz, stb2             ; -> dirty row
+; row is clean, prepare for next row
+    ; buf_ptr: DE += 2 * 40
+    ld      hl, BUFFER_BPR
+    add     hl, de
+    ex      de, hl
+    ; video_ptr += 6 * 64
+    ; push de
+    ; ld      hl, (_video_ptr)
+    ; ld      de, DISPLAY_BPR
+    ; add     hl, de
+    ; ld      (_video_ptr), hl
+    ; pop de
+    ; bit faster (58T vs 74T)
+    ld      hl, _video_ptr
+    ld      a, DISPLAY_BPR % 256
+    add     (hl)
+    ld      (hl), a
+    inc     hl
+    ld      a, DISPLAY_BPR / 256
+    adc     (hl)
+    ld      (hl), a
+stb2b:
+; BC = row_ptr; DE = buf_ptr
+    ; row_ptr++
+    inc     bc
+    ; rows--
+    ld      hl, buf_y
+    dec     (hl)
     jp      nz, stb1            ; -> next row
     ret                         ; done
 
-; process dirty region
-stb4:
-    ld      (de), a             ; store updated row dirty flags
-    ld      hl, buf_x           ; store updated buf_x
-    ld      (hl), b
-
-    ; get video_ptr
-    call    _update_video_ptr   ; HL = video_ptr for (buf_x, buf_y) position
-    push    hl
-    ; get row_ptr and buf_ptr
-    call    _update_tb_ptr      ; HL = buf_ptr for (buf_x, buf_y) position
-    pop     de                  ; DE = video_ptr
-; update region, 5 characters
-; char 1
-    ld      a, (hl)             ; compare current char with old char
-    inc     hl                  ; buf_ptr++
-    cp      (hl)
-    call    nz, stb6            ; -> dirty char
-    inc     hl                  ; buf_ptr++
-    inc     de                  ; video_ptr++
-; char 2
-    ld      a, (hl)             ; compare current char with old char
-    inc     hl                  ; buf_ptr++
-    cp      (hl)
-    call    nz, stb6            ; -> dirty char
-    inc     hl                  ; buf_ptr++
-    inc     de                  ; video_ptr++
-; char 3
-    ld      a, (hl)             ; compare current char with old char
-    inc     hl                  ; buf_ptr++
-    cp      (hl)
-    call    nz, stb6            ; -> dirty char
-    inc     hl                  ; buf_ptr++
-    inc     de                  ; video_ptr++
-; char 4
-    ld      a, (hl)             ; compare current char with old char
-    inc     hl                  ; buf_ptr++
-    cp      (hl)
-    call    nz, stb6            ; -> dirty char
-    inc     hl                  ; buf_ptr++
-    inc     de                  ; video_ptr++
-; char 5
-    ld      a, (hl)             ; compare current char with old char
-    inc     hl                  ; buf_ptr++
-    cp      (hl)
-    call    nz, stb6            ; -> dirty char
-    inc     hl                  ; buf_ptr++
-    inc     de                  ; video_ptr++
-; dirty region completed, prepare for next region
-    ld      hl, buf_x          ; re-load B with buf_x
-    ld      b, (hl)
-    ld      hl, (row_ptr)      ; re-load DE with row_ptr
+; process dirty row
+stb2:
+    push    bc                  ; save BC with row_ptr
+    ; cols: B = BUFFER_COLS
+    ld      b, BUFFER_COLS
+    ; HL = buf_ptr; DE = video_ptr
+    ld      hl, (_video_ptr)
     ex      de, hl
-    ld      a, (de)             ; re-load A with row dirty flags
-    jp      stb3b               ; -> move to next region
+
+; character loop
+stb3:
+; HL = buf_ptr; DE = video_ptr; B = cols
+    ld      a, (hl)
+    inc     hl
+    cp      (hl)
+    jp      z, stb3b            ; -> no change, skip this char
 
 ; process dirty character
-stb6:
     ld      (hl), a             ; update old char
+    push    bc                  ; save B with cols
     push    hl                  ; save buf_ptr
-    ex      de, hl              ; set (updated) video_ptr
+    ex      de, hl              ; set updated video_ptr
     ld      (_video_ptr), hl
     ld      l, a                ; L = char to blit
     cp      a, 32               ; space char?
     call    z, _clear_char
     call    nz, _blit_char
-; prepare fof next character
+; restore HL, DE, B
     ld      hl, (_video_ptr)    ; restore DE with _video_ptr
     ex      de, hl
-    pop     hl                  ; restore buf_ptr
-    ret
+    pop     hl                  ; restore HL with buf_ptr
+    pop     bc                  ; restore B with cols
 
-;----------------------------------------------------------------------------
+; prepare for next char
+stb3b:
+; HL = buf_ptr; DE = video_ptr
+    inc     hl
+    ; video_ptr
+    inc     de
+    ; cols--
+    dec     b
+    jp      nz, stb3            ; -> next char
+
+; dirty row completed
+    ex      de, hl              ; buf_ptr to DE; video_ptr to HL
+    ; update video_ptr: next character row - line we completed right now
+    ; video_ptr += 6 * 64 - 40
+    ld      bc, DISPLAY_BPR - BUFFER_COLS
+    add     hl, bc
+    ld      (_video_ptr), hl
+    ; restore BC with row_ptr
+    pop     bc
+    ; reset row dirty flag
+    xor     a
+    ld      (bc), a
+    jp      stb2b
+
+; ;----------------------------------------------------------------------------
