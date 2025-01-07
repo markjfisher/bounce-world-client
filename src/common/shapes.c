@@ -8,9 +8,12 @@
 #include "fujinet-network.h"
 
 #include "app_errors.h"
+#include "connection.h"
 #include "convert_chars.h"
 #include "data.h"
 #include "debug.h"
+#include "delay.h"
+#include "hex_dump.h"
 #include "shapes.h"
 
 char *shapes_url = "/shapes";
@@ -55,27 +58,20 @@ void parse_shape_records(const uint8_t *input) {
 	}
 }
 
-void create_shape_url() {
-	memset(url_buffer, 0, sizeof(url_buffer));
-	strcat(url_buffer, endpoint);
-	strcat(url_buffer, shapes_url);
-}
-
 uint8_t get_shape_count() {
 	int n = 0;
 	uint8_t shapes_tmp[1];
-	create_shape_url();
-	strcat(url_buffer, "/count");
+	shapes_tmp[0] = 0;
 
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("shape count open");
-	n = network_read(url_buffer, shapes_tmp, 1);
-	network_close(url_buffer);
+	create_command("x-shape-count");
+	send_command();
+	n = read_response(shapes_tmp, 1);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape count read");
 	}
-	return shapes_tmp[0];
+	shape_count = shapes_tmp[0];
+	return shape_count;
 }
 
 void read_and_parse_shapes_data() {
@@ -83,13 +79,11 @@ void read_and_parse_shapes_data() {
 
 	// use the app_data buffer as a scratch buffer, as it's only needed when initially parsing
 	memset(app_data, 0, 512);
+	create_command("x-shape-data");
+	send_command();
+	n = read_response(app_data, APP_DATA_SIZE);
+	hd(app_data, APP_DATA_SIZE);
 
-	create_shape_url();
-	strcat(url_buffer, "/data");
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("shapes open");
-	n = network_read(url_buffer, app_data, 512);
-	network_close(url_buffer);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape data read");

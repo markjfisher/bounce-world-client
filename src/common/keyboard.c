@@ -25,13 +25,13 @@ char *add_endpoint = "/add/";
 
 void do_command(char *command) {
 	char tmp[1];
-	memset(url_buffer, 0, sizeof(url_buffer));
-	strcat(url_buffer, endpoint);
-	strcat(url_buffer, command);
+	memset(server_url, 0, sizeof(server_url));
+	strcat(server_url, endpoint);
+	strcat(server_url, command);
 
-    err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+    err = network_open(server_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("get:open:command");
-	network_read(url_buffer, tmp, 1);
+	network_read(server_url, tmp, 1);
 
 	get_world_state();
 	info_display_count = 0;
@@ -42,15 +42,15 @@ void add_body(uint8_t size) {
 	char tmp[1];
 	char size_string[2];
 
-	memset(url_buffer, 0, sizeof(url_buffer));
-	strcat(url_buffer, endpoint);
-	strcat(url_buffer, add_endpoint);
+	memset(server_url, 0, sizeof(server_url));
+	strcat(server_url, endpoint);
+	strcat(server_url, add_endpoint);
 	itoa(size, size_string, 10);
-	strcat(url_buffer, size_string);
+	strcat(server_url, size_string);
 
-    err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
+    err = network_open(server_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
 	handle_err("get:open:add");
-	network_read(url_buffer, tmp, 1);
+	network_read(server_url, tmp, 1);
 
 	get_world_state();
 	info_display_count = 0;

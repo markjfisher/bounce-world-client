@@ -25,7 +25,7 @@ void get_info() {
 
   revers(1);
   cputsxy(hxp, yps + 1, "                                ");
-  cputsxy(hxp, yps + 2, " Welcome to Bounce World Client ");
+  cputsxy(hxp, yps + 2, " Welcome to Bouncy World Client ");
   cputsxy(hxp, yps + 3, "        By Mark Fisher          ");
   cputsxy(hxp, yps + 4, "                                ");
   revers(0);

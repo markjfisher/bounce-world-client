@@ -9,8 +9,11 @@
 #define SHAPES_BUFFER_SIZE 512
 #define APP_DATA_SIZE      512
 
-// scratch buffer when creating full url from concat of endpoint and service being called
-extern char    url_buffer[128];
+// endpoint to connect to
+extern char    server_url[128];
+
+// buffer for commands to send to the server
+extern uint8_t cmd_tmp[128];
 
 // scratch buffer for general network data (get/post etc)
 extern uint8_t app_data[APP_DATA_SIZE];

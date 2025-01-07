@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "app_errors.h"
+#include "connection.h"
 #include "data.h"
 #include "debug.h"
 #include "keyboard.h"
@@ -16,42 +17,26 @@ char *cmd_endpoint = "/cmd/get/";
 char *msg_endpoint = "/msg";
 
 void get_world_state() {
-	memset(url_buffer, 0, sizeof(url_buffer));
-	strcat(url_buffer, endpoint);
-	strcat(url_buffer, world_state);
+	int n;
 
-    err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("ws_get:open");
-
-	// read directly into the 14 bytes of memory starting at world_width
-	network_read(url_buffer, (uint8_t *) &world_width, 14);
-	network_close(url_buffer);
+	create_command("x-ws");
+	send_command();
+	read_response((uint8_t *) &world_width, 14);
 }
 
 // get up to 240 bytes for all connected clients. we live in hope
 void get_world_clients() {
-	memset(url_buffer, 0, sizeof(url_buffer));
-	strcat(url_buffer, endpoint);
-	strcat(url_buffer, who_endpoint);
-
 	memset(clients_buffer, 0, 240);
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:clients");
-	network_read(url_buffer, clients_buffer, 240);
-	network_close(url_buffer);
+	create_command("x-who");
+	send_command();
+	read_response(clients_buffer, 240);
 }
 
 void get_broadcast() {
 	int n;
-	memset(url_buffer, 0, sizeof(url_buffer));
-	strcat(url_buffer, endpoint);
-	strcat(url_buffer, msg_endpoint);
-
-	memset(broadcast_message, 0, 120);
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:broadcast");
-	n = network_read(url_buffer, broadcast_message, 119);
-	network_close(url_buffer);
+	create_command("x-msg");
+	send_command();
+	n = read_response(broadcast_message, 119);
 
 	if (n > 0) {
 		// terminate the string. We only read 119 bytes to not overrun the buffer, but always add a nul terminator.
@@ -63,15 +48,11 @@ void get_broadcast() {
 void get_world_cmd() {
 	int n;
 	uint8_t i, cmd;
-	memset(url_buffer, 0, sizeof(url_buffer));
-	strcat(url_buffer, endpoint);
-	strcat(url_buffer, cmd_endpoint);
-	strcat(url_buffer, client_str);
 
-	err = network_open(url_buffer, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:cmd");
-	n = network_read(url_buffer, app_data, 240);
-	network_close(url_buffer);
+	create_command("x-cmd-get");
+	append_command(client_str);
+	send_command();
+	n = read_response(app_data, 240);
 
 /*
     ENABLE_DARK_MODE(1, "enableDarkMode"),
@@ -80,7 +61,6 @@ void get_world_cmd() {
     DISABLE_WHO(4, "disableWho");
 	ENABLE_BROADCAST(5, "enableBroadcast"),
     DISABLE_BROADCAST(6, "disableBroadcast"),
-
  */
 
 	if (n > 0) {

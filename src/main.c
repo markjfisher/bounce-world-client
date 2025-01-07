@@ -31,12 +31,14 @@ int main(void)
 {
   // print app information and get the URL/name
   get_info();
+  clrscr();  
 
-  clrscr();
+  // make a persistent connection to the server
+  connect_service();
 
   // fetch data from server for shapes, create the client and get the current world state for display
   get_shapes();
-  connect_service();
+  send_client_data();
   get_world_state();
 
   // run it!
