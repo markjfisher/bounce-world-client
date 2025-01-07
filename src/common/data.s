@@ -82,6 +82,6 @@ _world_is_wrapped:  .res 1
 _is_running_sim:        .byte $01
 _current_step:          .byte $ff
 _info_display_count:    .byte $00
-_is_darkmode:           .byte $00
+_is_darkmode:           .byte $01
 _is_showing_clients:    .byte $00
 _is_showing_broadcast:  .byte $00
