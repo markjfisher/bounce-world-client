@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "app_errors.h"
+#include "connection.h"
 #include "data.h"
 #include "debug.h"
 #include "display.h"
@@ -17,44 +18,28 @@
 #include "dlist.h"
 #endif
 
-char *freeze_endpoint = "/freeze";
-char *reset_endpoint = "/reset";
-char *inc_endpoint = "/inc";
-char *dec_endpoint = "/dec";
-char *add_endpoint = "/add/";
-
 void do_command(char *command) {
 	char tmp[1];
-	memset(server_url, 0, sizeof(server_url));
-	strcat(server_url, endpoint);
-	strcat(server_url, command);
-
-    err = network_open(server_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:command");
-	network_read(server_url, tmp, 1);
+	create_command(command);
+	send_command();
+	read_response(tmp, 1);
 
 	get_world_state();
 	info_display_count = 0;
-	
 }
 
 void add_body(uint8_t size) {
 	char tmp[1];
 	char size_string[2];
 
-	memset(server_url, 0, sizeof(server_url));
-	strcat(server_url, endpoint);
-	strcat(server_url, add_endpoint);
+	create_command("x-add-body");
 	itoa(size, size_string, 10);
-	strcat(server_url, size_string);
-
-    err = network_open(server_url, OPEN_MODE_HTTP_GET, OPEN_TRANS_NONE);
-	handle_err("get:open:add");
-	network_read(server_url, tmp, 1);
+	append_command(size_string);
+	send_command();
+	read_response(tmp, 1);
 
 	get_world_state();
 	info_display_count = 0;
-
 }
 
 void do_darkmode() {
@@ -84,9 +69,9 @@ void handle_kb() {
 
 	c = cgetc();
 	switch (c) {
-		case '+': do_command(inc_endpoint); break;
-		case '-': do_command(dec_endpoint); break;
-		case 'f': do_command(freeze_endpoint); break;
+		case '+': do_command("x-inc"); break;
+		case '-': do_command("x-dec"); break;
+		case 'f': do_command("x-freeze"); break;
 		
 		case '1':
 		case '2':
@@ -94,7 +79,7 @@ void handle_kb() {
 		case '4':
 		case '5': add_body(c - '0'); break;
 
-		case 'r': do_command(reset_endpoint); break;
+		case 'r': do_command("x-reset"); break;
 		case 'w': is_showing_clients = !is_showing_clients; break;
 		case 'q': is_running_sim = false; break;
 
