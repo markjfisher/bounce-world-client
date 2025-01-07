@@ -30,7 +30,7 @@ void do_command(char *command) {
 
 void add_body(uint8_t size) {
 	char tmp[1];
-	char size_string[2];
+	char size_string[4];
 
 	create_command("x-add-body");
 	itoa(size, size_string, 10);

@@ -82,7 +82,7 @@ void read_and_parse_shapes_data() {
 	create_command("x-shape-data");
 	send_command();
 	n = read_response(app_data, APP_DATA_SIZE);
-	hd(app_data, APP_DATA_SIZE);
+	// hd(app_data, APP_DATA_SIZE);
 
 	if (n < 0) {
 		err = -n;
@@ -124,7 +124,7 @@ void get_shapes() {
 	uint8_t i;
 	uint8_t x;
 	uint8_t y;
-	char tmp[4];
+	char tmp[6];
 
 	cputsxy(0, 0, "Beginning parse of shapes data...");
 

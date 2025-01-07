@@ -11,6 +11,7 @@
 #include "display.h"
 #include "double_buffer.h"
 #include "hex_dump.h"
+#include "keyboard.h"
 #include "screen.h"
 #include "shapes.h"
 #include "target_clr.h"
@@ -47,6 +48,9 @@ void init_screen() {
 	// turn off key clicking
 	OS.noclik = 0xFF;
 #endif
+	if (is_darkmode) {
+		do_darkmode();
+	}
 
 }
 
@@ -143,6 +147,7 @@ void show_screen() {
 	// byte 3-5: {shape_id, x, y}
 	// byte 6-8: ...
 
+	char tmp[10];
 	uint8_t i, shape_id;
 	int8_t x, y;
 	// Number of bytes to skip before starting to read shapes data
@@ -187,7 +192,14 @@ void show_screen() {
 			show_other_screen();
 			clrscr();
 			cputsxy(0, 0, "error in app_data - bad shape id");
-			gotoxy(0,2);
+			cputsxy(0, 1, "shape id: ");
+			itoa(shape_id, tmp, 10);
+			cputsxy(10, 1, tmp);
+			cputsxy(0, 2, "num shapes: ");
+			itoa(number_of_shapes, tmp, 10);
+			cputsxy(12, 2, tmp);
+
+			gotoxy(0, 4);
 			hd(app_data, 64);
 			wait_vsync();
 			debug();

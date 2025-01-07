@@ -11,11 +11,6 @@
 #include "who.h"
 #include "world.h"
 
-char *world_state = "/ws";
-char *who_endpoint = "/who";
-char *cmd_endpoint = "/cmd/get/";
-char *msg_endpoint = "/msg";
-
 void get_world_state() {
 	int n;
 
@@ -24,12 +19,12 @@ void get_world_state() {
 	read_response((uint8_t *) &world_width, 14);
 }
 
-// get up to 240 bytes for all connected clients. we live in hope
+// get up to 512 bytes for all connected clients. we live in hope
 void get_world_clients() {
-	memset(clients_buffer, 0, 240);
+	memset(clients_buffer, 0, 512);
 	create_command("x-who");
 	send_command();
-	read_response(clients_buffer, 240);
+	read_response(clients_buffer, 512);
 }
 
 void get_broadcast() {

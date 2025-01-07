@@ -13,14 +13,14 @@
 extern char    server_url[128];
 
 // buffer for commands to send to the server
-extern uint8_t cmd_tmp[128];
+extern uint8_t cmd_tmp[32];
 
 // scratch buffer for general network data (get/post etc)
 extern uint8_t app_data[APP_DATA_SIZE];
 
 // This memory is carved up for the shapes data strings so we don't need to malloc them, and instead used slices of this memory
 extern uint8_t shapes_buffer[SHAPES_BUFFER_SIZE];
-extern char clients_buffer[240];	// room for 30 clients names!
+extern char clients_buffer[512];	// room for 64 clients names!
 extern char broadcast_message[120]; // up to 120 chars for a broadcast message
 
 extern char    name[9];
@@ -28,11 +28,8 @@ extern char    name[9];
 // this is the captured URL of the BW server without any controller endpoints added
 extern char    endpoint[80];
 
-// this is the endpoint for fetching world data for this client, effectively endpoint with extra controller strings
-extern char    client_data_url[96];
-
 extern char    client_id;
-extern char    client_str[4];
+extern char    client_str[10];
 
 // each record is 5 bytes, so this requires 250 bytes
 extern ShapeRecord shapes[50];

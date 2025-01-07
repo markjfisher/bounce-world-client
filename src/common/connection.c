@@ -13,11 +13,7 @@
 // platform specific values will be supplied here:
 #include "screen.h"
 
-char *client_url = "/client";
 char *comma_str  = ",";
-char *world_str  = "/w/";
-char *hb_str     = "/hb/";
-
 
 void create_command(char *cmd) {
 	memset(cmd_tmp, 0, sizeof(cmd_tmp));
@@ -34,7 +30,7 @@ void send_command() {
 }
 
 void connect_service() {
-	memset(server_url, 0, sizeof(server_url));
+	memset(server_url, 0, 128);
 	strcat(server_url, endpoint);
 	err = network_open(server_url, 0x0C, 0);
 	handle_err("connect");
@@ -59,7 +55,7 @@ int16_t read_response_with_error(uint8_t *buf, int16_t len) {
 }
 
 void send_client_data() {
-	char tmp[4]; // for the itoa string
+	char tmp[6]; // for the itoa string
 	int n;
 	memset(tmp, 0, sizeof(tmp));
 
@@ -85,7 +81,7 @@ void send_client_data() {
 		handle_err("client_id");
 	}
 
-	memset(client_str, 0, 4);
+	memset(client_str, 0, 10);
 	itoa(client_id, client_str, 10);
 
 	cputsxy(10, 19, "Client ID: ");
