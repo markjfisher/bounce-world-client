@@ -8,7 +8,6 @@
 #include "data.h"
 #include "fujinet-network.h"
 #include "press_key.h"
-#include "resilience.h"
 #include "shapes.h"
 
 #ifdef __PMD85__

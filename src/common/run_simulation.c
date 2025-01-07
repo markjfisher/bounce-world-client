@@ -10,7 +10,6 @@
 #include "double_buffer.h"
 #include "fujinet-network.h"
 #include "keyboard.h"
-#include "resilience.h"
 #include "sound.h"
 #include "status.h"
 #include "world.h"

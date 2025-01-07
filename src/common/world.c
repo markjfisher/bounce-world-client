@@ -10,7 +10,6 @@
 #include "display.h"
 #include "keyboard.h"
 #include "fujinet-network.h"
-#include "resilience.h"
 #include "who.h"
 #include "world.h"
 

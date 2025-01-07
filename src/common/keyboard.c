@@ -12,7 +12,6 @@
 #include "delay.h"
 #include "display.h"
 #include "fujinet-network.h"
-#include "resilience.h"
 #include "who.h"
 #include "world.h"
 
