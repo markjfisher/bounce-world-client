@@ -25,8 +25,8 @@ extern bool is_playing_collision;
 
 void run_simulation() {
 	int n;
-	uint16_t error_delay = 30;
 	uint8_t new_step_id;
+
 	init_screen();
 
 	// flag we are on initial screen for double buffering across the platforms
@@ -35,38 +35,33 @@ void run_simulation() {
 	get_world_clients();
 
 	while(is_running_sim) {
-		create_command("x-w");
-		append_command(client_str);
-		send_command();
-		n = read_response_with_error(app_data, APP_DATA_SIZE);
+		n = fetch_client_state();
 		if (n < 0) {
-			// there was an error, so don't process this round. try again after a small pause
-			// We use some resillience here, backing off until the error delay is 255 (about 5 seconds)
-			// TODO: check if we errored too many times maybe? Or just let the user decide to reboot etc.
-			// cputcxy(39, 23, 'E');
-			pause(error_delay);
-			error_delay = error_delay * 14 / 10; // roughly sqrt(2) times previous delay if keep getting errors
-			if (error_delay > 255) error_delay = 255;
-			continue;
+			// TODO: show an error message and exit
+			break;
 		}
 
-		// reset error delay when we have a good read.
-		error_delay = 30;
-
-		// check there was some data
+		// Nothing to show this round, so reloop and check again
 		if (n == 0) continue;
 
+		// handle any app events
 		app_status = app_data[1];
 		if (app_status != 0) {
 			handle_app_status();
 		}
 
+		// check if the server is frozen or not, by checking the step id
 		new_step_id = app_data[0];
 		if (new_step_id != current_step) {
 			current_step = new_step_id;
 			show_screen();
 		}
 
+		// handle any keyboard events
 		handle_kb();
 	}
+
+	// either errored, or quit by user, so deregister from the server
+	disconnect_service();
+
 }

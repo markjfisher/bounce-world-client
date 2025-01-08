@@ -2,6 +2,7 @@
 #define BWC_CONNECTION_H
 
 void connect_service();
+void disconnect_service();
 void send_client_data();
 void create_command(char *cmd);
 void append_command(char *cmd);

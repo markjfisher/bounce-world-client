@@ -41,6 +41,13 @@ void connect_service() {
 	handle_err("connect");
 }
 
+void disconnect_service() {
+	create_command("close");
+	append_command(client_str);
+	send_command();
+	network_close(server_url);
+}
+
 // This uses network_read_nb() which is a one shot read, grabbing whatever is in bytes-waiting.
 // We cannot use network_read() as it may ask for a larger size than would be returned.
 // Normally this is ok, but in TCP where we do not close the connection, it will loop in FN getting BW of 0, and never be able to fetch the rest as there isn't any

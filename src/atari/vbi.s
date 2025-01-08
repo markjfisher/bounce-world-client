@@ -1,4 +1,5 @@
         .export    _init_vbi
+        .export    _restore_vbi
 
         .export    vbi_main
 
@@ -26,8 +27,22 @@
         .include   "atari.inc"
 
 .proc _init_vbi
+        ; save the old VBI
+        lda     VVBLKI
+        sta     old_vbi
+        lda     VVBLKI+1
+        sta     old_vbi+1
+
+        ; set the new VBI
         ldy     #<vbi_main
         ldx     #>vbi_main
+        lda     #$06
+        jmp     SETVBV
+.endproc
+
+.proc _restore_vbi
+        ldy     old_vbi
+        ldx     old_vbi+1
         lda     #$06
         jmp     SETVBV
 .endproc
@@ -185,5 +200,6 @@ done_flash:
 
 
 .data
+old_vbi:        .word 0
 ; sound_round:     .byte 0
 flash_data:     .byte 15, 13, 11, 9, 8, 7, 6, 5, 4, 3, 3, 2, 2, 1, 1, 0

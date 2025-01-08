@@ -7,15 +7,43 @@
 #include "connection.h"
 #include "data.h"
 #include "debug.h"
+#include "delay.h"
 #include "display.h"
 #include "keyboard.h"
 #include "fujinet-network.h"
 #include "who.h"
 #include "world.h"
 
-void get_world_state() {
-	int n;
+int16_t fetch_client_state() {
+	int16_t n;
+	uint16_t error_delay = 30;
+	uint8_t attempts = 0;
+	bool got_state = false;
 
+	while (!got_state && attempts < 60) {
+		create_command("x-w");
+		append_command(client_str);
+		send_command();
+		n = read_response_with_error(app_data, APP_DATA_SIZE);
+		if (n < 0) {
+			// there was an error, so don't process this round. try again after a small pause
+			// We use some resillience here, backing off until the error delay is 255 (about 5 seconds)
+			// TODO: check if we errored too many times maybe? Or just let the user decide to reboot etc.
+			// cputcxy(39, 23, 'E');
+			pause(error_delay);
+			error_delay = error_delay * 14 / 10; // roughly sqrt(2) times previous delay if keep getting errors
+			if (error_delay > 255) error_delay = 255;
+			attempts++;
+			continue;
+		} else {
+			got_state = true;
+		}
+	}
+
+	return n;
+}
+
+void get_world_state() {
 	create_command("x-ws");
 	send_command();
 	read_response((uint8_t *) &world_width, 14);

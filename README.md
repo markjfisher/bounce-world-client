@@ -21,7 +21,7 @@ You can specify the endpoint URL when compiling the application which will embed
 This is useful for shows etc or distrubuting a client for a known DNS endpoint.
 
 ```shell
-make ENDPOINT_URL="http://192.168.0.200" release disk
+make ENDPOINT_URL="TCP://192.168.0.200:9002" release disk
 ```
 
 ## running

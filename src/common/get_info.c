@@ -34,10 +34,10 @@ void get_info() {
 
 #ifdef __APPLE2__
   // can't easily have apple2 target with lower case inverse text without doing hacks, so just do upper case
-  cputsxy(hxp, yps + 2, " WELCOME TO BOUNCE WORLD CLIENT ");
+  cputsxy(hxp, yps + 2, " WELCOME TO BOUNCY WORLD CLIENT ");
   cputsxy(hxp, yps + 3, "        BY MARK FISHER          ");
 #else
-  cputsxy(hxp, yps + 2, " Welcome to Bounce World Client ");
+  cputsxy(hxp, yps + 2, " Welcome to Bouncy World Client ");
   cputsxy(hxp, yps + 3, "        By Mark Fisher          ");
 #endif
 
@@ -68,8 +68,8 @@ void get_info() {
 #else
     get_line(endpoint_input, 60);
 #endif
-    if (strncasecmp(endpoint_input, "http", 4) != 0) {
-      strcat(endpoint, "http://");
+    if (strncasecmp(endpoint_input, "tcp", 3) != 0) {
+      strcat(endpoint, "tcp://");
     }
     strcat(endpoint, endpoint_input);
   } else {

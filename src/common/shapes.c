@@ -154,7 +154,6 @@ void get_shapes() {
 
 	shape_count = get_shape_count();
 	memset(shapes, 0, 250); // room for 50 shapes
-	// shapes = (ShapeRecord *)malloc(shape_count * sizeof(ShapeRecord));
 	read_and_parse_shapes_data();
 
 	gotoxy(0, 1);
