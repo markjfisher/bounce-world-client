@@ -157,6 +157,11 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 	char *data;
 	bool first_x_in_row;
 	char c;
+	uint8_t max_y = SCREEN_HEIGHT;
+
+	if (is_showing_info) {
+		max_y = SCREEN_HEIGHT - 2;
+	}
 
 	shape = shapes[shape_id];
 	width = shape.shape_width;
@@ -179,7 +184,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 		first_x_in_row = false; // Reset for each row
 
 		// Only proceed if the row is within the vertical screen bounds
-		if (y >= 0 && y < SCREEN_HEIGHT) {
+		if (y >= 0 && y < max_y) {
 			for (j = 0; j < width; ++j) {
 				x = start_x + j;
 

@@ -3,6 +3,7 @@
         .export   current_section
 
         .import   _is_flashing_screen
+        .import   _is_showing_info
         .import   _debug
         .import   _txt_c1
         .import   _txt_c2
@@ -16,6 +17,8 @@
 
 .proc _dli
         pha                     ; store A while we do our routine
+        lda     _is_showing_info
+        beq     exit            ; exit if we are not showing the info bar
 
 :       lda     current_section ; which part of the screen are we in? 0 means we have just done a VBI and reset
         sta     WSYNC           ; ensure we're at start of scan line for color change
@@ -35,6 +38,7 @@ set_and_inc:
 done:   lda     #$0F            ; bright white
         sta     COLPF1          ; text colour
 
+exit:
         pla                     ; restore A
         rti                     ; and end DLI
 
