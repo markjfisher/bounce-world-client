@@ -54,7 +54,7 @@ void get_info() {
   chlinexy(2, yps + 6, 36);
 #endif
 
-  memset(endpoint, 0, 80);
+  memset(app_data, 0, 80);
   memset(name, 0, 9);
 
   cputsxy(txp, yps +  9, "Bounce Server URL:");
@@ -62,20 +62,20 @@ void get_info() {
   cursor(1);
   if (strlen(ENDPOINT_URL) == 0) {
     cputsxy(txp, yps + 10, "> ");
-    memset(endpoint_input, 0, 60);
+    memset(app_data, 0, 60);
 #ifdef __PMD85__
     get_line(endpoint_input, 33);
 #else
     get_line(endpoint_input, 60);
 #endif
     if (strncasecmp(endpoint_input, "tcp", 3) != 0) {
-      strcat(endpoint, "tcp://");
+      strcat(app_data, "tcp://");
     }
-    strcat(endpoint, endpoint_input);
+    strcat(app_data, endpoint_input);
   } else {
-    strcpy(endpoint, ENDPOINT_URL);
+    strcpy(app_data, ENDPOINT_URL);
     cputsxy(txp, yps + 10, "> ");
-    cputs(endpoint);
+    cputs(app_data);
   }
 
   cputsxy(txp, yps + 12, "Your name (max 8):");
@@ -85,6 +85,11 @@ void get_info() {
   cursor(0);
 
   // move it forward 3 bytes, and prepend n1:
-  memmove(endpoint + 3, endpoint, 76);
-  memcpy(endpoint, protocol, 3);
+  memmove(app_data + 3, app_data, 76);
+  memcpy(app_data, protocol, 3);
+
+  memset(server_url, 0, 80);
+	// copy from the app_data buffer into the server_url
+	strcpy(server_url, (char *) app_data);
+
 }

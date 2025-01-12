@@ -68,17 +68,20 @@ void parse_shape_records(const uint8_t *input) {
 
 uint8_t get_shape_count() {
 	int n = 0;
-	uint8_t shapes_tmp[1];
-	shapes_tmp[0] = 0;
+	// hijack the app_data buffer to store the shape count
+	memset(app_data, 0, 5);
 
 	create_command("x-shape-count");
 	send_command();
-	n = read_response(shapes_tmp, 1);
+	n = read_response(app_data, 5);
 	if (n < 0) {
 		err = -n;
 		handle_err("shape count read");
 	}
-	shape_count = shapes_tmp[0];
+	gotoxy(0, 21);
+	hd(app_data, 5);
+	pause(200);
+	shape_count = app_data[0];
 	return shape_count;
 }
 
@@ -86,7 +89,7 @@ void read_and_parse_shapes_data() {
 	int n;
 
 	// use the app_data buffer as a scratch buffer, as it's only needed when initially parsing
-	memset(app_data, 0, 512);
+	memset(app_data, 0, APP_DATA_SIZE);
 	create_command("x-shape-data");
 	send_command();
 	n = read_response(app_data, APP_DATA_SIZE);

@@ -6,6 +6,7 @@
 #include "connection.h"
 #include "data.h"
 #include "display.h"
+#include "debug.h"
 #include "delay.h"
 #include "double_buffer.h"
 #include "fujinet-network.h"
@@ -42,7 +43,10 @@ void run_simulation() {
 		}
 
 		// Nothing to show this round, so reloop and check again
-		if (n == 0) continue;
+		if (n == 0) {
+			debug();
+			continue;
+		}
 
 		// handle any app events
 		app_status = app_data[1];
@@ -59,6 +63,9 @@ void run_simulation() {
 
 		// handle any keyboard events
 		handle_kb();
+
+		// debug: slow things down for logs
+		pause(8);
 	}
 
 	// either errored, or quit by user, so deregister from the server

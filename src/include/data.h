@@ -7,13 +7,12 @@
 
 // WARNING: if these change, need to change data.s too where the data is reserved!
 #define SHAPES_BUFFER_SIZE 512
-#define APP_DATA_SIZE      512
+#define APP_DATA_SIZE      256
 
 // endpoint to connect to
-extern char    server_url[128];
-
+extern char    server_url[80];
 // buffer for commands to send to the server
-extern uint8_t cmd_tmp[32];
+extern uint8_t cmd_tmp[64];
 
 // scratch buffer for general network data (get/post etc)
 extern uint8_t app_data[APP_DATA_SIZE];
@@ -26,11 +25,11 @@ extern char broadcast_message[120]; // up to 120 chars for a broadcast message
 extern char    name[9];
 extern uint8_t name_pad;    // pre-calculate 9 - name.length();
 
-// this is the captured URL of the BW server without any controller endpoints added
-extern char    endpoint[80];
-
 extern char    client_id;
-extern char    client_str[10];
+extern char    client_str[8];
+// cache the "x-w <id>" command for the client fetch cycle to save time
+extern char    client_data_cmd[10];
+extern uint8_t client_data_cmd_len;
 
 // each record is 5 bytes, so this requires 250 bytes
 extern ShapeRecord shapes[50];

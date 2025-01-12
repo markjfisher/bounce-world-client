@@ -233,7 +233,9 @@ void show_screen() {
 	// byte 3-5: {shape_id, x, y}
 	// byte 6-8: ...
 
+#ifdef __PMD85__
 	char tmp[10];
+#endif
 	uint8_t i, shape_id;
 	int8_t x, y;
 	// Number of bytes to skip before starting to read shapes data

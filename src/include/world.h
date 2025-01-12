@@ -20,5 +20,6 @@ void get_world_clients();
 void get_world_cmd();
 void get_broadcast();
 int16_t fetch_client_state();
+void create_client_data_command();
 
 #endif // BWC_WORLD_H

@@ -30,24 +30,28 @@
 #endif
 
 void do_command(char *command) {
-	char tmp[1];
 	create_command(command);
 	send_command();
-	read_response(tmp, 1);
+
+	// the response is discarded as it's not needed
+	memset(cmd_tmp, 0, 64);
+	read_response((uint8_t *) cmd_tmp, 64);
 
 	get_world_state();
 	info_display_count = 0;
 }
 
 void add_body(uint8_t size) {
-	char tmp[1];
 	char size_string[4];
 
 	create_command("x-add-body");
 	itoa(size, size_string, 10);
 	append_command(size_string);
 	send_command();
-	read_response(tmp, 1);
+
+	// the response is discarded as it's not needed
+	memset(cmd_tmp, 0, 64);
+	read_response((uint8_t *) cmd_tmp, 64);
 
 	get_world_state();
 	info_display_count = 0;

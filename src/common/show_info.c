@@ -87,7 +87,7 @@ void print_reverse(char *s) {
 }
 
 void show_info() {
-	uint8_t xtra, i;
+	uint8_t i;
 
 	CPUTSXY(0, 22, name);
 	for (i = 0; i < name_pad; i++) {

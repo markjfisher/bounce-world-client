@@ -7,8 +7,10 @@
 #include "app_errors.h"
 #include "data.h"
 #include "fujinet-network.h"
+#include "hex_dump.h"
 #include "press_key.h"
 #include "shapes.h"
+#include "world.h"
 
 #ifdef __PMD85__
 #include "conio_wrapper.h"
@@ -21,22 +23,32 @@
 char *comma_str  = ",";
 
 void create_command(char *cmd) {
-	memset(cmd_tmp, 0, sizeof(cmd_tmp));
-	strcat(cmd_tmp, cmd);
+	memset(cmd_tmp, 0, 64);
+	strcpy((char *) cmd_tmp, cmd);
+	// cmd_tmp[strlen(cmd)] = '\0';
 }
 
 void append_command(char *cmd) {
-	strcat(cmd_tmp, " ");
-	strcat(cmd_tmp, cmd);
+	strcat((char *) cmd_tmp, " ");
+	strcat((char *) cmd_tmp, cmd);
+	// cmd_tmp[strlen((char *) cmd_tmp)] = '\0';
 }
 
 void send_command() {
-	network_write(server_url, cmd_tmp, strlen(cmd_tmp));
+	// gotoxy(0, 0);
+	// hd(cmd_tmp, 64);
+	// cgetc();
+	err = network_write(server_url, (uint8_t *) cmd_tmp, strlen((char *) cmd_tmp));
+	handle_err("send_command");
+}
+
+// just send the cached client data command
+void request_client_data() {
+	err = network_write(server_url, (uint8_t *) client_data_cmd, client_data_cmd_len);
+	handle_err("request_client_data");
 }
 
 void connect_service() {
-	memset(server_url, 0, 128);
-	strcat(server_url, endpoint);
 	err = network_open(server_url, 0x0C, 0);
 	handle_err("connect");
 }
@@ -75,9 +87,7 @@ void send_client_data() {
 
 	memset((char *) app_data, 0, 64);
 	strcat((char *) app_data, name);
-	strcat((char *) app_data, comma_str);
-	strcat((char *) app_data, "2"); // version
-	strcat((char *) app_data, comma_str);
+	strcat((char *) app_data, ",2,"); // version
 	itoa(SCREEN_WIDTH, tmp, 10);
 	strcat((char *) app_data, tmp);
 	strcat((char *) app_data, comma_str);
@@ -85,7 +95,7 @@ void send_client_data() {
 	strcat((char *) app_data, tmp);
 
 	create_command("x-add-client");
-	append_command(app_data);
+	append_command((char *) app_data);
 	send_command();
 	n = read_response((uint8_t *) &client_id, 1);
 	if (n < 0) {
@@ -93,11 +103,14 @@ void send_client_data() {
 		handle_err("client_id");
 	}
 
-	memset(client_str, 0, 10);
+	memset(client_str, 0, 8);
 	itoa(client_id, client_str, 10);
 
 	cputsxy(10, 19, "Client ID: ");
 	cputsxy(21, 19, client_str);
+
+	// create the cached client data command like "x-w <id>"
+	create_client_data_command();
 
 	press_key();
 
