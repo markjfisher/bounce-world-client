@@ -20,6 +20,8 @@
 char endpoint_input[61];
 char *protocol = "n1:";
 
+char *version = "2.0.0";
+
 void get_info() {
   char hxp = 4;
   char txp = 3;
@@ -45,23 +47,27 @@ void get_info() {
   cputsxy(hxp, yps + 4, "   PMD 85 version by Jan Krupa  ");
   cputsxy(hxp, yps + 5, "                                ");
   revers(0);
+  cputsxy(hxp, yps + 6, "                 Version 0.0.0  ");
+  cputsxy(hxp + 25, yps + 6, version);
 
-  chlinexy(2, yps + 7, 36);
+  chlinexy(2, yps + 8, 36);
 #else
   cputsxy(hxp, yps + 4, "                                ");
   revers(0);
+  cputsxy(hxp, yps + 5, "                  Version: 0.0.0");
+  cputsxy(hxp + 27, yps + 5, version);
 
-  chlinexy(2, yps + 6, 36);
+  chlinexy(2, yps + 7, 36);
 #endif
 
   memset(app_data, 0, 80);
   memset(name, 0, 9);
 
-  cputsxy(txp, yps +  9, "Bounce Server URL:");
+  cputsxy(txp, yps +  10, "Bounce Server URL:");
 
   cursor(1);
   if (strlen(ENDPOINT_URL) == 0) {
-    cputsxy(txp, yps + 10, "> ");
+    cputsxy(txp, yps + 11, "> ");
     memset(app_data, 0, 60);
 #ifdef __PMD85__
     get_line(endpoint_input, 33);
@@ -74,12 +80,12 @@ void get_info() {
     strcat(app_data, endpoint_input);
   } else {
     strcpy(app_data, ENDPOINT_URL);
-    cputsxy(txp, yps + 10, "> ");
+    cputsxy(txp, yps + 11, "> ");
     cputs(app_data);
   }
 
-  cputsxy(txp, yps + 12, "Your name (max 8):");
-  cputsxy(txp, yps + 13, "> ");  
+  cputsxy(txp, yps + 13, "Your name (max 8):");
+  cputsxy(txp, yps + 14, "> ");  
   get_line(name, 9);
   name_pad = 9 - strlen(name);    // pre-calculate this so it isn't constantly done in loops
   cursor(0);
