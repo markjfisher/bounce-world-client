@@ -34,8 +34,7 @@ void do_command(char *command) {
 	send_command();
 
 	// the response is discarded as it's not needed
-	memset(cmd_tmp, 0, 64);
-	read_response((uint8_t *) cmd_tmp, 64);
+	read_response_wait((uint8_t *) cmd_tmp, 1);
 
 	get_world_state();
 	info_display_count = 0;
@@ -49,9 +48,8 @@ void add_body(uint8_t size) {
 	append_command(size_string);
 	send_command();
 
-	// the response is discarded as it's not needed
-	memset(cmd_tmp, 0, 64);
-	read_response((uint8_t *) cmd_tmp, 64);
+	// the response is discarded as it's not needed, but must be read to ensure TCP reading is aligned
+	read_response_wait((uint8_t *) cmd_tmp, 1);
 
 	get_world_state();
 	info_display_count = 0;

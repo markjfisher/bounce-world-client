@@ -37,14 +37,10 @@ void run_simulation() {
 
 	while(is_running_sim) {
 		n = fetch_client_state();
-		if (n < 0) {
-			// TODO: show an error message and exit
-			break;
-		}
 
 		// Nothing to show this round, so reloop and check again
-		if (n == 0) {
-			debug();
+		if (n == 1) {
+			// debug();
 			continue;
 		}
 
@@ -64,8 +60,8 @@ void run_simulation() {
 		// handle any keyboard events
 		handle_kb();
 
-		// debug: slow things down for logs
-		pause(8);
+		// debug: slow things down so we can monitor the logs and catch them when it errors.
+		// pause(60);
 	}
 
 	// either errored, or quit by user, so deregister from the server

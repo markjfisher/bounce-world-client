@@ -25,48 +25,15 @@ void create_client_data_command() {
 }
 
 int16_t fetch_client_state() {
-	int16_t n;
-	uint8_t i;
-	uint16_t error_delay = 50;
-	uint8_t attempts = 0;
-	bool got_state = false;
-
-	while (!got_state && attempts < 60) {
-		memset(app_data, 0, APP_DATA_SIZE);
-		request_client_data();
-		n = read_response_with_error((uint8_t *) app_data, APP_DATA_SIZE);
-		if (n < 0) {
-			// there was an error, so don't process this round. try again after a small pause
-			// We use some resillience here, backing off until the error delay is 255 (about 5 seconds)
-			// TODO: check if we errored too many times maybe? Or just let the user decide to reboot etc.
-
-			for (i = 0; i < 20; i++) {
-				// Flash an E to indicate an error
-				cputcxy(39, 23, 'E');
-				pause(error_delay);
-				cputcxy(39, 23, ' ');
-				pause(error_delay);
-			}
-
-			error_delay += error_delay >> 1;
-			if (error_delay > 255) error_delay = 255;
-			attempts++;
-			continue;
-		} else {
-			got_state = true;
-		}
-		if (n == 0) {
-			debug();
-		}
-	}
-
-	return n;
+	memset(app_data, 0, APP_DATA_SIZE);
+	request_client_data();
+	return read_response_min((uint8_t *) app_data, 1, APP_DATA_SIZE);
 }
 
 void get_world_state() {
 	create_command("x-ws");
 	send_command();
-	read_response((uint8_t *) &world_width, 14);
+	read_response_wait((uint8_t *) &world_width, 14);
 }
 
 // get up to 512 bytes for all connected clients. we live in hope
@@ -74,19 +41,16 @@ void get_world_clients() {
 	memset(clients_buffer, 0, 512);
 	create_command("x-who");
 	send_command();
-	read_response((uint8_t *) clients_buffer, 512);
+	read_response_min((uint8_t *) clients_buffer, 1, 512);
 }
 
 void get_broadcast() {
 	int n;
 	create_command("x-msg");
 	send_command();
-	n = read_response((uint8_t *) broadcast_message, 119);
+	n = read_response_min((uint8_t *) broadcast_message, 1, 119);
 
-	if (n > 0) {
-		// terminate the string. We only read 119 bytes to not overrun the buffer, but always add a nul terminator.
-		broadcast_message[n] = '\0';
-	}
+	broadcast_message[n] = '\0';
 }
 
 // this client has some commands to process
@@ -97,7 +61,7 @@ void get_world_cmd() {
 	create_command("x-cmd-get");
 	append_command(client_str);
 	send_command();
-	n = read_response((uint8_t *) app_data, 240);
+	n = read_response_min((uint8_t *) app_data, 1, 256);
 
 /*
     ENABLE_DARK_MODE(1, "enableDarkMode"),

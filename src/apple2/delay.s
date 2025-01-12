@@ -8,55 +8,26 @@
         .export         _pause
         .export         _wait_vsync
 
-        .import         ostype
-
-        .include        "apple2.inc"
+        .import         WAIT
 
 ; removing this as it's not supported on ][+ and isn't really needed
 ; void wait_vsync();
 ;
 _wait_vsync:
-        ; rts
-
-        bit     ostype
-        bmi     iigs            ; $8x
-        bvs     iic             ; $4x
-
-:       bit     RDVBLBAR
-        bpl     :-              ; Blanking
-:       bit     RDVBLBAR
-        bmi     :-              ; Drawing
-        rts
-
-        ; Apple IIgs TechNote #40, VBL Signal
-iigs:   bit     RDVBLBAR
-        bmi     iigs            ; Blanking
-:       bit     RDVBLBAR
-        bpl     :-              ; Drawing
-        rts
-
-        ; Apple IIc TechNote #9, Detecting VBL
-iic:    sei
-        sta     IOUDISOFF
-        lda     RDVBLMSK
-        bit     ENVBL
-        bit     PTRIG           ; Reset VBL interrupt flag
-:       bit     RDVBLBAR
-        bpl     :-
-        asl
-        bcs     :+              ; VBL interrupts were already enabled
-        bit     DISVBL
-:       sta     IOUDISON        ; IIc Tech Ref Man: The firmware normally leaves IOUDIS on.
-        cli
         rts
 
 ; void pause(uint8_t count);
 ;
-; does 'count' vsync waits
+; does 'count' x 1/60th of a second pauses
 
+
+;; https://gswv.apple2.org.za/a2zine/GS.WorldView/Resources/USEFUL.TABLES/WAIT.DELAY.CR.txt
 _pause:
         tax
-:       jsr     _wait_vsync
+:
+        lda     #$4A            ; Sleep about 16ms, or 1/60th of a second (4A is 14.7ms, but this accounts for any additional looping to get 1s pretty close when called with pause(60))
+        jsr     WAIT
+
         dex
         bne     :-
         rts

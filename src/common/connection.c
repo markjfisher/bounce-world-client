@@ -6,6 +6,7 @@
 
 #include "app_errors.h"
 #include "data.h"
+#include "delay.h"
 #include "fujinet-network.h"
 #include "hex_dump.h"
 #include "press_key.h"
@@ -60,27 +61,42 @@ void disconnect_service() {
 	network_close(server_url);
 }
 
-// This uses network_read_nb() which is a one shot read, grabbing whatever is in bytes-waiting.
-// We cannot use network_read() as it may ask for a larger size than would be returned.
-// Normally this is ok, but in TCP where we do not close the connection, it will loop in FN getting BW of 0, and never be able to fetch the rest as there isn't any
-int16_t read_response(uint8_t *buf, int16_t len) {
+// read fully until we get len bytes
+// Used for commands where we must receive all the data
+int16_t read_response_wait(uint8_t *buf, int16_t len) {
 	int16_t n;
-	n = network_read_nb(server_url, buf, len);
+	n = network_read(server_url, buf, len);
 	if (n < 0) {
 		err = -n;
-		handle_err("read_response");
+		handle_err("read_response_wait");
 	}
 	return n;
 }
 
-// As above but without error handling, as we need to handle errors in the caller
-int16_t read_response_with_error(uint8_t *buf, int16_t len) {
-	return network_read_nb(server_url, buf, len);
+// read at least min bytes. Forces something to be read, not skip if there's no bytes waiting
+int16_t read_response_min(uint8_t *buf, int16_t min, int16_t max) {
+	int16_t n = 0;
+	int16_t total = 0;
+	while (total < min) {
+		n = network_read_nb(server_url, buf + total, max - total);
+		if (n < 0) {
+			err = -n;
+			handle_err("read_response_wait");
+		}
+		// if we got no data, pause slightly and try again. this compensates for network latency
+		if (n == 0) {
+			pause(3); // about 50ms
+			continue;
+		}
+
+		total += n;
+	}
+	return total;
 }
+
 
 void send_client_data() {
 	char tmp[6]; // for the itoa string
-	int n;
 	memset(tmp, 0, sizeof(tmp));
 
 	// send x-add-client with "name,version,screenX,screenY", and get the client id back
@@ -97,10 +113,10 @@ void send_client_data() {
 	create_command("x-add-client");
 	append_command((char *) app_data);
 	send_command();
-	n = read_response((uint8_t *) &client_id, 1);
-	if (n < 0) {
-		err = -n;
-		handle_err("client_id");
+	read_response_wait((uint8_t *) &client_id, 1);
+	if (client_id == 0) {
+		err = -1;
+		handle_err("bad client id");
 	}
 
 	memset(client_str, 0, 8);

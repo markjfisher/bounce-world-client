@@ -26,11 +26,7 @@ void press_key() {
 	while (kbhit() == 0) {
 		fetch_client_state();
 		// 20/60th of a second - enough to stop spamming, but react to user input fast enough.
-#ifdef __APPLE2__
-		pause(60);
-#else
 		pause(20);
-#endif
 	}
 
 	// fetch the key so it doesn't get act upon
