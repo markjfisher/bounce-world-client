@@ -14,8 +14,8 @@
 #endif
 
 #ifndef ENDPOINT_URL
-//#define ENDPOINT_URL ""
-#define ENDPOINT_URL "tcp://localhost:9002"
+#define ENDPOINT_URL ""
+//#define ENDPOINT_URL "tcp://localhost:9002"
 #endif
 
 char endpoint_input[61];
