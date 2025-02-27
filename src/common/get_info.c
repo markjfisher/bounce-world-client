@@ -15,6 +15,7 @@
 
 #ifndef ENDPOINT_URL
 #define ENDPOINT_URL ""
+//#define ENDPOINT_URL "tcp://localhost:9002"
 #endif
 
 char endpoint_input[61];
@@ -79,6 +80,7 @@ void get_info() {
     }
     strcat(app_data, endpoint_input);
   } else {
+    memset(app_data, 0, 256);
     strcpy(app_data, ENDPOINT_URL);
     cputsxy(txp, yps + 11, "> ");
     cputs(app_data);

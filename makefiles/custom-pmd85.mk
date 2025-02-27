@@ -1,8 +1,10 @@
 # COMPILE FLAGS
 
-# before we will get real fujinet-lib ...
-ASFLAGS += -Isrc/$(CURRENT_PLATFORM)/fujinet-lib-stub
-CFLAGS += -Isrc/$(CURRENT_PLATFORM)/fujinet-lib-stub
+# until there is a fujinet-lib release for pmd85
+# manually copy and unzip the pmd85 library files into _libs/4.7.4-pmd85
+CFLAGS += -I_libs/4.7.4-pmd85
+FUJINET_LIB_PATH = _libs/4.7.4-pmd85/fujinet-pmd85-4.7.4.lib
+LIBS += $(FUJINET_LIB_PATH)
 
 ################################################################
 # ROM creation
