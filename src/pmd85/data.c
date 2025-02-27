@@ -1,12 +1,16 @@
 #include "data.h"
 
 // GENERAL BUFFERS
+uint8_t server_url[80];
 uint8_t app_data[APP_DATA_SIZE];
 uint8_t shapes_buffer[SHAPES_BUFFER_SIZE];
 uint8_t name[9];
 uint8_t name_pad;
 uint8_t clients_buffer[512];
 uint8_t broadcast_message[120];
+uint8_t cmd_tmp[64];
+uint8_t client_data_cmd[10];
+uint8_t client_data_cmd_len;
 
 // room for 50 shapes is 50 * 5 = 250 bytes, in BSS so not saved to disk. The data for the shapes strings is stored in _shapes_buffer above.
 ShapeRecord shapes[50];

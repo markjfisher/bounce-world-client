@@ -11,6 +11,8 @@ CFLAGS += -I$(SRCDIR)/include
 
 LDFLAGS += -create-app
 
+LIBFLAGS := $(foreach lib,$(LIBS),-l$(lib))
+
 $(OBJDIR)/$(CURRENT_TARGET)/%.o: %.c $(VERSION_FILE) | $(OBJDIR)
 	@$(call MKDIR,$(dir $@))
 	$(CC) +$(CURRENT_TARGET) -c $(CFLAGS) -o $@ $<
@@ -21,4 +23,4 @@ $(OBJDIR)/$(CURRENT_TARGET)/%.o: %.asm $(VERSION_FILE) | $(OBJDIR)
 
 
 $(BUILD_DIR)/$(PROGRAM_TGT): $(OBJECTS) $(LIBS) | $(BUILD_DIR)
-	$(CC) +$(CURRENT_TARGET) $(LDFLAGS) -o $@ $^
+	$(CC) +$(CURRENT_TARGET) $(LDFLAGS) -o $@ $(OBJECTS) $(LIBFLAGS)
