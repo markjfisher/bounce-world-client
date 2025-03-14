@@ -3,7 +3,7 @@
 # Set the TARGETS and PROGRAM values as required.
 # See makefiles/build.mk for details on directory structure for src files and how to add custom extensions to the build.
 
-TARGETS = apple2 atari c64
+TARGETS = apple2enh atari c64
 PROGRAM := bwc
 
 SUB_TASKS := clean disk test release

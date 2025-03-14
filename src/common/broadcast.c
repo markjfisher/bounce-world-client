@@ -13,7 +13,6 @@
 #endif
 
 #ifdef __APPLE2__
-#include "compat.h"
 #include "conio_helpers.h"
 #define GOTOXY gotoxy_buffer
 #define CPUTSXY cputsxy_buffer

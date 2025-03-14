@@ -1,6 +1,6 @@
 #include <stdint.h>
+#include <apple2enh.h>
 
-#include "compat.h"
 #include "convert_chars.h"
 
 void convert_chars(uint8_t *data, uint8_t len) {
