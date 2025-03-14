@@ -133,8 +133,5 @@ void show_info() {
 	print_reverse("D"); cputs("rk ");
 	cputc('f'); print_reverse("L");    cputs("sh");
 #endif
-
-#ifndef __APPLE2__
-#endif
 }
 #endif // __PMD85__

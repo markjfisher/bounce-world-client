@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "compat.h"
 #include "get_line.h"
 
 // This function adds 900 bytes to the app. The atari CIO routine is much cleaner and handles cursor movement better, so this
@@ -12,13 +11,10 @@
 void get_line(char* buf, uint8_t max_len) {
 	uint8_t c;
 	uint16_t i = 0;
-	uint8_t init_x = wherex();
 
 	cursor(1);
 
 	do {
-		gotox(i + init_x);
-
 		c = cgetc();
 
 		if (isprint(c)) {

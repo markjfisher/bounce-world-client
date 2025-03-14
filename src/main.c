@@ -25,10 +25,6 @@
 #include "shutdown.h"
 #include "world.h"
 
-#ifdef __APPLE2__
-#include <peekpoke.h>
-#endif
-
 #ifdef __PMD85__
 #include "conio_wrapper.h"
 #include "timer.h"
@@ -40,12 +36,6 @@ extern uint8_t fn_network_error;
 
 int main(void)
 {
-#ifdef __APPLE2__
-  // get lowercase and mouse text in early
-	allow_lowercase(true);
-	POKE(0xC00F, 0);
-#endif
-
 #ifdef __PMD85__
   reset_timer(1);
 #endif
