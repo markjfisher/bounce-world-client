@@ -1,7 +1,9 @@
 #ifndef BWC_DISPLAY_H
 #define BWC_DISPLAY_H
 
+#ifndef _CMOC_VERSION_
 #include <stdint.h>
+#endif
 
 void show_screen();
 void show_info();
