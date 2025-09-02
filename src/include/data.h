@@ -2,7 +2,10 @@
 #define BWC_DATA_H
 
 #include <stdbool.h>
+
+#ifndef _CMOC_VERSION_
 #include <stdint.h>
+#endif
 #include "shapes.h"
 
 // WARNING: if these change, need to change data.s too where the data is reserved!

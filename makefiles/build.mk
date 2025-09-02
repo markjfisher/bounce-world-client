@@ -86,6 +86,8 @@ DEPENDS := $(OBJECTS:.o=.d)
 
 ifeq ($(CURRENT_TARGET),pmd85)
 -include ./makefiles/compiler-z88dk.mk
+else ifeq ($(CURRENT_TARGET),coco)
+-include ./makefiles/compiler-cmoc.mk
 else
 -include ./makefiles/compiler-cc65.mk
 endif

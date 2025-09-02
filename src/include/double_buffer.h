@@ -1,7 +1,9 @@
 #ifndef BWC_DOUBLE_BUFFER_H
 #define BWC_DOUBLE_BUFFER_H
 
+#ifndef _CMOC_VERSION_
 #include <stdint.h>
+#endif
 
 // double buffering macros, apple2 needs a hand.
 #ifdef __APPLE2__

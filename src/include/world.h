@@ -1,7 +1,9 @@
 #ifndef BWC_WORLD_H
 #define BWC_WORLD_H
 
+#ifndef _CMOC_VERSION_
 #include <stdint.h>
+#endif
 
 extern uint16_t world_width;
 extern uint16_t world_height;

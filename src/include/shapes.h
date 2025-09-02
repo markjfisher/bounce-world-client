@@ -1,7 +1,9 @@
 #ifndef BWC_SHAPES_H
 #define BWC_SHAPES_H
 
+#ifndef _CMOC_VERSION_
 #include <stdint.h>
+#endif
 
 void get_shapes();
 
