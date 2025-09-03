@@ -9,6 +9,8 @@ CFLAGS += -I$(SRCDIR)
 ASFLAGS += -I$(SRCDIR)/include
 CFLAGS += -I$(SRCDIR)/include
 
+LDFLAGS += -L$ (FUJINET_LIB_VERSION_DIR)
+
 LIBFLAGS := $(foreach lib,$(LIBS),-l$(lib))
 
 $(OBJDIR)/$(CURRENT_TARGET)/%.o: %.c $(VERSION_FILE) | $(OBJDIR)
@@ -20,4 +22,4 @@ $(OBJDIR)/$(CURRENT_TARGET)/%.o: %.asm $(VERSION_FILE) | $(OBJDIR)
 	$(CC) -c -o $@ $<
 
 $(BUILD_DIR)/$(PROGRAM_TGT): $(OBJECTS) $(LIBS) | $(BUILD_DIR)
-	$(CC) -o $@ $(OBJECTS) $(LIBFLAGS)
+	$(CC) -o $@ $(OBJECTS) $(LDFLAGS) $(LIBFLAGS)
