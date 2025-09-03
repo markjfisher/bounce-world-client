@@ -1,13 +1,13 @@
 CC := cmoc
 
-ASFLAGS += -Isrc/common -Isrc/$(CURRENT_PLATFORM) -Isrc/current-target/$(CURRENT_TARGET)
-CFLAGS += -Isrc/common -Isrc/$(CURRENT_PLATFORM) -Isrc/current-target/$(CURRENT_TARGET)
+ASFLAGS += -I src/common -I src/$(CURRENT_PLATFORM) -I src/current-target/$(CURRENT_TARGET)
+CFLAGS += -I src/common -I src/$(CURRENT_PLATFORM) -I src/current-target/$(CURRENT_TARGET)
 
-ASFLAGS += -I$(SRCDIR)
-CFLAGS += -I$(SRCDIR)
+ASFLAGS += -I $(SRCDIR)
+CFLAGS += -I $(SRCDIR)
 
-ASFLAGS += -I$(SRCDIR)/include
-CFLAGS += -I$(SRCDIR)/include
+ASFLAGS += -I $(SRCDIR)/include
+CFLAGS += -I $(SRCDIR)/include
 
 LDFLAGS += -L$ (FUJINET_LIB_VERSION_DIR)
 
