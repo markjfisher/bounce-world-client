@@ -1,7 +1,12 @@
 #include <stdbool.h>
+
+#ifndef _CMOC_VERSION_
 #include <stdint.h>
 #include <stdlib.h>
-
+#else
+#include <cmoc.h>
+#include <coco.h>
+#endif
 #include "collision.h"
 #include "data.h"
 #include "debug.h"

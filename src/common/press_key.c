@@ -1,4 +1,8 @@
+#ifndef _CMOC_VERSION_
 #include <conio.h>
+#else
+#include "conio_wrapper.h"
+#endif
 
 #include "delay.h"
 #include "world.h"

@@ -1,8 +1,14 @@
+#ifndef _CMOC_VERSION_
 #include <conio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-
+#else
+#include <cmoc.h>
+#include <coco.h>
+#include <chardef.h>
+#include <conio_wrapper.h>
+#endif
 #include "app_errors.h"
 #include "data.h"
 #include "fujinet-network.h"

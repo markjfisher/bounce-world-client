@@ -11,7 +11,7 @@
 #ifdef _CMOC_VERSION_
 #include <cmoc.h>
 #include <coco.h>
-#include <clrscr.h>
+#include <conio_wrapper.h>
 #else
 #include <conio.h>
 #include <stdbool.h>

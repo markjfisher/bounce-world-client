@@ -16,9 +16,8 @@ DISK_FILE = $(DIST_DIR)/$(PROGRAM).dsk
 			rm "$(DISK_FILE)" ; \
 		fi ; \
                 decb dskini $(DISK_FILE) ; \
-		writecocofile $(DISK_FILE) $(PROGRAM) ; \
+		writecocofile $(DISK_FILE) $(DIST_DIR)/$(PROGRAM_TGT)$(SUFFIX) ; \
 	else \
 		echo -e "\nERROR! You must install toolshed from https://github.com/nitros9project/toolshed to create coco disks\n" ; \
 		exit 1 ; \
 	fi
-

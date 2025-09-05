@@ -1,8 +1,14 @@
+#ifndef _CMOC_VERSION_
 #include <conio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#else
+#include <cmoc.h>
+#include <coco.h>
+#include "conio_wrapper.h"
+#endif
 
 #include "broadcast.h"
 #include "data.h"
