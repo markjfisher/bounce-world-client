@@ -9,9 +9,12 @@ CFLAGS += -I $(SRCDIR)
 ASFLAGS += -I $(SRCDIR)/include
 CFLAGS += -I $(SRCDIR)/include
 
-LDFLAGS += -L$ (FUJINET_LIB_VERSION_DIR)
+CFLAGS += -Wno-const
 
-LIBFLAGS := $(foreach lib,$(LIBS),-l$(lib))
+
+LDFLAGS += $(foreach lib, $(LIBS), -L $(dir $(lib)))
+
+LIBFLAGS := $(foreach lib,$(LIBS),-l$(notdir $(lib)))
 
 $(OBJDIR)/$(CURRENT_TARGET)/%.o: %.c $(VERSION_FILE) | $(OBJDIR)
 	@$(call MKDIR,$(dir $@))

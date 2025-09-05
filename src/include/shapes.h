@@ -3,6 +3,9 @@
 
 #ifndef _CMOC_VERSION_
 #include <stdint.h>
+#else
+#include <cmoc.h>
+#include <coco.h>
 #endif
 
 void get_shapes();

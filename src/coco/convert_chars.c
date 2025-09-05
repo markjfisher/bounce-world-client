@@ -1,5 +1,11 @@
+#ifndef _CMOC_VERSION_
 #include <cbm.h>
 #include <stdint.h>
+#else
+#include <cmoc.h>
+#include <coco.h>
+#include "chardef.h"
+#endif
 
 #include "convert_chars.h"
 

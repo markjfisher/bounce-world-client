@@ -1,9 +1,16 @@
+#ifndef _CMOC_VERSION_
 #include <conio.h>
 #include <screen.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#else
+#include <cmoc.h>
+#include <coco.h>
+#include "stdbool.h"
+#include "conio_wrapper.h"
+#endif
 
 #include "app_errors.h"
 #include "connection.h"
@@ -17,11 +24,6 @@
 
 #ifdef __ATARI__
 #include "dlist.h"
-#endif
-
-#ifdef __PMD85__
-#include "conio_wrapper.h"
-#include "itoa_wrapper.h"
 #endif
 
 #ifdef __PMD85__

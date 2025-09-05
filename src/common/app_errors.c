@@ -1,11 +1,18 @@
-#ifndef __PMD85__
+#if !defined(__PMD85__) && !defined(_CMOC_VERSION_)
 #include <cc65.h>
 #endif
+#ifdef _CMOC_VERSION_
+#include <cmoc.h>
+#include <coco.h>
+#include <clrscr.h>
+#include "conio_wrapper.h"
+#else
 #include <conio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#endif
 
 #include "app_errors.h"
 #include "fujinet-network.h"
