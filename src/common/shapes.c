@@ -152,14 +152,21 @@ void get_shapes() {
 	uint8_t y;
 	char tmp[6];
 
+#ifdef COCO2_BUILD
+	cputsxy(0, 0, "BEGINNING PARSE OF SHAPES DATA.");
+#else
 	cputsxy(0, 0, "Beginning parse of shapes data...");
-
+#endif
 	shape_count = get_shape_count();
 	memset(shapes, 0, 250); // room for 50 shapes
 	read_and_parse_shapes_data();
 
 	gotoxy(0, 1);
+#ifdef COCO2_BUILD
+	cputs("PARSED SHAPES, COUNT: ");
+#else
 	cputs("Parsed shapes, count: ");
+#endif
 	itoa(shape_count, tmp, 10);
 	cputs(tmp);
 
@@ -167,12 +174,26 @@ void get_shapes() {
 	reset_dirty();
 #endif
 
+#ifdef COCO2_BUILD
+	x=1;
+	y=3;
+	for (i = 0; i < 5; i++) {
+		display_shape_data(i, x, y);
+		x += shapes[i].shape_width+2;
+	}
+	y += (shapes[0].shape_data_len/shapes[0].shape_width) + 1;
+	x = 1;
+	for (i = 5; i < 10; i++) {
+		display_shape_data(i, x, y);
+		x += shapes[i].shape_width+2;
+	}
+#else
 	for (i = 0; i < shape_count; i++) {
 		x = (i % 7) * 6;
 		y = ((uint8_t) (i / 7)) * 6 + 3;
 		display_shape_data(i, x, y);
 	}
-
+#endif
 #ifdef __PMD85__
 	show_text_buffer();
 	clear_dirty();

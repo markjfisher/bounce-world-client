@@ -31,31 +31,60 @@ char *protocol = "n1:";
 char *version = "2.0.0";
 
 void get_info() {
-  char hxp = 4;
+  
+#ifdef COCO2_BUILD
+  char hxp = 0;
   char txp = 3;
+  char yps = 1;
+#else
+  char hxp = 4;
+  char txp = 0;
   char yps = 3;
+ #endif
 
   clrscr();
   init_sound();
-  chlinexy(2, yps - 1, 36);
 
+#ifdef COCO2_BUILD
+  chlinexy(0, yps, 32);
+  cputsxy(hxp, yps + 1, "                                ");
+  cputsxy(hxp, yps + 2, " WELCOME TO BOUNCY WORLD CLIENT ");
+  cputsxy(hxp, yps + 3, "        BY MARK FISHER          ");
+#else
+  chlinexy(2, yps - 1, 36);
   revers(1);
   cputsxy(hxp, yps + 1, "                                ");
   cputsxy(hxp, yps + 2, " Welcome to Bouncy World Client ");
   cputsxy(hxp, yps + 3, "        By Mark Fisher          ");
-
+#endif
 #ifdef __PMD85__
   cputsxy(hxp, yps + 4, "   PMD 85 version by Jan Krupa  ");
   cputsxy(hxp, yps + 5, "                                ");
   revers(0);
-  cputsxy(hxp, yps + 6, "                 Version 0.0.0  ");
+  cputsxy(hxp, yps + 6, "                Version: 0.0.0  ");
+  cputsxy(hxp + 25, yps + 6, version);
+
+  chlinexy(2, yps + 8, 36);
+#elif defined(_CMOC_VERSION_) && defined(COCO2_BUILD)
+  cputsxy(hxp, yps + 4, "  COCO VERSION BY RICH STEPHENS ");
+  cputsxy(hxp, yps + 5, "                                ");
+  revers(0);
+  cputsxy(hxp, yps + 6, "                VERSION: 0.0.0  ");
+  cputsxy(hxp + 25, yps + 6, version);
+
+  chlinexy(0, yps + 8, 32);
+#elif defined(_CMOC_VERSION_)
+  cputsxy(hxp, yps + 4, "  CoCo version by Rich Stephens ");
+  cputsxy(hxp, yps + 5, "                                ");
+  revers(0);
+  cputsxy(hxp, yps + 6, "                Version: 0.0.0  ");
   cputsxy(hxp + 25, yps + 6, version);
 
   chlinexy(2, yps + 8, 36);
 #else
   cputsxy(hxp, yps + 4, "                                ");
   revers(0);
-  cputsxy(hxp, yps + 5, "                  Version: 0.0.0");
+  cputsxy(hxp, yps + 5, "                Version: 0.0.0  ");
   cputsxy(hxp + 27, yps + 5, version);
 
   chlinexy(2, yps + 7, 36);
@@ -64,8 +93,11 @@ void get_info() {
   memset(app_data, 0, 80);
   memset(name, 0, 9);
 
+#ifdef COCO2_BUILD
+  cputsxy(txp, yps +  10, "BOUNCE SERVER URL:");
+#else
   cputsxy(txp, yps +  10, "Bounce Server URL:");
-
+#endif
   cursor(1);
   if (strlen(ENDPOINT_URL) == 0) {
     cputsxy(txp, yps + 11, "> ");
@@ -86,7 +118,11 @@ void get_info() {
     cputs((char *)app_data);
   }
 
+#ifdef COCO2_BUILD
+  cputsxy(txp, yps + 13, "YOUR NAME (MAX 8):");
+#else
   cputsxy(txp, yps + 13, "Your name (max 8):");
+#endif
   cputsxy(txp, yps + 14, "> ");  
   get_line(name, 9);
   name_pad = 9 - strlen(name);    // pre-calculate this so it isn't constantly done in loops

@@ -31,8 +31,6 @@
 #define cputc(c) putchar(c)
 #define cputs(s) putstr(s, strlen(s))
 
-#define chlinexy(x, y, length) chlinexy_blt(x, y, length)
-
 #define isprint(c) (c>=0x20 && c<=0x8E)
 
 #define kbhit() inkey()
@@ -49,7 +47,6 @@ void cputcxy(unsigned char x, unsigned char y, char c);
 void cputsxy(unsigned char x, unsigned char y, const char* s);
 
 void chlinexy(unsigned char x, unsigned char y, unsigned char length);
-// void cvlinexy_blt(unsigned char x, unsigned char y, unsigned char height);
 
 unsigned char doesclrscrafterexit (void);
 

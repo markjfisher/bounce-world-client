@@ -13,12 +13,32 @@
 #include "double_buffer.h"
 #include "debug.h"
 #include "world.h"
+#include "screen.h"
 
 #ifdef __PMD85__
 #include "conio_wrapper.h"
 #include "itoa_wrapper.h"
 #include "screen_util.h"
 #endif
+
+// print a uint8_t into 2 spaces
+void printu8j2(uint8_t v) {
+	if (v < 10) {
+		cputc(v + '0');
+		cputc(' ');
+	} else {
+		cputc(v / 10 + '0');
+		cputc(v % 10 + '0');
+	}
+}
+
+// print a uint16
+void printu16(uint16_t v) {
+	char tmp[6];
+
+	utoa(v, tmp, 10);
+	cputs(tmp);
+}
 
 #ifdef __PMD85__
 
@@ -67,27 +87,37 @@ void clear_info() {
 	screen_fill_region(PATTERN_BLANK);
 }
 
-#else
+#elif defined(COCO2_BUILD)
+void show_info() {
+	cputsxy(0, SCREEN_HEIGHT-3, name);
 
-// print a uint8_t into 2 spaces
-void printu8j2(uint8_t v) {
-	if (v < 10) {
-		cputc(v + '0');
+	gotoxy(0, SCREEN_HEIGHT-2);
+	
+	cputs("C:"); printu8j2(num_clients);
+	cputs("1:"); printu8j2(body_1);
+	cputs("2:"); printu8j2(body_2);
+	cputs("3:"); printu8j2(body_3);
+	cputs("4:"); printu8j2(body_4);
+	cputs("5:"); printu8j2(body_5);
+
+	if (world_height > 99) {
 		cputc(' ');
-	} else {
-		cputc(v / 10 + '0');
-		cputc(v % 10 + '0');
 	}
+	if (world_is_frozen) {
+		revers(1);
+	}
+	printu16(world_width);
+	cputc('X');
+	printu16(world_height);
+	if (world_is_frozen) {
+		revers(0);
+	}
+
+	gotoxy(0, SCREEN_HEIGHT-1);
+	cputs("fR rST +/- 1-5 ADD wHO iNF qUIT");
 }
 
-// print a uint16
-void printu16(uint16_t v) {
-	char tmp[6];
-
-	utoa(v, tmp, 10);
-	cputs(tmp);
-}
-
+#else
 void print_reverse(char *s) {
 	revers(1); cputs(s); revers(0);
 }
@@ -95,7 +125,7 @@ void print_reverse(char *s) {
 void show_info() {
 	uint8_t i;
 
-	CPUTSXY(0, 22, name);
+	CPUTSXY(0, SCREEN_HEIGHT-2, name);
 	for (i = 0; i < name_pad; i++) {
 		cputc(' ');
 	}
@@ -126,7 +156,7 @@ void show_info() {
 		revers(0);
 	}
 
-	GOTOXY(0, 23);
+	GOTOXY(0, SCREEN_HEIGHT-1);
 	print_reverse("F"); cputs("rz ");
 	print_reverse("R"); cputs("st ");
 	print_reverse("+"); cputc('/'); print_reverse("-"); cputc(' ');

@@ -127,9 +127,13 @@ void send_client_data() {
 	memset(client_str, 0, 8);
 	itoa(client_id, client_str, 10);
 
+#ifdef COCO2_BUILD
+	cputsxy(10, 12, "CLIENT ID: ");
+	cputsxy(21, 12, client_str);
+#else
 	cputsxy(10, 19, "Client ID: ");
 	cputsxy(21, 19, client_str);
-
+#endif
 	// create the cached client data command like "x-w <id>"
 	create_client_data_command();
 

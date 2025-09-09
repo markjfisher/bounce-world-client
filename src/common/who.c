@@ -42,11 +42,17 @@
 #include <cbm.h>
 #endif
 
+#ifdef COCO2_BUILD
+static char grid[2][10] = {
+	{CH_ULCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_URCORNER },
+	{CH_LLCORNER, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_LRCORNER }
+};
+#else
 static char grid[2][10] = {
 	{CH_ULCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_URCORNER },
 	{CH_LLCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_LRCORNER }
 };
-
+#endif
 void show_clients() {
 	uint8_t i, j;
 	uint8_t max_show = SCREEN_HEIGHT - 4;
@@ -58,23 +64,27 @@ void show_clients() {
 	// show a fake box on the screen, it will be displayed on the buffer screen, so should just overlay bodies
 
 	// top of box
-	GOTOXY(29, 2);
+	GOTOXY(SCREEN_WIDTH-11, 2);
 	for (i = 0; i < 10; i++) {
 		CPUTC(grid[0][i]);
 	}
 
 	// all the clients, these are space buffered for us by server
 	for (i = 0; i < to_show; i++) {
-		GOTOXY(29, 3+i);
+		GOTOXY(SCREEN_WIDTH-11, 3+i);
 		CPUTC(CH_VLINE);
 		for (j = 0; j < 8; j++) {
 			CPUTC(clients_buffer[(i << 3) + j]);
 		}
+#ifdef COCO2_BUILD		
+		CPUTC(CH_VLINE_R);
+#else
 		CPUTC(CH_VLINE);
+#endif
 	}
 
 	// bottom of box
-	GOTOXY(29, 3+num_clients);
+	GOTOXY(SCREEN_WIDTH-11, 3+num_clients);
 	for (i = 0; i < 10; i++) {
 		CPUTC(grid[1][i]);
 	}

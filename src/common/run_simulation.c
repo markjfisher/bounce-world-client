@@ -37,6 +37,8 @@ void run_simulation() {
 
 	// flag we are on initial screen for double buffering across the platforms
 	is_alt_screen = 0;
+	// Ensure that the is_running_sim flag is set if it was turned off previously
+	is_running_sim = 1;
 
 	get_world_clients();
 
