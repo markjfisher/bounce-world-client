@@ -73,12 +73,19 @@ void toggle_info() {
 void handle_kb() {
 	char c;
 
+#ifdef _CMOC_VERSION_
+	c = (char) kbhit();
+
+	if (c == 0) return;
+#else
 	if (kbhit() == 0) return;
 
 	c = cgetc();
+#endif
 	switch (c) {
 		case '+': do_command("x-inc"); break;
 		case '-': do_command("x-dec"); break;
+		case 'F':
 		case 'f': do_command("x-freeze"); break;
 		
 		case '1':
@@ -87,9 +94,13 @@ void handle_kb() {
 		case '4':
 		case '5': add_body(c - '0'); break;
 
+		case 'R':
 		case 'r': do_command("x-reset"); break;
+		case 'I':
 		case 'i': toggle_info(); break;
+		case 'W':
 		case 'w': is_showing_clients = !is_showing_clients; break;
+		case 'Q':
 		case 'q': is_running_sim = false; break;
 
 #if defined(__ATARI__) || defined(__PMD85__)

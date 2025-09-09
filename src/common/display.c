@@ -209,6 +209,8 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 #ifdef BWC_CUSTOM_CPUTC
 					// handles space char as just moving x directly
 					cputc_fast(c);
+#elif defined(_CMOC_VERSION_)
+					cputc(c);  // Print and move to the next position
 #else
 					if (c != ' ') {
 						cputc(c);  // Print and move to the next position

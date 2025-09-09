@@ -1,10 +1,6 @@
 #include <cmoc.h>
 #include <coco.h>
 
-void wait_vsync()
-{
-    pause(1);	
-}
 void pause(uint8_t count)
 {
     if (!count)
@@ -13,4 +9,8 @@ void pause(uint8_t count)
     while (getTimer() < count);
 }
 
+void wait_vsync()
+{
+    pause(1);	
+}
 
