@@ -38,7 +38,7 @@ void get_info() {
   char yps = 1;
 #else
   char hxp = 4;
-  char txp = 0;
+  char txp = 3;
   char yps = 3;
  #endif
 
@@ -85,7 +85,7 @@ void get_info() {
   cputsxy(hxp, yps + 4, "                                ");
   revers(0);
   cputsxy(hxp, yps + 5, "                Version: 0.0.0  ");
-  cputsxy(hxp + 27, yps + 5, version);
+  cputsxy(hxp + 25, yps + 5, version);
 
   chlinexy(2, yps + 7, 36);
 #endif
