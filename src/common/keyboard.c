@@ -31,6 +31,10 @@
 #include "itoa_wrapper.h"
 #endif
 
+#ifdef USE_PLATFORM_SPECIFIC_INPUT
+extern int getPlatformKey();
+#endif
+
 void do_command(char *command) {
 	create_command(command);
 	send_command();
@@ -73,14 +77,18 @@ void toggle_info() {
 void handle_kb() {
 	char c;
 
-#ifdef _CMOC_VERSION_
+
+// Process any waiting keystrokes
+#ifdef USE_PLATFORM_SPECIFIC_INPUT
+	c = getPlatformKey();
+	if (c == 0) return;
+#elif defined _CMOC_VERSION_
 	c = (char) kbhit();
 
 	if (c == 0) return;
 #else
 	if (kbhit() == 0) return;
-
-	c = cgetc();
+  	c = cgetc();
 #endif
 	switch (c) {
 		case '+': do_command("x-inc"); break;

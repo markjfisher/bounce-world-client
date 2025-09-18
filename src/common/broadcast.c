@@ -18,6 +18,11 @@
 #include "conio_wrapper.h"
 #endif
 
+#if __ADAM__
+#include "chardef.h"
+// #include "conio_helpers.h"
+#endif
+
 #ifdef __APPLE2__
 #include "conio_helpers.h"
 #define GOTOXY gotoxy_buffer

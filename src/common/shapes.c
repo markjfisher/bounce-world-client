@@ -1,5 +1,7 @@
-#ifndef _CMOC_VERSION_
+#if !defined(_CMOC_VERSION_)
+#if !defined(__ADAM__)
 #include <conio.h>
+#endif
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -28,6 +30,9 @@
 #include "shape_util.h"
 #include "itoa_wrapper.h"
 #include "double_buffer.h"
+#elif defined __ADAM__
+#include "conio_helpers.h"
+
 #endif
 
 char *shapes_url = "/shapes";

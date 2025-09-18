@@ -17,7 +17,15 @@ void get_line(char* buf, uint8_t max_len) {
 	cursor(1);
 
 	do {
+#if defined (USE_PLATFORM_SPECIFIC_INPUT)
+    while(c == 0) 
+    {
+      c = getPlatformKey();
+    }
+#else
 		c = cgetc();
+#endif
+
 
 		if (isprint(c)) {
 			gotox(start_x + i);
