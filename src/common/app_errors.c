@@ -1,4 +1,4 @@
-#if !defined(__PMD85__) && !defined(_CMOC_VERSION_)
+#if !defined(__PMD85__) && !defined(_CMOC_VERSION_) && !defined(__ADAM__)
 #include <cc65.h>
 #endif
 #ifdef _CMOC_VERSION_

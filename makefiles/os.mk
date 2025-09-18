@@ -6,6 +6,7 @@ ifeq ($(CURRENT_TARGET),)
 $(error Missing value for CURRENT_TARGET)
 endif
 
+CURRENT_PLATFORM_adam := adam
 CURRENT_PLATFORM_apple2 := apple2
 CURRENT_PLATFORM_apple2enh := apple2
 CURRENT_PLATFORM_atari := atari

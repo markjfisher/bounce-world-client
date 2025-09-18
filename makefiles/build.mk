@@ -24,7 +24,11 @@ SOURCES += $(wildcard $(SRCDIR)/*.asm)
 ifeq ($(CURRENT_TARGET),pmd85)
 SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.asm)
 else
+ifeq ($(CURRENT_TARGET),adam)
+SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.asm)
+else
 SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.s)
+endif
 endif
 SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.c)
 
@@ -32,7 +36,11 @@ SOURCES += $(call rwildcard,$(SRCDIR)/common/,*.c)
 ifeq ($(CURRENT_TARGET),pmd85)
 SOURCES_PF := $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.asm)
 else
+ifeq ($(CURRENT_TARGET),adam)
+SOURCES_PF := $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.asm)
+else
 SOURCES_PF := $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.s)
+endif
 endif
 SOURCES_PF += $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.c)
 
@@ -40,7 +48,11 @@ SOURCES_PF += $(call rwildcard,$(SRCDIR)/$(CURRENT_PLATFORM)/,*.c)
 ifeq ($(CURRENT_TARGET),pmd85)
 SOURCES_TG := $(call rwildcard,$(SRCDIR)/current-target/$(CURRENT_TARGET)/,*.asm)
 else
+ifeq ($(CURRENT_TARGET),adam)
+SOURCES_TG := $(call rwildcard,$(SRCDIR)/current-target/$(CURRENT_TARGET)/,*.asm)
+else
 SOURCES_TG := $(call rwildcard,$(SRCDIR)/current-target/$(CURRENT_TARGET)/,*.s)
+endif
 endif
 SOURCES_TG += $(call rwildcard,$(SRCDIR)/current-target/$(CURRENT_TARGET)/,*.c)
 
@@ -91,7 +103,11 @@ else ifeq ($(CURRENT_TARGET),coco)
 -include ./makefiles/compiler-cmoc.mk
 -include ./makefiles/hirestxt-mod-lib.mk
 else
+ifeq ($(CURRENT_TARGET),adam)
+-include ./makefiles/compiler-z88dk.mk
+else
 -include ./makefiles/compiler-cc65.mk
+endif
 endif
 
 .SUFFIXES:

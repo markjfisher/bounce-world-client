@@ -21,6 +21,8 @@
 #ifdef __PMD85__
 #include "conio_wrapper.h"
 #include "itoa_wrapper.h"
+// #elif defined __ADAM__
+// #include "conio_wrapper.h"
 #endif
 
 // platform specific values will be supplied here:
@@ -47,7 +49,7 @@ void send_command() {
 	// hd(cmd_tmp, 64);
 	// cgetc();
 	err = network_write(server_url, (uint8_t *) cmd_tmp, strlen((char *) cmd_tmp));
-	handle_err("send_command");
+	handle_err("send_command"); 
 }
 
 // just send the cached client data command
@@ -90,7 +92,7 @@ int16_t read_response_min(uint8_t *buf, int16_t min, int16_t max) {
 		n = network_read_nb(server_url, buf + total, max - total);
 		if (n < 0) {
 			err = -n;
-			handle_err("read_response_wait");
+			handle_err("read_response_min");
 		}
 		// if we got no data, pause slightly and try again. this compensates for network latency
 		if (n == 0) {

@@ -22,7 +22,7 @@ void init_appkey(void) {
 bool read_appkey(char *buffer, uint8_t max_len, uint8_t key) {
     bool key_result = false;
     bool read_result = false;
-	uint16_t read_count = 0;
+    uint16_t read_count = 0;
 
     memset(read_buffer, 0, max_len);
     key_result = fuji_read_appkey(key, &read_count, read_buffer);
@@ -30,7 +30,7 @@ bool read_appkey(char *buffer, uint8_t max_len, uint8_t key) {
     {
         strncpy(buffer, read_buffer, max_len);
         if (read_count >= max_len) read_count = max_len - 1;
-        read_buffer[read_count] = 0;
+        *(buffer+read_count) = 0;
         read_result = true;
     }
     return read_result;

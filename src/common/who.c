@@ -29,6 +29,12 @@
 #undef CPUTC
 #define GOTOXY(x, y) gotoxy_tb(x, y)
 #define CPUTC(c) putc_upper_tb(c)
+#elif __ADAM__
+#include "chardef.h"
+#define GOTOXY gotoxy
+#define CPUTSXY cputsxy
+#define CPUTC(c) cputc(c)
+
 #else
 #define GOTOXY gotoxy
 #define CPUTSXY cputsxy
