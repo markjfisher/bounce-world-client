@@ -3,10 +3,10 @@
 
 #include <cmoc.h>
 #include <coco.h>
+#include <hirestxt.h>
 #include "chardef.h"
 #include "stdbool.h"
 
-#undef clrscr
 #undef gotoxy
 #undef gotox
 #undef gotoy
@@ -22,11 +22,12 @@
 #undef kbhit
 #undef cgetc
 
-#define clrscr() cls(1)
+unsigned char wherex(void);
+unsigned char wherey(void);
 
-#define gotoxy(x, y) locate(x, y)
-#define gotox(x) locate(x, 0)
-#define gotoy(y) locate(0, y)
+#define gotoxy(x, y) moveCursor(x, y)
+#define gotox(x) moveCursor(x, wherey())
+#define gotoy(y) moveCursor(wherex(), y)
  
 #define cputc(c) putchar(c)
 #define cputs(s) putstr(s, strlen(s))
@@ -37,8 +38,7 @@
 
 #define cgetc() waitkey(false)
 
-unsigned char wherex(void);
-unsigned char wherey(void);
+
 
 unsigned char revers(unsigned char onoff);
 unsigned char cursor(unsigned char onoff);
@@ -49,5 +49,7 @@ void cputsxy(unsigned char x, unsigned char y, const char* s);
 void chlinexy(unsigned char x, unsigned char y, unsigned char length);
 
 unsigned char doesclrscrafterexit (void);
+
+void hirestxt_init(void);
 
 #endif // COCO_CONIO_WRAPPER_H

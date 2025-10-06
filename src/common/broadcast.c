@@ -75,11 +75,7 @@ void broadcast() {
             GOTOXY(startCol, startRow++);
             cputc(CH_VLINE);
             cputs(lineBuffer);
-#ifdef COCO2_BUILD
-            cputc(CH_VLINE_R);
-#else
             cputc(CH_VLINE);
-#endif
 
             // Reset the line buffer for the next line
             lineLen = 0;
@@ -113,11 +109,7 @@ void broadcast() {
         GOTOXY(startCol, startRow++);
         cputc(CH_VLINE);
         cputs(lineBuffer);
-#ifdef COCO2_BUILD
-            cputc(CH_VLINE_R);
-#else
-            cputc(CH_VLINE);
-#endif
+        cputc(CH_VLINE);
     }
 
     // Bottom border of the box

@@ -9,13 +9,12 @@ CFLAGS += -I $(SRCDIR)
 ASFLAGS += -I $(SRCDIR)/include
 CFLAGS += -I $(SRCDIR)/include
 
-CFLAGS += -Wno-const -DCOCO2_BUILD
-#-DCOCO2_BUILD assumes 32x16 screen, CoCo 1 & 2
-#CFLAGS += -Wno-const 
+CFLAGS += -Wno-const
 
 LDFLAGS += $(foreach lib, $(LIBS), -L $(dir $(lib)))
 
 LIBFLAGS := $(foreach lib,$(LIBS),-l$(notdir $(lib)))
+LIBFLAGS += -lhirestxt
 
 $(OBJDIR)/$(CURRENT_TARGET)/%.o: %.c $(VERSION_FILE) | $(OBJDIR)
 	@$(call MKDIR,$(dir $@))

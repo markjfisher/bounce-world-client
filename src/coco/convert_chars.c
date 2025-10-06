@@ -20,27 +20,27 @@ void convert_chars(uint8_t *data, uint8_t len) {
 			case '-': data[i] = CH_HLINE;    break;     // ─
 			case '+': data[i] = CH_CROSS;    break;     // ┼
 
-			case 'a': data[i] = CH_VLINE_L;  break;     // >▌<
-			case 'b': data[i] = CH_VLINE_R;  break;     // >▐< inverted version of previous
+			case 'a': data[i] = 171;  		 break;     // >▌<
+			case 'b': data[i] = 172;         break;     // >▐< inverted version of previous
 
-			case 'c': data[i] = CH_HLINE_T;  break;     // >▄<
-			case 'd': data[i] = CH_HLINE_B;  break;     // >▀< inverted version of previous
+			case 'c': data[i] = 173;         break;     // >▄<
+			case 'd': data[i] = 174;         break;     // >▀< inverted version of previous
 
-			case 'e': data[i] = 141;         break;     // >▖<
-			case 'f': data[i] = 142;         break;     // >▗<
-			case 'g': data[i] = 135;         break;     // >▘<
-			case 'h': data[i] = 139;         break;     // >▝<
+			case 'e': data[i] = 175;         break;     // >▖<
+			case 'f': data[i] = 176;         break;     // >▗<
+			case 'g': data[i] = 177;         break;     // >▘<
+			case 'h': data[i] = 178;         break;     // >▝<
 
             // inverted versions of the above 4
-			case 'i': data[i] = CH_URCORNER; break;     // >▜<
-			case 'j': data[i] = CH_ULCORNER; break;     // >▛<
-			case 'k': data[i] = CH_LRCORNER; break;     // >▟<
-			case 'l': data[i] = CH_LLCORNER; break;     // >▙<
+			case 'i': data[i] = 179;         break;     // >▜<
+			case 'j': data[i] = 180;         break;     // >▛<
+			case 'k': data[i] = 181;         break;     // >▟<
+			case 'l': data[i] = 182;         break;     // >▙<
 
-			case 'm': data[i] = 128;         break;     // >█< inverted space
+			case 'm': data[i] = 183;         break;     // >█< inverted space
 
-			case 'n': data[i] = 134;         break;     // >▚<
-			case 'p': data[i] = 137;         break;     // >▞<
+			case 'n': data[i] = 184;         break;     // >▚<
+			case 'p': data[i] = 185;         break;     // >▞<
 
 			case '/': data[i] = '/';         break;     // /
 			case '\\': data[i] = '\\';       break;     // \

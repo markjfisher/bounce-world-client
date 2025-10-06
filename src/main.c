@@ -46,6 +46,9 @@ int main(void)
 #ifdef __PMD85__
   reset_timer(1);
 #endif
+#ifdef _CMOC_VERSION_
+  hirestxt_init();
+#endif  
 
   // print app information and get the URL/name
   get_info();
