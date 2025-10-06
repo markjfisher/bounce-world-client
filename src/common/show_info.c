@@ -86,37 +86,6 @@ void clear_info() {
 	screen_set_region(4+0, 4+21, 40, 3);
 	screen_fill_region(PATTERN_BLANK);
 }
-
-#elif defined(COCO2_BUILD)
-void show_info() {
-	cputsxy(0, SCREEN_HEIGHT-3, name);
-
-	gotoxy(0, SCREEN_HEIGHT-2);
-	
-	cputs("C:"); printu8j2(num_clients);
-	cputs("1:"); printu8j2(body_1);
-	cputs("2:"); printu8j2(body_2);
-	cputs("3:"); printu8j2(body_3);
-	cputs("4:"); printu8j2(body_4);
-	cputs("5:"); printu8j2(body_5);
-
-	if (world_height > 99) {
-		cputc(' ');
-	}
-	if (world_is_frozen) {
-		revers(1);
-	}
-	printu16(world_width);
-	cputc('X');
-	printu16(world_height);
-	if (world_is_frozen) {
-		revers(0);
-	}
-
-	gotoxy(0, SCREEN_HEIGHT-1);
-	cputs("fR rST +/- 1-5 ADD wHO iNF qUIT");
-}
-
 #else
 void print_reverse(char *s) {
 	revers(1); cputs(s); revers(0);

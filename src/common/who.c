@@ -42,17 +42,11 @@
 #include <cbm.h>
 #endif
 
-#ifdef COCO2_BUILD
-static char grid[2][10] = {
-	{CH_ULCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_URCORNER },
-	{CH_LLCORNER, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_HLINE_B, CH_LRCORNER }
-};
-#else
 static char grid[2][10] = {
 	{CH_ULCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_URCORNER },
 	{CH_LLCORNER, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_HLINE, CH_LRCORNER }
 };
-#endif
+
 void show_clients() {
 	uint8_t i, j;
 	uint8_t max_show = SCREEN_HEIGHT - 4;
@@ -76,11 +70,8 @@ void show_clients() {
 		for (j = 0; j < 8; j++) {
 			CPUTC(clients_buffer[(i << 3) + j]);
 		}
-#ifdef COCO2_BUILD		
-		CPUTC(CH_VLINE_R);
-#else
+
 		CPUTC(CH_VLINE);
-#endif
 	}
 
 	// bottom of box
