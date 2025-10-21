@@ -75,7 +75,7 @@ void get_info() {
 
   cputsxy(txp, yps +  10, "Bounce Server URL:");
 
-  #ifndef __CMOC_VERSION_
+  #ifndef _CMOC_VERSION_
   cursor(1);
   #endif
   if (strlen(ENDPOINT_URL) == 0) {
@@ -86,8 +86,9 @@ void get_info() {
 #else
     get_line(endpoint_input, 60);
 #endif
-    if (strncasecmp(endpoint_input, "tcp", 3) != 0) {
-      strcat(app_data, "tcp://");
+    if (strncasecmp(endpoint_input, "tcp", 3) != 0 &&
+        strncasecmp(endpoint_input, "http", 4) != 0) {
+          strcat(app_data, "tcp://");
     }
     strcat(app_data, endpoint_input);
   } else {

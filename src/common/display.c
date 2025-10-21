@@ -270,8 +270,20 @@ void show_screen() {
 		// this increments to 2 so that we can clear/print info in both buffers
 		info_display_count++;
 	} else {
+#ifdef _CMOC_VERSION_
+		if (is_showing_info)
+		{
+			// just a partial clear, the info display is now setup correctly.
+			playfield_clr();
+		}
+		else
+		{
+			full_clr();
+		}
+#else 
 		// just a partial clear, the info display is now setup correctly.
 		playfield_clr();
+#endif // _CMOC_VERSION
 	}
 #endif // __PMD85__
 
