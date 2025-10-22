@@ -1,15 +1,15 @@
 # bounce-world-client
 
-A cc65 fujinet-lib application to connect to bouncy-world service.
+A fujinet-lib application to connect to bouncy-world service.
 
-You will need to run a bouncy world service from https://github.com/markjfisher/bounce-world
+The bouncy world service can be found at https://github.com/markjfisher/bounce-world
 
 ## building
 
 Standard make for cc65 projects with fujinet-lib:
 
-```shell
-make clear
+```
+make clean
 make release disk
 ```
 
