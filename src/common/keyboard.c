@@ -103,6 +103,12 @@ void handle_kb() {
 		case 'Q':
 		case 'q': is_running_sim = false; break;
 
+#ifdef _CMOC_VERSION_
+		case 'C':
+		case 'c':
+			switch_colorset();
+#endif
+
 #if defined(__ATARI__) || defined(__PMD85__)
 		case 'd': toggle_darkmode(); break;
 		case 'l': flash_on_collision = !flash_on_collision; break;

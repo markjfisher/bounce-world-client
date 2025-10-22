@@ -36,9 +36,9 @@ unsigned char wherey(void);
 
 #define kbhit() inkey()
 
-#define cgetc() waitkey(false)
+byte cgetc(void);
 
-
+byte cgetc_cursor(void);
 
 unsigned char revers(unsigned char onoff);
 unsigned char cursor(unsigned char onoff);
@@ -51,5 +51,7 @@ void chlinexy(unsigned char x, unsigned char y, unsigned char length);
 unsigned char doesclrscrafterexit (void);
 
 void hirestxt_init(void);
+
+void switch_colorset(void);
 
 #endif // COCO_CONIO_WRAPPER_H
