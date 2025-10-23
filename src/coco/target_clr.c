@@ -7,10 +7,5 @@
 extern void wait_vsync();
 
 void playfield_clr() {
-
-	for (int y = 0; y < SCREEN_HEIGHT - 2; y++)
-	{
-		gotoxy(0, y);
-		clrtoeol();
-	}
+	clrscrn(SCREEN_HEIGHT -2);
 }
