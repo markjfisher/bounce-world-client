@@ -40,6 +40,11 @@ void run_simulation() {
 	// Ensure that the is_running_sim flag is set if it was turned off previously
 	is_running_sim = 1;
 
+	// Reset info, broadcast, clients flags;
+	is_showing_info = 0;
+	is_showing_broadcast = 0;
+	is_showing_clients = 0;
+
 	get_world_clients();
 
 	while(is_running_sim) {

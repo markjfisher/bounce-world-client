@@ -1,10 +1,11 @@
-HIRESTXT_LIB_VERSION := 0.5.0
+HIRESTXT_LIB_VERSION := 0.5.0.1
 
 HIRESTXT_LIB = ./_libs
 HIRESTXT_LIB_VERSION_DIR = $(HIRESTXT_LIB)/$(HIRESTXT_LIB_VERSION)-$(CURRENT_TARGET)
 HIRESTXT_LIB_PATH = $(HIRESTXT_LIB_VERSION_DIR)/hirestxt
-HIRESTXT_LIB_DOWNLOAD_URL = https://github.com/RichStephens/hirestxt-mod/releases/download/$(HIRESTXT_LIB_VERSION)/hirestxt-mod-bin-0.5.0.tar.gz
-HIRESTXT_LIB_DOWNLOAD_FILE = $(HIRESTXT_LIB)/hirestxt-mod-bin-0.5.0.tar.gz
+                            https://github.com/RichStephens/hirestxt-mod/releases/download/0.5.0.1/hirestxt-mod-bin.0.5.0.1.tar.gz
+HIRESTXT_LIB_DOWNLOAD_URL = https://github.com/RichStephens/hirestxt-mod/releases/download/$(HIRESTXT_LIB_VERSION)/hirestxt-mod-bin-$(HIRESTXT_LIB_VERSION).tar.gz
+HIRESTXT_LIB_DOWNLOAD_FILE = $(HIRESTXT_LIB)/hirestxt-mod-bin-$(HIRESTXT_LIB_VERSION).tar.gz
 HIRESTXT_LIB_BASENAME := $(notdir $(HIRESTXT_LIB_PATH))
 HIRESTXT_LIB_SYMLINK  := libhirestxt.a
 
