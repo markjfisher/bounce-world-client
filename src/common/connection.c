@@ -26,8 +26,6 @@
 // platform specific values will be supplied here:
 #include "screen.h"
 
-char *comma_str  = ",";
-
 void create_command(char *cmd) {
 	memset(cmd_tmp, 0, 64);
 	strcpy((char *) cmd_tmp, cmd);
@@ -111,7 +109,7 @@ void send_client_data() {
 	strcat((char *) app_data, ",2,"); // version
 	itoa(SCREEN_WIDTH, tmp, 10);
 	strcat((char *) app_data, tmp);
-	strcat((char *) app_data, comma_str);
+	strcat((char *) app_data, ",");
 	itoa(SCREEN_HEIGHT, tmp, 10);
 	strcat((char *) app_data, tmp);
 
