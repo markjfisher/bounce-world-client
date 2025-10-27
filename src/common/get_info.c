@@ -39,11 +39,13 @@ void get_server(unsigned char x, unsigned char y, char *serverbuf)
   cputsxy(x,y, serverbuf);
   memset(serverbuf, 0, 60);
   gotoxy(x,y);
+  cursor(1);
 #ifdef __PMD85__
     get_line(endpoint_input, 33);
 #else  
   get_line(endpoint_input, 60);
 #endif
+  cursor(0);
 }
 
 void get_name(unsigned char x, unsigned char y, char *namebuf)
@@ -53,7 +55,9 @@ void get_name(unsigned char x, unsigned char y, char *namebuf)
   cputsxy(x,y, namebuf);
   memset(namebuf, 0, 8);
   gotoxy(x,y);
+  cursor(1);
   get_line(namebuf, 8);
+  cursor(0);
   
 }
 
@@ -61,8 +65,9 @@ void get_info_menu(char x, char y)
 {
   char c = 0;
 
-  chlinexy(6, 20, 28);
-  gotoxy(7, 21);
+  cursor(0);
+  chlinexy(x + 3, 20, 28);
+  gotoxy(x + 4, 21);
   cputs("Change ");
   revers(1);
   cputs("S");
@@ -74,10 +79,10 @@ void get_info_menu(char x, char y)
   revers(0);
   cputs("ame");
   revers(1);
-  gotoxy(8, 22);
+  gotoxy(x + 5, 22);
   cputs("Press a key to continue");
   revers(0);
-  chlinexy(6, 23, 28);
+  chlinexy(x + 3, 23, 28);
 
   while (true)
   {
@@ -123,14 +128,19 @@ void get_info_menu(char x, char y)
 void get_info()
 {
 
+#ifdef _CMOC_VERSION_
+  char hxp = 5;
+  char txp = 4;
+#else
   char hxp = 4;
   char txp = 3;
+#endif 
   char yps = 3;
 
   clrscr();
   init_sound();
 
-  chlinexy(2, yps - 1, 36);
+  chlinexy(hxp-2, yps - 1, 36);
   revers(1);
   cputsxy(hxp, yps + 1, "                                ");
   cputsxy(hxp, yps + 2, " Welcome to Bouncy World Client ");
@@ -143,7 +153,7 @@ void get_info()
   cputsxy(hxp, yps + 6, "                Version: 0.0.0  ");
   cputsxy(hxp + 25, yps + 6, version);
 
-  chlinexy(2, yps + 8, 36);
+  chlinexy(hxp-2, yps + 8, 36);
 #elif defined(_CMOC_VERSION_)
   cputsxy(hxp, yps + 4, "  CoCo version by Rich Stephens ");
   cputsxy(hxp, yps + 5, "                                ");
@@ -151,14 +161,14 @@ void get_info()
   cputsxy(hxp, yps + 6, "                Version: 0.0.0  ");
   cputsxy(hxp + 25, yps + 6, version);
 
-  chlinexy(2, yps + 8, 36);
+  chlinexy(hxp-2, yps + 8, 36);
 #else
   cputsxy(hxp, yps + 4, "                                ");
   revers(0);
   cputsxy(hxp, yps + 5, "                Version: 0.0.0  ");
   cputsxy(hxp + 25, yps + 5, version);
 
-  chlinexy(2, yps + 7, 36);
+  chlinexy(hxp-2, yps + 7, 36);
 #endif
 
   memset(app_data, 0, 80);
@@ -169,38 +179,36 @@ void get_info()
 #ifndef _CMOC_VERSION_
   cursor(1);
 #endif
-  if (strlen(ENDPOINT_URL) == 0)
-  {
-    cputsxy(txp, yps + 11, "> ");
-    memset(app_data, 0, 80);
 
-    // Try to read the endpoint from the app key
-    if (read_endpoint_appkey(endpoint_input) == true)
+  cputsxy(txp, yps + 11, "> ");
+  memset(app_data, 0, 80);
+
+  // Try to read the endpoint from the app key
+  if (read_endpoint_appkey(endpoint_input) == true)
+  {
+    cputsxy(txp + 2, yps + 11, endpoint_input);
+  }
+  else
+  {
+    if (strlen(ENDPOINT_URL) != 0)
     {
-      cputsxy(txp + 2, yps + 11, endpoint_input);
+      strcpy(endpoint_input, ENDPOINT_URL);
     }
     else
     {
       get_server(txp + 2, yps + 11, endpoint_input);
-      if (strlen(endpoint_input) > 0)
-      {
-        write_endpoint_appkey(endpoint_input);
-      }
     }
-
-    if (strncasecmp(endpoint_input, "tcp", 3) != 0)
+    if (strlen(endpoint_input) > 0)
     {
-      strcat(app_data, "tcp://");
+      write_endpoint_appkey(endpoint_input);
     }
-    strcat(app_data, endpoint_input);
   }
-  else
+
+  if (strncasecmp(endpoint_input, "tcp", 3) != 0)
   {
-    memset(app_data, 0, 256);
-    strcpy(app_data, ENDPOINT_URL);
-    cputsxy(txp, yps + 11, "> ");
-    cputsxy(txp + 2, yps + 11, (char *)app_data);
+    strcat(app_data, "tcp://");
   }
+  strcat(app_data, endpoint_input);
 
   cputsxy(txp, yps + 13, "Your name (max 8):");
   cputsxy(txp, yps + 14, "> ");
