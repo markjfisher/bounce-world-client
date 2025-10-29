@@ -26,6 +26,8 @@
 // platform specific values will be supplied here:
 #include "screen.h"
 
+// extern void debug();
+
 void create_command(char *cmd) {
 	memset(cmd_tmp, 0, 64);
 	strcpy((char *) cmd_tmp, cmd);

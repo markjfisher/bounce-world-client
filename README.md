@@ -6,7 +6,7 @@ The bouncy world service can be found at https://github.com/markjfisher/bounce-w
 
 ## building
 
-Standard make for cc65 projects with fujinet-lib:
+Standard make for cc65 projects with fujinet-lib. Set TARGETS for make if you wish to only build one platform.
 
 ```
 make clean
@@ -15,28 +15,22 @@ make release disk
 
 Specify `TARGETS` value if you only wish to compile a set of clients. This is normal cc65 behaviour.
 
-## endpoint URL
-
-You can specify the endpoint URL when compiling the application which will embed it in the application and not aske for it when the application is run.
-This is useful for shows etc or distrubuting a client for a known DNS endpoint.
-
-```shell
-make ENDPOINT_URL="TCP://192.168.0.200:9002" release disk
-```
-
 ## running
 
 Deploy the released binary for the platform to a FujiNet (e.g. via SD or TNFS), and run it in your usual way.
-It will ask you for the location of the bouncy world service. Enter as a simple http url, e.g. `http://localhost:8080`.
-There is no need for "n:" part, that is done for you.
+It will ask you for the location of the bouncy world service. Enter as a simple tcp url, e.g. `tcp://localhost:9002`.
+
+The "tcp://" part will be pre-pended if you omit it.
+This version of the client uses TCP instead of HTTP, so you must pick the TCP port the service is running on.
 
 ## testing
 
 See the `makefiles/custom-<platform>.mk` files for requirements to run code under emulation.
-Supported at the moment is Altirra on Atari, simply set the `ALTIRRA_HOME` value and run:
+
+Supported at the moment is Altirra on Atari, set the `ALTIRRA_BIN` value to point to the appropriate executable, then run:
 
 ```shell
-make test
+make TARGETS=atari test
 ```
 
 ## copying to SD
@@ -45,5 +39,5 @@ The fujinet supports webdav copying to the SD, and the cyberduck cli command `du
 This is particularly useful for testing c64 programs.
 
 ```shell
-duck --upload dav://anonymous@fujinet.home/dav/bwc.prg dist/bwc.c64.prg -existing overwrite
+duck --upload dav://anonymous@fujinet/dav/bwc.prg dist/bwc.c64.prg -existing overwrite
 ```

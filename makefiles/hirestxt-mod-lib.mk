@@ -1,6 +1,6 @@
 HIRESTXT_LIB_VERSION := 0.5.0.1
 
-HIRESTXT_LIB = ./_libs
+HIRESTXT_LIB = $(CACHE_DIR)/hires-lib
 HIRESTXT_LIB_VERSION_DIR = $(HIRESTXT_LIB)/$(HIRESTXT_LIB_VERSION)-$(CURRENT_TARGET)
 HIRESTXT_LIB_PATH = $(HIRESTXT_LIB_VERSION_DIR)/hirestxt
                             https://github.com/RichStephens/hirestxt-mod/releases/download/0.5.0.1/hirestxt-mod-bin.0.5.0.1.tar.gz

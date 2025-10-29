@@ -22,15 +22,10 @@
 #include "conio_wrapper.h"
 #endif
 
-#ifndef ENDPOINT_URL
-#define ENDPOINT_URL ""
-//#define ENDPOINT_URL "tcp://localhost:9002"
-#endif
-
 char endpoint_input[61];
 char *protocol = "n1:";
 
-char *version = "2.0.0";
+char *version = "2.0.1";
 
 void get_server(unsigned char x, unsigned char y, char *serverbuf)
 {
@@ -103,16 +98,22 @@ void get_info_menu(char x, char y)
     {
     case 'S':
     case 's':
+      cursor(1);
       get_server(x + 2, y + 11, endpoint_input);
+      cursor(0);
+      cputcxy(0, 0, ' ');
       if (strlen(endpoint_input) > 0) 
       {
         write_endpoint_appkey(endpoint_input);
       }
       c=0;
       break;
-    case 'N':
-    case 'n':
+      case 'N':
+      case 'n':
+      cursor(1);
       get_name(x + 2, y + 14, name);
+      cursor(0);
+      cputcxy(0, 0, ' ');
       if (strlen(name) > 0)
       {
         write_name_appkey(name);
@@ -190,14 +191,8 @@ void get_info()
   }
   else
   {
-    if (strlen(ENDPOINT_URL) != 0)
-    {
-      strcpy(endpoint_input, ENDPOINT_URL);
-    }
-    else
-    {
-      get_server(txp + 2, yps + 11, endpoint_input);
-    }
+    cursor(1);
+    get_server(txp + 2, yps + 11, endpoint_input);
     if (strlen(endpoint_input) > 0)
     {
       write_endpoint_appkey(endpoint_input);
@@ -220,6 +215,7 @@ void get_info()
   }
   else
   {
+    cursor(1);
     get_name(txp + 2, yps + 14, name);
     if (strlen(name) > 0)
     {
@@ -228,6 +224,7 @@ void get_info()
   }
   name_pad = 9 - strlen(name); // pre-calculate this so it isn't constantly done in loops
   cursor(0);
+  cputcxy(0, 0, ' ');
 
   // move it forward 3 bytes, and prepend n1:
   memmove(app_data + 3, app_data, 76);

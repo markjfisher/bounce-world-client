@@ -9,6 +9,7 @@ apple-tools/*.jar
 apple-tools/*.dsk
 
 _libs/
+_cache/
 build/
 dist/
 obj/

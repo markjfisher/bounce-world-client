@@ -11,7 +11,8 @@
 #endif
 #include "fujinet-fuji.h"
 
-#define MARK_FISHER_CREATOR_ID 0xFE0C
+// Mark Fisher (aka FENROCK [FE0C]) creator id
+#define CREATOR_ID 0xFE0C
 #define BOUNCY_WORLD_APP_ID 0x02
 #define APP_KEY_ENDPOINT 0x01
 #define APP_KEY_NAME 0x02
@@ -27,7 +28,7 @@ bool read_endpoint_appkey(char *endpoint_buf)
     bool r;
 	uint16_t read_count = 0;
 
-    fuji_set_appkey_details(MARK_FISHER_CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
+    fuji_set_appkey_details(CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
 
     r = fuji_read_appkey(APP_KEY_ENDPOINT, &read_count, read_buffer);
     if (r == true && read_count > 0)
@@ -48,7 +49,7 @@ bool write_endpoint_appkey(char* endpoint_buf)
     bool r;
 	uint16_t write_count = 0;
 
-    fuji_set_appkey_details(MARK_FISHER_CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
+    fuji_set_appkey_details(CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
 
     r = fuji_write_appkey(APP_KEY_ENDPOINT, strlen(endpoint_buf), endpoint_buf);
 
@@ -60,7 +61,7 @@ bool read_name_appkey(char *name_buf)
     bool r;
 	uint16_t read_count = 0;
 
-    fuji_set_appkey_details(MARK_FISHER_CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
+    fuji_set_appkey_details(CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
 
     r = fuji_read_appkey(APP_KEY_NAME, &read_count, read_buffer);
     if (r == true && read_count > 0)
@@ -80,7 +81,7 @@ bool write_name_appkey(char* name_buf)
 {
     bool r;
 
-    fuji_set_appkey_details(MARK_FISHER_CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
+    fuji_set_appkey_details(CREATOR_ID, BOUNCY_WORLD_APP_ID, DEFAULT);
 
     r = fuji_write_appkey(APP_KEY_NAME, strlen(name_buf), name_buf);
 
