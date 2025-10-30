@@ -21,7 +21,7 @@ if [ -z "${FUJI_LIB_DIR}" ]; then
   exit 1
 fi
 
-PLATFORMS=${PLATFORMS:-"c64 atari apple2 apple2enh"}
+PLATFORMS=${PLATFORMS:-"c64 atari apple2 apple2enh coco msdos"}
 VERSION=${FUJINET_LIB_VERSION:-$(grep '^FUJINET_LIB_VERSION :=' ${ROOT_DIR}/makefiles/fujinet-lib.mk | awk '{print $3}')}
 
 FN_CACHE=_cache/fujinet-lib

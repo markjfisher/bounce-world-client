@@ -27,117 +27,81 @@ char *protocol = "n1:";
 
 char *version = "2.0.1";
 
-void get_server(unsigned char x, unsigned char y, char *serverbuf)
-{
-  memset(serverbuf, ' ', 60);
-  serverbuf[60] = 0;
-  cputsxy(x,y, serverbuf);
-  memset(serverbuf, 0, 60);
-  gotoxy(x,y);
+#ifdef _CMOC_VERSION_
+char hxp = 5;
+char txp = 4;
+#else
+char hxp = 4;
+char txp = 3;
+#endif 
+char yps = 3;
+
+void clear_cursor() {
+  // a touch hacky, but forces cursor off after printing a char
+  cursor(0);
+  cputcxy(0, 0, ' ');
+}
+
+void get_input(uint8_t x, uint8_t y, uint8_t len, char *s) {
+  memset(s, ' ', len);
   cursor(1);
+  cputsxy(x, y, s);
+  *s = '\0';
+  gotoxy(x, y);
+
 #ifdef __PMD85__
-    get_line(endpoint_input, 33);
+  get_line(s, 33);
 #else  
-  get_line(endpoint_input, 60);
+  get_line(s, len);
 #endif
-  cursor(0);
+  clear_cursor();
+
 }
 
-void get_name(unsigned char x, unsigned char y, char *namebuf)
+void get_info_changes()
 {
-  memset(namebuf, ' ', 8);
-  namebuf[8] = 0;
-  cputsxy(x,y, namebuf);
-  memset(namebuf, 0, 8);
-  gotoxy(x,y);
-  cursor(1);
-  get_line(namebuf, 8);
-  cursor(0);
-  
-}
+  char c;
 
-void get_info_menu(char x, char y)
-{
-  char c = 0;
+  // keep looping until they hit non NnSs key
+  while (true) {
+    c = 0;
 
-  cursor(0);
-  chlinexy(x + 3, 20, 28);
-  gotoxy(x + 4, 21);
-  cputs("Change ");
-  revers(1);
-  cputs("S");
-  revers(0);
-  cputs("erver ");
-  cputs("Change ");
-  revers(1);
-  cputs("N");
-  revers(0);
-  cputs("ame");
-  revers(1);
-  gotoxy(x + 5, 22);
-  cputs("Press a key to continue");
-  revers(0);
-  chlinexy(x + 3, 23, 28);
-
-  while (true)
-  {
 #ifdef _CMOC_VERSION_
     while (c == 0)
     {
       c = (char)kbhit();
     }
 #else
-    while (kbhit() == 0)
-    {
-      pause(20);
-    }
+    while (kbhit() == 0) ;
     c = cgetc();
 #endif
 
-    switch (c)
-    {
-    case 'S':
-    case 's':
-      cursor(1);
-      get_server(x + 2, y + 11, endpoint_input);
-      cursor(0);
-      cputcxy(0, 0, ' ');
-      if (strlen(endpoint_input) > 0) 
-      {
-        write_endpoint_appkey(endpoint_input);
-      }
-      c=0;
-      break;
+    switch (c) {
+
+      case 'S':
+      case 's':
+        get_input(txp + 2, yps + 11, ENDPOINT_LEN, endpoint_input);
+        write_appkey(endpoint_input, APP_KEY_ENDPOINT);
+        break;
+
       case 'N':
       case 'n':
-      cursor(1);
-      get_name(x + 2, y + 14, name);
-      cursor(0);
-      cputcxy(0, 0, ' ');
-      if (strlen(name) > 0)
-      {
-        write_name_appkey(name);
-      }
-      c=0;
-      break;
-    default:
-      return;
+        get_input(txp + 2, yps + 14, NAME_LEN, name);
+        write_appkey(name, APP_KEY_NAME);
+        break;
+
+      default:
+        // only exit if both server and name are set
+        if (strlen(endpoint_input) > 0 && strlen(name) > 0) {
+          return;
+        }
+        break;
+
     }
   }
 }
 
-void get_info()
-{
-
-#ifdef _CMOC_VERSION_
-  char hxp = 5;
-  char txp = 4;
-#else
-  char hxp = 4;
-  char txp = 3;
-#endif 
-  char yps = 3;
-
+void show_header() {
   clrscr();
   init_sound();
 
@@ -172,32 +136,75 @@ void get_info()
   chlinexy(hxp-2, yps + 7, 36);
 #endif
 
+}
+
+void get_default_server(char *s) {
+  bool r = read_appkey(s, ENDPOINT_LEN, APP_KEY_ENDPOINT);
+  if (!r) {
+    *s = '\0';
+  }
+}
+
+void get_default_name(char *s) {
+  bool r = read_appkey(s, NAME_LEN, APP_KEY_NAME);
+  if (!r) {
+    *s = '\0';
+  }
+}
+
+void show_server(char *s) {
+  cputsxy(txp, yps + 10, "Bounce Server URL:");
+  cputsxy(txp, yps + 11, "> ");
+  cputsxy(txp + 2, yps + 11, s);
+}
+
+void show_name(char *s) {
+  cputsxy(txp, yps + 13, "Your name (max 8):");
+  cputsxy(txp, yps + 14, "> ");
+  cputsxy(txp +2, yps + 14, s);
+}
+
+void cput_rev1(char *s) {
+  revers(1);
+  cputc(s[0]);
+  revers(0);
+  cputs(&s[1]);  
+}
+
+void show_menu() {
+  chlinexy(txp + 3, 20, 28);
+
+  cputsxy(txp + 4, 21, "Change ");
+  cput_rev1("Server ");
+
+  cputs("Change ");
+  cput_rev1("Name");
+
+  revers(1);
+  gotoxy(txp + 5, 22);
+  cputs("Press a key to continue");
+  revers(0);
+
+  chlinexy(txp + 3, 23, 28);
+}
+
+void get_info()
+{
   memset(app_data, 0, 80);
   memset(name, 0, 9);
 
-  cputsxy(txp, yps + 10, "Bounce Server URL:");
+  show_header();
+  
+  get_default_server(endpoint_input);
+  show_server(endpoint_input);
+  
+  get_default_name(name);
+  show_name(name);
 
-#ifndef _CMOC_VERSION_
-  cursor(1);
-#endif
+  show_menu();
 
-  cputsxy(txp, yps + 11, "> ");
-  memset(app_data, 0, 80);
-
-  // Try to read the endpoint from the app key
-  if (read_endpoint_appkey(endpoint_input) == true)
-  {
-    cputsxy(txp + 2, yps + 11, endpoint_input);
-  }
-  else
-  {
-    cursor(1);
-    get_server(txp + 2, yps + 11, endpoint_input);
-    if (strlen(endpoint_input) > 0)
-    {
-      write_endpoint_appkey(endpoint_input);
-    }
-  }
+  get_info_changes();
+  clear_cursor();
 
   if (strncasecmp(endpoint_input, "tcp", 3) != 0)
   {
@@ -205,26 +212,8 @@ void get_info()
   }
   strcat(app_data, endpoint_input);
 
-  cputsxy(txp, yps + 13, "Your name (max 8):");
-  cputsxy(txp, yps + 14, "> ");
-
-  if (read_name_appkey(name) == true)
-  {
-    cputsxy(txp +2, yps + 14, name);
-    get_info_menu(txp, yps);
-  }
-  else
-  {
-    cursor(1);
-    get_name(txp + 2, yps + 14, name);
-    if (strlen(name) > 0)
-    {
-      write_name_appkey(name);
-    }
-  }
-  name_pad = 9 - strlen(name); // pre-calculate this so it isn't constantly done in loops
-  cursor(0);
-  cputcxy(0, 0, ' ');
+  // pre-calculate this so it isn't constantly done in loops
+  name_pad = 9 - strlen(name);
 
   // move it forward 3 bytes, and prepend n1:
   memmove(app_data + 3, app_data, 76);

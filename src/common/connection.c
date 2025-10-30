@@ -26,6 +26,8 @@
 // platform specific values will be supplied here:
 #include "screen.h"
 
+extern uint8_t fn_default_timeout;
+
 // extern void debug();
 
 void create_command(char *cmd) {
@@ -55,7 +57,9 @@ void request_client_data() {
 }
 
 void connect_service() {
+	fn_default_timeout = 2;
 	err = network_open(server_url, 0x0C, 0);
+	fn_default_timeout = 15;
 	handle_err("connect");
 }
 

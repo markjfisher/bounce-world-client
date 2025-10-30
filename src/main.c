@@ -23,6 +23,7 @@
 
 #include "fujinet-network.h"
 
+#include "appkey.h"
 #include "connection.h"
 #include "data.h"
 #include "hex_dump.h"
@@ -48,7 +49,8 @@ int main(void)
 #endif
 #ifdef _CMOC_VERSION_
   hirestxt_init();
-#endif  
+#endif
+  init_appkey();
 
   // print app information and get the URL/name
   get_info();
