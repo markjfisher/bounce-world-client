@@ -44,11 +44,10 @@ void clear_cursor() {
 
 void get_input(uint8_t x, uint8_t y, uint8_t len, char *s) {
   memset(s, ' ', len);
-  cursor(1);
   cputsxy(x, y, s);
   *s = '\0';
   gotoxy(x, y);
-
+  cursor(1);
 #ifdef __PMD85__
   get_line(s, 33);
 #else  
