@@ -67,5 +67,8 @@ void get_line(char* buf, uint8_t max_len) {
 	cputs(buf);
 
 	cursor(0);
+
+	//// Alternate version just using cgets() with Oliver's changes to handle CH_DEL:
+	// cgets(buf, max_len+1);
 }
 #endif
