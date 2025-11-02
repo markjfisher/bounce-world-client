@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [2.0.2] - 2025-11-02
+
+- [cc65] Consolidated on single get_line.c for all cc65 targets [Mark Fisher]
+- [coco] Fix cursor for coco [Rich Stephens]
+- [fujinet-lib] Bump to version 4.8.1 with coco fix to undo dragon changes
+
 ## [2.0.1] - 2025-10-29
 
 - Removed ENDPOINT_URL in favour of appkeys by Rich Stephens in last release
