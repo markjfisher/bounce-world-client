@@ -42,25 +42,19 @@ void get_line(char* buf, uint8_t max_len) {
 			if (i) {
 				uint8_t cur_x = wherex();
 
-				// if we're at the end, i is max_len - 1 but we need to check if the
-				// buffer has a char there before deciding which char to remove
+				gotox(cur_x - 1);
 				if (i == (max_len - 1) && buf[i] != '\0') {
-					// we need to erase the last char from the buffer but not "move" the cursor
-					buf[i] = '\0';
-					gotox(cur_x - 1);
+					// don't "move" the cursor, but do set back to normal text
 					revers(0);
 					cursor(1);
-					cputc(' ');
-					gotox(cur_x - 1);
 				} else {
-					// we weren't on a full buffer, so do simple erase
-					gotox(cur_x - 1);
-					cputc(' ');
-					gotox(cur_x - 1);
+					// we weren't on a full buffer, ok to move
 					--i;
-					buf[i] = '\0';
 				}
-
+				cputc(' ');
+				gotox(cur_x - 1);
+				
+				buf[i] = '\0';
 			}
 		}
 
