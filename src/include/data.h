@@ -10,7 +10,8 @@
 
 // WARNING: if these change, need to change data.s too where the data is reserved!
 #define SHAPES_BUFFER_SIZE 512
-#define APP_DATA_SIZE      256
+// need enough room for 240*3 for shapes + header and status bytes etc.
+#define APP_DATA_SIZE      1024
 
 // endpoint to connect to
 extern char    server_url[80];

@@ -245,8 +245,9 @@ void show_screen() {
 #endif
 	uint8_t i, shape_id;
 	int8_t x, y;
-	// Number of bytes to skip before starting to read shapes data
-	uint8_t index = 3;
+	// Number of bytes to skip before starting to read shapes data, and then indexes into data for shapes
+	// must be 16 bit as we can have 240 shapes in buffer, which is up to 722 bytes to index
+	uint16_t index = 3;
 	uint8_t number_of_shapes = app_data[2];
 
 	// make all writes go to the other screen/memory

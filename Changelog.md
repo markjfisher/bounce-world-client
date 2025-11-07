@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [2.0.3] - 2025-11-07
+
+Fix indexing variable to be 16 bit to support > 85 shapes. Server version 2.1.0 caps
+at 240 objects per client, which is ridiculously large number for an 8 bit client as
+it slows the client down a lot. The server can still handle millions, but client
+has to render them all per frame
+
+Increase buffer size for client app data to 1024 to ensure 240 shapes doesn't cause
+buffer overrun.
+
 ## [2.0.2] - 2025-11-02
 
 - [cc65] Consolidated on single get_line.c for all cc65 targets [Mark Fisher]
