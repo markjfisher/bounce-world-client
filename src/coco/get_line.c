@@ -13,7 +13,7 @@ void get_line(char *buf, uint8_t max_len)
 
 	do
 	{
-		gotox(i + init_x);
+		gotox((byte) i + init_x);
 		cursor(1);
 		c = cgetc_cursor();
 
