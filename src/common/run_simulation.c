@@ -44,6 +44,8 @@ void run_simulation() {
 	is_showing_info = 0;
 	is_showing_broadcast = 0;
 	is_showing_clients = 0;
+	flash_on_collision = 0;
+	play_sound_on_collision = 0;
 
 	get_world_clients();
 

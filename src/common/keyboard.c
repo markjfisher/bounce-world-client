@@ -107,6 +107,15 @@ void handle_kb() {
 		case 'C':
 		case 'c':
 			switch_colorset();
+			break;
+		case 'L':
+		case 'l':
+			flash_on_collision = !flash_on_collision;
+			break;
+		case 'S':
+		case 's':
+			play_sound_on_collision = !play_sound_on_collision;
+			break;
 #endif
 
 #if defined(__ATARI__) || defined(__PMD85__)

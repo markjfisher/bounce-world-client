@@ -135,7 +135,9 @@ void show_info() {
 	print_reverse("Q"); cputs("uit ");
 
 #ifdef _CMOC_VERSION_
-	print_reverse("C"); cputs("olor");
+	print_reverse("C");	cputs("ol ");
+	cputc('f'); print_reverse("L"); cputc(' ');
+	print_reverse("S"); cputs("nd");
 #endif
 
 #ifdef __ATARI__

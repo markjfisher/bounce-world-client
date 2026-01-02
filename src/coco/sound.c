@@ -24,5 +24,19 @@ void stop_sound() {
 }
 
 void sound_collision() {
-	
+    uint16_t i;
+    uint8_t c;
+
+    // Enable 6 bit dac
+    *(uint8_t *)0xFF23 = 0x3F;
+
+    for (i = 240; i > 0; --i)
+    {
+        c = rand() % i;
+        *(uint8_t *)0xFF20 = c & c;
+        *(uint8_t *)0xFF20 = c & c - 1;
+        *(uint8_t *)0xFF20 = c & c + 1;
+        *(uint8_t *)0xFF20 = c & c + 10;
+    }
+
 }
