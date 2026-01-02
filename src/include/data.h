@@ -45,6 +45,7 @@ extern bool is_showing_info;
 extern bool is_showing_clients;
 extern bool is_showing_broadcast;
 extern bool flash_on_collision;
+extern bool play_sound_on_collision;
 
 extern uint8_t current_step;
 extern uint8_t app_status;

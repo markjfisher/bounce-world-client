@@ -46,3 +46,4 @@ uint8_t is_showing_info      = 0x00;
 uint8_t is_showing_clients   = 0x00;
 uint8_t is_showing_broadcast = 0x00;
 uint8_t flash_on_collision   = 0x00;
+uint8_t play_sound_on_collision = 0x00;
