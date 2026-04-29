@@ -1,27 +1,41 @@
-# msdos has no stable fujinet-lib release; resolve via fnlib.py from a git URL.
+# msdos has no stable fujinet-lib release; clone and build from a git URL.
 # Override on the command line to use a fork, local path, or branch (URL#branch).
 FUJINET_LIB ?= https://github.com/FozzTexx/fujinet-lib-experimental.git
 
-FNLIB_CACHE := $(CACHE_DIR)/fnlib-$(CURRENT_TARGET).mk
+FUJINET_LIB_CACHE := $(CACHE_DIR)/fujinet-lib
 
-$(info CACHE_DIR = $(CACHE_DIR))
-$(info FUJINET_LIB = $(FUJINET_LIB))
+# Literal '#' in a make value (so $(subst) can split on it).
+HASH := \#
 
-ifeq (,$(wildcard $(FNLIB_CACHE)))
-$(shell mkdir -p $(CACHE_DIR))
-$(info Resolving fujinet-lib for $(CURRENT_TARGET) from $(FUJINET_LIB))
-FNLIB_RC := $(shell PLATFORM=$(CURRENT_TARGET) CACHE_DIR=$(CACHE_DIR) python3 ./makefiles/fnlib.py "$(FUJINET_LIB)" > $(FNLIB_CACHE).tmp && mv $(FNLIB_CACHE).tmp $(FNLIB_CACHE) && echo ok)
-ifneq ($(FNLIB_RC),ok)
-$(error fnlib.py failed to resolve FUJINET_LIB=$(FUJINET_LIB); see output above. Remove $(FNLIB_CACHE).tmp before retrying)
+FUJINET_LIB_URL    := $(firstword $(subst $(HASH), ,$(FUJINET_LIB)))
+FUJINET_LIB_BRANCH := $(word 2,$(subst $(HASH), ,$(FUJINET_LIB)))
+
+# If FUJINET_LIB points at an existing directory, use it in place. Otherwise
+# treat it as a git URL and clone into _cache/fujinet-lib/<basename>.
+ifneq (,$(wildcard $(FUJINET_LIB_URL)/.))
+FUJINET_LIB_REPO := $(FUJINET_LIB_URL)
+else
+FUJINET_LIB_REPO := $(FUJINET_LIB_CACHE)/$(basename $(notdir $(patsubst %/,%,$(FUJINET_LIB_URL))))
 endif
-endif
 
--include $(FNLIB_CACHE)
-
-ifeq (,$(FUJINET_LIB_INCLUDE))
-$(error FUJINET_LIB_INCLUDE empty after fnlib.py; remove $(FNLIB_CACHE) and retry)
-endif
+FUJINET_LIB_INCLUDE := $(FUJINET_LIB_REPO)/include
+FUJINET_LIB_DIR     := $(FUJINET_LIB_REPO)/r2r/$(CURRENT_TARGET)
+FUJINET_LIB_FILE    := libfujinet.$(CURRENT_TARGET).a
 
 CFLAGS  += -i=$(FUJINET_LIB_INCLUDE)
 ASFLAGS += -i=$(FUJINET_LIB_INCLUDE)
 LIBS    += $(FUJINET_LIB_DIR)/$(FUJINET_LIB_FILE)
+
+.get_fujinet_lib:
+	@set -e; \
+	mkdir -p "$(FUJINET_LIB_CACHE)"; \
+	if [ ! -d "$(FUJINET_LIB_REPO)" ]; then \
+	    echo "Cloning $(FUJINET_LIB_URL) into $(FUJINET_LIB_REPO)"; \
+	    git clone $(if $(FUJINET_LIB_BRANCH),-b $(FUJINET_LIB_BRANCH),) "$(FUJINET_LIB_URL)" "$(FUJINET_LIB_REPO)"; \
+	fi; \
+	if [ ! -f "$(FUJINET_LIB_DIR)/$(FUJINET_LIB_FILE)" ]; then \
+	    echo "Building fujinet-lib for $(CURRENT_TARGET) in $(FUJINET_LIB_REPO)"; \
+	    unset FUJINET_LIB; \
+	    MAKEFLAGS="$$(echo " $$MAKEFLAGS " | sed -E 's/ FUJINET_LIB=[^ ]*//g; s/^ //; s/ $$//')" \
+	        $(MAKE) -C "$(FUJINET_LIB_REPO)" $(CURRENT_TARGET)/r2r; \
+	fi
