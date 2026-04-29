@@ -144,5 +144,11 @@ void show_info() {
 	print_reverse("D"); cputs("rk ");
 	cputc('f'); print_reverse("L");    cputs("sh");
 #endif
+
+#ifdef __MSDOS__
+	print_reverse("C"); cputs("ol ");
+	print_reverse("S"); cputs("nd");
+	cputc(play_sound_on_collision ? '+' : ' ');
+#endif
 }
 #endif // __PMD85__

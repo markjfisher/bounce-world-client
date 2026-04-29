@@ -5,7 +5,7 @@
  *
  */
 
-#if !defined(__PMD85__) && !defined(_CMOC_VERSION_) && !defined(__ADAM__)
+#if !defined(__PMD85__) && !defined(_CMOC_VERSION_) && !defined(__ADAM__) && !defined(__MSDOS__)
 #include <cc65.h>
 #endif
 #ifdef _CMOC_VERSION_
@@ -53,6 +53,9 @@ int main(void)
 #endif
 #ifdef _CMOC_VERSION_
   hirestxt_init();
+#endif
+#ifdef __MSDOS__
+  init_msdos();
 #endif
   init_appkey();
 

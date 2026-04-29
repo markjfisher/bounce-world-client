@@ -1,4 +1,4 @@
-#if defined(__CC65__)
+#if defined(__CC65__) || defined(__MSDOS__)
 
 #include <conio.h>
 #include <ctype.h>

@@ -37,7 +37,34 @@ int16_t fetch_client_state() {
 void get_world_state() {
 	create_command("x-ws");
 	send_command();
+#ifdef __MSDOS__
+	{
+		// Two msdos-specific issues handled here:
+		//  1. Watcom reorders BSS globals, so the cc65-style "read directly
+		//     into &world_width and trust contiguity" hack doesn't work.
+		//     Read into a local buffer and unpack each field explicitly.
+		//  2. The server sends uint16 fields big-endian on the wire. cc65
+		//     LE platforms accept them as-is (effectively ignoring the BE
+		//     intent); CMOC reads them BE natively, matching the wire.
+		//     Watcom is LE, so we byte-swap on unpack to match what the
+		//     coco build sees (10240 / 6144 etc.).
+		uint8_t buf[14];
+		read_response_wait(buf, 14);
+		world_width      = ((uint16_t)buf[0] << 8) | buf[1];
+		world_height     = ((uint16_t)buf[2] << 8) | buf[3];
+		body_count       = ((uint16_t)buf[4] << 8) | buf[5];
+		body_1           = buf[6];
+		body_2           = buf[7];
+		body_3           = buf[8];
+		body_4           = buf[9];
+		body_5           = buf[10];
+		num_clients      = buf[11];
+		world_is_frozen  = buf[12];
+		world_is_wrapped = buf[13];
+	}
+#else
 	read_response_wait((uint8_t *) &world_width, 14);
+#endif
 }
 
 // get up to 512 bytes for all connected clients. we live in hope

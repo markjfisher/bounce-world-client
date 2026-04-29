@@ -102,6 +102,8 @@ ifeq ($(CURRENT_TARGET),pmd85)
 else ifeq ($(CURRENT_TARGET),coco)
 -include ./makefiles/compiler-cmoc.mk
 -include ./makefiles/hirestxt-mod-lib.mk
+else ifeq ($(CURRENT_TARGET),msdos)
+-include ./makefiles/compiler-ow2.mk
 else
 ifeq ($(CURRENT_TARGET),adam)
 -include ./makefiles/compiler-z88dk.mk

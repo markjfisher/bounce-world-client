@@ -1,7 +1,12 @@
 # until there is a fujinet-lib release for pmd85
 # manually copy and unzip the pmd85 library files into _libs/4.7.4-pmd85
-ifneq ($(CURRENT_TARGET),pmd85)
+ifeq ($(filter $(CURRENT_TARGET),pmd85 msdos),)
 -include ./makefiles/fujinet-lib.mk
+endif
+
+# msdos uses fujinet-lib-experimental via fnlib.py (no stable release yet)
+ifeq ($(CURRENT_TARGET),msdos)
+-include ./makefiles/fujinet-lib-msdos.mk
 endif
 
 VERSION_FILE := src/version.txt
