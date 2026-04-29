@@ -148,6 +148,15 @@ void show_header() {
 
   chlinexy(hxp+1, yps + 7, 30);
 
+#elif defined(__MSDOS__)
+  cputsxy(hxp, yps + 4, " MS-DOS version by Rich Stephens");
+  cputsxy(hxp, yps + 5, "                                ");
+  revers(0);
+  cputsxy(hxp, yps + 6, "                Version: 0.0.0  ");
+  cputsxy(hxp + 25, yps + 6, version);
+
+  chlinexy(hxp-2, yps + 8, 36);
+
 #else
   cputsxy(hxp, yps + 4, "                                ");
   revers(0);

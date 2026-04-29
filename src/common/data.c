@@ -38,12 +38,25 @@ uint8_t world_is_frozen;
 uint8_t world_is_wrapped;
 
 
-uint8_t is_running_sim       = 0x01;
+#ifdef __MSDOS__
+bool    is_running_sim          = true;
+#else
+uint8_t is_running_sim          = 0x01;
+#endif
 uint8_t current_step         = 0xff;
 uint8_t info_display_count   = 0x00;
+#ifdef __MSDOS__
+bool    is_darkmode             = true;
+bool    is_showing_info         = false;
+bool    is_showing_clients      = false;
+bool    is_showing_broadcast    = false;
+bool    flash_on_collision      = false;
+bool    play_sound_on_collision = false;
+#else
 uint8_t is_darkmode          = 0x01;
 uint8_t is_showing_info      = 0x00;
 uint8_t is_showing_clients   = 0x00;
 uint8_t is_showing_broadcast = 0x00;
 uint8_t flash_on_collision   = 0x00;
 uint8_t play_sound_on_collision = 0x00;
+#endif

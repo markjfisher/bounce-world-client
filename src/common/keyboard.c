@@ -111,18 +111,24 @@ void handle_kb() {
 		case 'Q':
 		case 'q': is_running_sim = false; break;
 
-#ifdef _CMOC_VERSION_
+#if defined(_CMOC_VERSION_) || defined(__MSDOS__)
 		case 'C':
 		case 'c':
 			switch_colorset();
 			break;
-		case 'L':
-		case 'l':
-			flash_on_collision = !flash_on_collision;
-			break;
 		case 'S':
 		case 's':
 			play_sound_on_collision = !play_sound_on_collision;
+#ifdef __MSDOS__
+			info_display_count = 0;
+#endif
+			break;
+#endif
+
+#ifdef _CMOC_VERSION_
+		case 'L':
+		case 'l':
+			flash_on_collision = !flash_on_collision;
 			break;
 #endif
 
