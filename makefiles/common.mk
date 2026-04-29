@@ -4,7 +4,7 @@ ifeq ($(filter $(CURRENT_TARGET),pmd85 msdos),)
 -include ./makefiles/fujinet-lib.mk
 endif
 
-# msdos uses fujinet-lib-experimental via fnlib.py (no stable release yet)
+# msdos uses fujinet-lib-experimental cloned from git (no stable release yet)
 ifeq ($(CURRENT_TARGET),msdos)
 -include ./makefiles/fujinet-lib-msdos.mk
 endif
