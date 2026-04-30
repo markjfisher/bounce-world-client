@@ -37,22 +37,18 @@ int16_t fetch_client_state() {
 void get_world_state() {
 	create_command("x-ws");
 	send_command();
-#ifdef __MSDOS__
+#if defined(__MSDOS__) || defined(_CMOC_VERSION_)
 	{
-		// Two msdos-specific issues handled here:
-		//  1. Watcom reorders BSS globals, so the cc65-style "read directly
-		//     into &world_width and trust contiguity" hack doesn't work.
-		//     Read into a local buffer and unpack each field explicitly.
-		//  2. The server sends uint16 fields big-endian on the wire. cc65
-		//     LE platforms accept them as-is (effectively ignoring the BE
-		//     intent); CMOC reads them BE natively, matching the wire.
-		//     Watcom is LE, so we byte-swap on unpack to match what the
-		//     coco build sees (10240 / 6144 etc.).
+		// Wire format is little-endian uint16. cc65/z88dk LE targets read
+		// directly into &world_width via BSS contiguity. Two platforms can't:
+		//  - msdos (Watcom): reorders BSS, so contiguity isn't guaranteed.
+		//  - coco (cmoc): 6809 is big-endian, so a raw read swaps the bytes.
+		// Both unpack into a buffer and assemble the uint16s as LE.
 		uint8_t buf[14];
 		read_response_wait(buf, 14);
-		world_width      = ((uint16_t)buf[0] << 8) | buf[1];
-		world_height     = ((uint16_t)buf[2] << 8) | buf[3];
-		body_count       = ((uint16_t)buf[4] << 8) | buf[5];
+		world_width      = buf[0] | ((uint16_t)buf[1] << 8);
+		world_height     = buf[2] | ((uint16_t)buf[3] << 8);
+		body_count       = buf[4] | ((uint16_t)buf[5] << 8);
 		body_1           = buf[6];
 		body_2           = buf[7];
 		body_3           = buf[8];
