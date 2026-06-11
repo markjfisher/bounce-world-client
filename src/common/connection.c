@@ -45,16 +45,21 @@ void append_command(char *cmd) {
 }
 
 void send_command() {
-	// gotoxy(0, 0);
-	// hd(cmd_tmp, 64);
-	// cgetc();
+	/* TCP commands are line-terminated (\n -> 0x9B on Atari, 0x0A on Linux) */
+	strcat((char *) cmd_tmp, "\n");
 	err = network_write(server_url, (uint8_t *) cmd_tmp, strlen((char *) cmd_tmp));
-	handle_err("send_command"); 
+	handle_err("send_command");
 }
 
 // just send the cached client data command
 void request_client_data() {
-	err = network_write(server_url, (uint8_t *) client_data_cmd, client_data_cmd_len);
+	uint16_t len = client_data_cmd_len;
+
+	/* append LF without mutating the cached command buffer */
+	client_data_cmd[len] = '\n';
+	client_data_cmd[len + 1] = '\0';
+	err = network_write(server_url, (uint8_t *) client_data_cmd, len + 1);
+	client_data_cmd[len] = '\0';
 	handle_err("request_client_data");
 }
 
