@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-06-11
+
+This is a breaking change to pre v2.2.1 Bouncy World Server instances.
+A LF is now append to commands so the server knows when they have completed, to fix an issue with
+netstream on atari sending messages in parts and not being fully realised on server.
+
 ## [2.0.3] - 2025-11-07
 
 Fix indexing variable to be 16 bit to support > 85 shapes. Server version 2.1.0 caps

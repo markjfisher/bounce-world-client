@@ -29,7 +29,7 @@
 char endpoint_input[61];
 char *protocol = "n1:";
 
-char *version = "2.0.3";
+char *version = "2.1.0";
 
 #ifdef _CMOC_VERSION_
 char hxp = 5;
