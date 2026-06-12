@@ -33,8 +33,10 @@ void hirestxt_init(void)
 	width(32); /* PMODE graphics will only appear from 32x16 (does nothing on CoCo 1&2) */
 	pmode(4, (byte *)init.textScreenBuffer); /* hires text mode */
 	pcls(255);
-	screen(1, colorset); 
+	screen(1, colorset);
 	initHiResTextScreen(&init);
+
+	init_double_buffer();
 }
 
 void switch_colorset(void)

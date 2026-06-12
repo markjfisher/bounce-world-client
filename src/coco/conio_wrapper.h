@@ -54,4 +54,7 @@ void hirestxt_init(void);
 
 void switch_colorset(void);
 
+void init_double_buffer(void);
+void shutdown_double_buffer(void);
+
 #endif // COCO_CONIO_WRAPPER_H
