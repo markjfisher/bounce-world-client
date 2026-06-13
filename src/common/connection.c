@@ -45,9 +45,12 @@ void append_command(char *cmd) {
 }
 
 void send_command() {
-	/* TCP commands are line-terminated (\n -> 0x9B on Atari, 0x0A on Linux) */
-	strcat((char *) cmd_tmp, "\n");
-	err = network_write(server_url, (uint8_t *) cmd_tmp, strlen((char *) cmd_tmp));
+	uint16_t len = strlen((char *) cmd_tmp);
+
+	/* append LF (0x0A); avoid "\n" which cc65 maps to 0x9B on Atari */
+	cmd_tmp[len] = 0x0A;
+	err = network_write(server_url, (uint8_t *) cmd_tmp, len + 1);
+	cmd_tmp[len] = '\0';
 	handle_err("send_command");
 }
 
@@ -55,8 +58,8 @@ void send_command() {
 void request_client_data() {
 	uint16_t len = client_data_cmd_len;
 
-	/* append LF without mutating the cached command buffer */
-	client_data_cmd[len] = '\n';
+	/* append LF (0x0A); avoid '\n' which cc65 maps to 0x9B on Atari */
+	client_data_cmd[len] = 0x0A;
 	client_data_cmd[len + 1] = '\0';
 	err = network_write(server_url, (uint8_t *) client_data_cmd, len + 1);
 	client_data_cmd[len] = '\0';

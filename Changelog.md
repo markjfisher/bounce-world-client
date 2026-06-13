@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-06-13
+
+We've fixed backwards compatibility again with old servers. It was mostly broken for atari's 0x9b line ending.
+
+- [coco] Add double buffering to coco platforms [Rich Stephens]
+- [doc] Mention where the version string is in readme so I don't have to search for it every time.
+- [all] Force 0x0A as line ending for commands to avoid auto-convert to 0x9b for atari and other conversions
+
 ## [2.1.0] - 2026-06-11
 
 This is a breaking change to pre v2.2.1 Bouncy World Server instances.

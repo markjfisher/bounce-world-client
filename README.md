@@ -4,6 +4,12 @@ A fujinet-lib application to connect to bouncy-world service.
 
 The bouncy world service can be found at https://github.com/markjfisher/bounce-world
 
+## version string
+
+The version string is currently in [get_info.c](src/common/get_info.c), which needs to be updated along with
+[Chagelog.md](Changelog.md).
+
+
 ## building
 
 Standard make for cc65 projects with fujinet-lib. Set TARGETS for make if you wish to only build one platform.
