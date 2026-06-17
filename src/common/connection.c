@@ -80,37 +80,117 @@ void disconnect_service() {
 	network_close(server_url);
 }
 
-// read fully until we get len bytes
-// Used for commands where we must receive all the data
-int16_t read_response_wait(uint8_t *buf, int16_t len) {
+static uint16_t packet_size_from_header(const uint8_t *buf)
+{
+	return (uint16_t)buf[0] | ((uint16_t)buf[1] << 8);
+}
+
+static int16_t read_raw(uint8_t *buf, int16_t len)
+{
+	int16_t total = 0;
 	int16_t n;
-	n = network_read(server_url, buf, len);
+
+	while (total < len) {
+		n = network_read(server_url, buf + total, len - total);
+		if (n < 0) {
+			err = -n;
+			handle_err("read_raw");
+			return total;
+		}
+		if (n == 0) {
+			pause(3);
+			continue;
+		}
+		total += n;
+	}
+	return total;
+}
+
+// read fully until we get payload_len bytes from a framed response
+// Used for commands where we must receive all the data
+int16_t read_response_wait(uint8_t *payload_buf, int16_t payload_len)
+{
+	uint8_t header[PACKET_HEADER_SIZE];
+	uint16_t packet_total;
+	int16_t n;
+
+	n = read_raw(header, PACKET_HEADER_SIZE);
+	if (n < PACKET_HEADER_SIZE) {
+		return n;
+	}
+
+	packet_total = packet_size_from_header(header);
+	if (packet_total != (uint16_t)(payload_len + PACKET_HEADER_SIZE)) {
+		err = 1;
+		handle_err("read_response_wait size");
+		return -1;
+	}
+
+	n = read_raw(payload_buf, payload_len);
 	if (n < 0) {
-		err = -n;
-		handle_err("read_response_wait");
+		return n;
 	}
 	return n;
 }
 
-// read at least min bytes. Forces something to be read, not skip if there's no bytes waiting
-int16_t read_response_min(uint8_t *buf, int16_t min, int16_t max) {
-	int16_t n = 0;
+// read a framed response into buf; payload begins at buf + PACKET_HEADER_SIZE
+// (use app_payload when buf is app_data). Returns payload length, or -1 on error.
+int16_t read_response_min(uint8_t *buf, int16_t min_payload, int16_t max_payload)
+{
 	int16_t total = 0;
-	while (total < min) {
-		n = network_read_nb(server_url, buf + total, max - total);
+	int16_t n = 0;
+	int16_t max_total = (int16_t)(max_payload + PACKET_HEADER_SIZE);
+	int16_t need_total = (int16_t)(min_payload + PACKET_HEADER_SIZE);
+	uint16_t packet_total = 0;
+	uint8_t have_header = 0;
+
+	while (total < need_total) {
+		n = network_read_nb(server_url, buf + total, max_total - total);
 		if (n < 0) {
 			err = -n;
 			handle_err("read_response_min");
+			return -1;
 		}
-		// if we got no data, pause slightly and try again. this compensates for network latency
 		if (n == 0) {
-			pause(3); // about 50ms
+			pause(3);
 			continue;
 		}
 
 		total += n;
+
+		if (total >= PACKET_HEADER_SIZE) {
+			if (!have_header) {
+				packet_total = packet_size_from_header(buf);
+				if (packet_total < PACKET_HEADER_SIZE ||
+					packet_total > (uint16_t)max_total) {
+					err = 1;
+					handle_err("read_response_min bad size");
+					return -1;
+				}
+				need_total = (int16_t)packet_total;
+				have_header = 1;
+			}
+			if (total >= need_total) {
+				break;
+			}
+		}
 	}
-	return total;
+
+	if (!have_header) {
+		return 0;
+	}
+
+	if (total < need_total) {
+		return (int16_t)(total - PACKET_HEADER_SIZE);
+	}
+
+	if (packet_total != packet_size_from_header(buf)) {
+		err = 1;
+		handle_err("read_response_min mismatch");
+		return -1;
+	}
+
+	return (int16_t)(packet_total - PACKET_HEADER_SIZE);
 }
 
 

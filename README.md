@@ -24,10 +24,15 @@ Specify `TARGETS` value if you only wish to compile a set of clients. This is no
 ## running
 
 Deploy the released binary for the platform to a FujiNet (e.g. via SD or TNFS), and run it in your usual way.
-It will ask you for the location of the bouncy world service. Enter as a simple tcp url, e.g. `tcp://localhost:9002`.
+It will ask you for the location of the bouncy world service. Enter as a simple tcp url, e.g. `tcp://localhost:9003`.
+
+The client uses the server's **framed TCP port** (default 9003). Every response is prefixed with a
+2-byte little-endian total packet size; the read helpers in `connection.c` strip and validate that
+header automatically. Use `app_payload` (not `app_data` directly) when interpreting response data
+stored in the shared buffer.
 
 The "tcp://" part will be pre-pended if you omit it.
-This version of the client uses TCP instead of HTTP, so you must pick the TCP port the service is running on.
+This version of the client uses TCP instead of HTTP, so you must pick the framed TCP port the service is running on.
 
 ## testing
 

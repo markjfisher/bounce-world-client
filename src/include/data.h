@@ -12,14 +12,17 @@
 #define SHAPES_BUFFER_SIZE 512
 // need enough room for 240*3 for shapes + header and status bytes etc.
 #define APP_DATA_SIZE      1024
+#define PACKET_HEADER_SIZE 2
+#define APP_PAYLOAD_SIZE   (APP_DATA_SIZE - PACKET_HEADER_SIZE)
 
 // endpoint to connect to
 extern char    server_url[80];
 // buffer for commands to send to the server
 extern uint8_t cmd_tmp[64];
 
-// scratch buffer for general network data (get/post etc)
+// scratch buffer for general network data; first 2 bytes hold packet size on read
 extern uint8_t app_data[APP_DATA_SIZE];
+#define app_payload (&app_data[PACKET_HEADER_SIZE])
 
 // This memory is carved up for the shapes data strings so we don't need to malloc them, and instead used slices of this memory
 extern uint8_t shapes_buffer[SHAPES_BUFFER_SIZE];

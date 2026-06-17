@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-06-17
+
+Breaking change!
+
+The client now uses the newer server port that fetches TCP data with the payload size in the first 2 bytes.
+This will not work with the old port which does not prepend the response with the length.
+
+This was needed to support netstream issues on atari, and make TCP transfers more reliable, so that split packets
+can be detected by the client and recovered from, as the 2.3.0 bouncy world server now offers a port that provides
+that facility (i.e. first 2 bytes are the size of the packet). As this is a streaming protocol, the count helps
+with framentation.
+
+Also, for versioning, I decided to keep the server and client in sync with version numbers, so the major part of the client is compatible
+with the major part of the server, i.e. this client uses a 2.3.x server.
+
+When connecting to a newer bouncy world server, use port 9003 instead of 9002.
+The BW server supports older clients on port 9002, but clients of version 2.3+ must use the new port 9003 to
+get the additional length bytes.
+
 ## [2.1.1] - 2026-06-13
 
 We've fixed backwards compatibility again with old servers. It was mostly broken for atari's 0x9b line ending.

@@ -53,19 +53,19 @@ void run_simulation() {
 		n = fetch_client_state();
 
 		// Nothing to show this round, so reloop and check again
-		if (n == 1) {
+		if (n <= 0) {
 			// debug();
 			continue;
 		}
 
 		// handle any app events
-		app_status = app_data[1];
+		app_status = app_payload[1];
 		if (app_status != 0) {
 			handle_app_status();
 		}
 
 		// check if the server is frozen or not, by checking the step id
-		new_step_id = app_data[0];
+		new_step_id = app_payload[0];
 		if (new_step_id != current_step) {
 			current_step = new_step_id;
 			show_screen();

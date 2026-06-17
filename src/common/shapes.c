@@ -80,13 +80,13 @@ void parse_shape_records(const uint8_t *input) {
 uint8_t get_shape_count() {
 	create_command("x-shape-count");
 	send_command();
-	read_response_wait(app_data, 1);
+	read_response_wait(app_payload, 1);
 
 	// debug: show the shape count
 	// gotoxy(0, 21);
-	// hd(app_data, 1);
+	// hd(app_payload, 1);
 
-	return app_data[0];
+	return app_payload[0];
 }
 
 void read_and_parse_shapes_data() {
@@ -96,15 +96,15 @@ void read_and_parse_shapes_data() {
 	memset(app_data, 0, APP_DATA_SIZE);
 	create_command("x-shape-data");
 	send_command();
-	n = read_response_min(app_data, 1, APP_DATA_SIZE);
-	// hd(app_data, APP_DATA_SIZE);
+	n = read_response_min(app_data, 1, APP_PAYLOAD_SIZE);
+	// hd(app_payload, APP_PAYLOAD_SIZE);
 
 	if (n < 0) {
 		err = -n;
 		handle_err("shape data read");
 	}
 
-	parse_shape_records(app_data);
+	parse_shape_records(app_payload);
 }
 
 #ifdef __PMD85__

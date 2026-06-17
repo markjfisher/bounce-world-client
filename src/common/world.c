@@ -31,7 +31,7 @@ void create_client_data_command() {
 int16_t fetch_client_state() {
 	memset(app_data, 0, APP_DATA_SIZE);
 	request_client_data();
-	return read_response_min((uint8_t *) app_data, 1, APP_DATA_SIZE);
+	return read_response_min((uint8_t *) app_data, 1, APP_PAYLOAD_SIZE);
 }
 
 void get_world_state() {
@@ -65,19 +65,29 @@ void get_world_state() {
 
 // get up to 512 bytes for all connected clients. we live in hope
 void get_world_clients() {
+	int16_t n;
+
 	memset(clients_buffer, 0, 512);
 	create_command("x-who");
 	send_command();
-	read_response_min((uint8_t *) clients_buffer, 1, 512);
+	n = read_response_min((uint8_t *) app_data, 1, APP_PAYLOAD_SIZE);
+	if (n > 0) {
+		memcpy(clients_buffer, app_payload, (size_t)n);
+	}
 }
 
 void get_broadcast() {
 	int n;
 	create_command("x-msg");
 	send_command();
-	n = read_response_min((uint8_t *) broadcast_message, 1, 119);
+	n = read_response_min((uint8_t *) app_data, 1, APP_PAYLOAD_SIZE);
 
-	broadcast_message[n] = '\0';
+	if (n > 0) {
+		memcpy(broadcast_message, app_payload, (size_t)n);
+		broadcast_message[n] = '\0';
+	} else {
+		broadcast_message[0] = '\0';
+	}
 }
 
 // this client has some commands to process
@@ -88,7 +98,7 @@ void get_world_cmd() {
 	create_command("x-cmd-get");
 	append_command(client_str);
 	send_command();
-	n = read_response_min((uint8_t *) app_data, 1, 256);
+	n = read_response_min((uint8_t *) app_data, 1, APP_PAYLOAD_SIZE);
 
 /*
     ENABLE_DARK_MODE(1, "enableDarkMode"),
@@ -103,7 +113,7 @@ void get_world_cmd() {
 
 	if (n > 0) {
 		for (i = 0; i < n; i++) {
-			cmd = app_data[i];
+			cmd = app_payload[i];
 			switch (cmd) {
 				case 1: // enable dark mode
 					is_darkmode = true;

@@ -242,7 +242,7 @@ void show_shape(uint8_t shape_id, int8_t center_x, int8_t center_y) {
 }
 
 void show_screen() {
-	// positions to display are in app_data
+	// positions to display are in app_payload
 	// byte 0: world step number (0-255, looping)
 	// byte 1: status byte (used elsewhere)
 	// byte 2: number of shapes to display for client, 3 bytes per shape follow
@@ -257,7 +257,7 @@ void show_screen() {
 	// Number of bytes to skip before starting to read shapes data, and then indexes into data for shapes
 	// must be 16 bit as we can have 240 shapes in buffer, which is up to 722 bytes to index
 	uint16_t index = 3;
-	uint8_t number_of_shapes = app_data[2];
+	uint8_t number_of_shapes = app_payload[2];
 
 	// make all writes go to the other screen/memory
 	swap_buffer();
@@ -299,9 +299,9 @@ void show_screen() {
 
 	// if (!is_showing_broadcast) {
 		for (i = 0; i < number_of_shapes; ++i) {
-			shape_id = app_data[index++];
-			x = (int8_t)app_data[index++];
-			y = (int8_t)app_data[index++];
+			shape_id = app_payload[index++];
+			x = (int8_t)app_payload[index++];
+			y = (int8_t)app_payload[index++];
 #ifdef __PMD85__
 			// t1 = read_timer(1);
 			shape_to_buffer(shape_id, x, y);
