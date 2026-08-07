@@ -1,0 +1,8 @@
+[project]
+name = "bw-client"
+version = "0.1.0"
+description = "CLI helpers for talking to a bounce-world server"
+requires-python = ">=3.11"
+
+[project.scripts]
+bw-client = "bw_client.cli:main"

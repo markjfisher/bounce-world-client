@@ -19,6 +19,12 @@ altirra-debug*.ini
 atari800-debug.cfg
 AppleWin.log
 
+# python
+__pycache__/
+*.py[cod]
+.Python
+*.egg-info/
+
 Makefile.options
 .DS_Store
 
