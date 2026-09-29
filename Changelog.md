@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- [coco] Use the latest hirestxt-mod release, no-VT52 build [Rich Stephens]
+
 ## [2.3.0] - 2026-06-17
 
 Breaking change!
